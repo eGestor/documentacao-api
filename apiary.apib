@@ -65,79 +65,30 @@ As ações de `listar` permitem o envio dos seguintes parâmetros:
 
 Nossa API utiliza [OAuth2](https://oauth.net/2/) como forma de autenticação/autorização.
 
-Para utilizar o eGestor através do OAuth2, você precisará:
-1. Solicitar o cadastro da sua aplicação, enviando um email para suporte@zipline.com.br com os dados:
-    * Nome da aplicação;
-    * URL de redirecionamento (`redirect_uri`);
-    * Telefone de contato;
-2. Receber um `client_id` e `client_secret`, utilizados na solicitação de acesso;
 
-**Caso sua aplicação não possa utilizar uma URL de redirecionamento:**
-
-*Utilize `urn:ietf:wg:oauth:2.0:oob:auto` para que o código de autorização seja exibido para o usuário.*
-
----
-
-#### Solicitando acesso com `authorization_code`
-
-1. **Redirecione o usuário para a URL de autorização.**
-
-    Monte a URL de autorização utilizando seus dados e o endereço [**/oauth/authorize**](#reference/autenticacao-oauth/autorizando) e depois redirecione o usuário.
-
-2. **eGestor redireciona para sua aplicação.**
-
-    Caso usuário autorize o acesso, nosso sistema irá utilizar a `redirect_uri` para redirecionar o usuário para sua aplicação informando o parâmetro `code`.
-
-3. **Solicite um access token.**
-
-    Utilize o `code` fornecido para solicitar um `access_token` pela URL [**/oauth/access_token**](#reference/autenticacao-oauth/solicitando-tokens-de-acesso). O `access_token` possui validade de 15 minutos, depois disso utilize o `refresh_token` para solicitar um novo `access_token`.
-
-## Autorizando [/oauth/authorize{?response_type,client_id,redirect_uri}]
-
-+ Parameters
-    + response_type (required, string, `code`) ... Fixo string `code`.
-    + client_id (required, string, `9b36d8c0db59ef9cc2f`) ... Fornecido depois de cadastrar a aplicação.
-    + redirect_uri (required, string, `59ef9cc2f8c0db59ef`) ... URI de redirecionamento fornecida pela sua aplicação.
-
-### Autorizando sua aplicação [GET]
-Monte a URL utilizando os dados fornecidos no cadastrado da aplicação. O site do eGestor irá solicitar o acesso para o usuário e depois redirecionar para sua aplicação.
-
-+ Request (application/json)
-
-    ```
-    https://v4.egestor.com.br/api/oauth/authorize?response_type=code&client_id=9b36d8c0db&client_secret=59ef9cc2f&redirect_uri=urn:ietf:wg:oauth:2.0:oob
-    ```
-
-    + Body
-
-+ Response 200
-
-    + Body
 
 ## Solicitando tokens de acesso [/oauth/access_token]
 
-### Utilizando o código de acesso [POST]
-Utilizando o `code` enviado pelo servidor de autorização, envie um POST com seus dados para receber um `access_token`.
-O `access_token` é válido por 15 minutos. Utilize o `refresh_token` para solicitar um novo `access_token`, para não solicitar ao usuário suas credenciais (login e senha) novamente.
+### Utilizando personal_token [POST]
 
+O `personal_token` é do formato JWT e contém informações da aplicação e do cliente (usuário). Este é o tipo de token recomendado para utilização em sistemas de e-Commerce e sites integrados ao eGestor.
+
+Os dados desse token podem ser obtidos diretamente no eGestor, na aba `Configurações -> Aplicativos conectados`.
+
+#### Dados para envio no POST
 | Parâmetro | Descrição |
 |---|---|
-| `grant_type` | Informar: `authorization_code` |
-| `client_id` | Código de identificação da aplicação no sistema. |
-| `client_secret` | `client_secret` da aplicação no sistema. |
-| `redirect_uri` | Url de redirecionamento informada na configuração da aplicação. |
-| `code` | Código recebido pela autorização do usuário. |
+| `grant_type` | Informar: `personal` |
+| `personal_token` | Token JWT com informações da aplicação cliente. |
+
 
 + Request (application/json)
 
     + Body
 
             {
-                "code": "1rbUURjcp1KErn7Jgx7d",
-                "client_id": "e70654d7f568d0",
-                "client_secret": "156762a28c007a64ff",
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob:auto",
-                "grant_type": "authorization_code"
+              "grant_type": "personal"
+              "personal_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiIzNDhlNTM4MzQ2M2Y3MzZjMGExZTJhNTFmNjYwZjA5NCIsInN1YmRvbWluaW8iOiJleGVtcGxvIiwiY2xpZW50IjoiMTU0ZDZlZGQ4YmQzMDEwYzQ4NjBkN2E5Yzk1NzNmYmVmZTUyNGRlZiJ9.JJNs0bFtGOtwyJy_r-eefsvkd387M_x7zpucE1m4WIw",
             }
 
 + Response 200 (application/json)
@@ -148,8 +99,7 @@ O `access_token` é válido por 15 minutos. Utilize o `refresh_token` para solic
                 "access_token": "[access_token]",
                 "token_type": "Bearer",
                 "expires_in": 900,
-                "refresh_token": "[refresh_token]",
-                "personal_token": "[token_string]"
+                "refresh_token": "[refresh_token]"
             }
 
 
@@ -190,26 +140,32 @@ Utilize o último `refresh_token` recebido para solicitar um novo `access_token`
                 "refresh_token": "[refresh_token]"
             }
 
-### Utilizando personal_token [POST]
 
-O `personal_token` é do formato JWT e contém informações da aplicação e do cliente (usuário). Este é o tipo de token recomendado para utilização em sistemas de e-Commerce e sites integrados ao eGestor.
 
-Os dados desse token podem ser obtidos diretamente no eGestor, na aba `Configurações -> Aplicativos conectados`.
 
-#### Dados para envio no POST
+
+### Utilizando o código de acesso [POST]
+Utilizando o `code` enviado pelo servidor de autorização, envie um POST com seus dados para receber um `access_token`.
+O `access_token` é válido por 15 minutos. Utilize o `refresh_token` para solicitar um novo `access_token`, para não solicitar ao usuário suas credenciais (login e senha) novamente.
+
 | Parâmetro | Descrição |
 |---|---|
-| `grant_type` | Informar: `personal` |
-| `personal_token` | Token JWT com informações da aplicação cliente. |
-
+| `grant_type` | Informar: `authorization_code` |
+| `client_id` | Código de identificação da aplicação no sistema. |
+| `client_secret` | `client_secret` da aplicação no sistema. |
+| `redirect_uri` | Url de redirecionamento informada na configuração da aplicação. |
+| `code` | Código recebido pela autorização do usuário. |
 
 + Request (application/json)
 
     + Body
 
             {
-              "grant_type": "personal"
-              "personal_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiIzNDhlNTM4MzQ2M2Y3MzZjMGExZTJhNTFmNjYwZjA5NCIsInN1YmRvbWluaW8iOiJleGVtcGxvIiwiY2xpZW50IjoiMTU0ZDZlZGQ4YmQzMDEwYzQ4NjBkN2E5Yzk1NzNmYmVmZTUyNGRlZiJ9.JJNs0bFtGOtwyJy_r-eefsvkd387M_x7zpucE1m4WIw",
+                "code": "1rbUURjcp1KErn7Jgx7d",
+                "client_id": "e70654d7f568d0",
+                "client_secret": "156762a28c007a64ff",
+                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob:auto",
+                "grant_type": "authorization_code"
             }
 
 + Response 200 (application/json)
@@ -220,9 +176,9 @@ Os dados desse token podem ser obtidos diretamente no eGestor, na aba `Configura
                 "access_token": "[access_token]",
                 "token_type": "Bearer",
                 "expires_in": 900,
-                "refresh_token": "[refresh_token]"
+                "refresh_token": "[refresh_token]",
+                "personal_token": "[token_string]"
             }
-
 
 # Group Recursos
 
@@ -633,7 +589,7 @@ Produtos são utilizados nas vendas e controle de estoque.
                   "anotacoesInternas": "",
                   "pesoBruto": 0,
                   "pesoLiquido": 0,
-                  "tags": ['examplo', 'modelo']
+                  "tags": ['exemplo', 'modelo']
                 }
 
 + Response 200 (application/json)
