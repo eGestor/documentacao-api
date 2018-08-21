@@ -1008,6 +1008,47 @@ Produtos são utilizados nas vendas e controle de estoque.
                   }
                 ]
             }
+            
+### Novo (Create) [POST]
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
+  + Body
+
+            {
+              "codPlanoContas": 1,
+              "codFormaPgto": 0,
+              "numDoc": "",
+              "descricao": "Recebimento parcela 1/1",
+              "valor": 500,
+              "dtVenc": "2017-09-02",
+              "dtPgto": "0000-00-00",
+              "dtCad": "2017-06-02 11:57:03",
+              "codContato": 7,
+              "obs": "",
+              "tags": [ "tag1", "tag2" ]
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "descricao": "Recebimento parcela 1/1",
+              "situacao": 20,
+              "origem": "financeiro"
+            }
+            
 
 
 ### Detalhar [GET /recebimentos/{codigo}]
@@ -1220,6 +1261,46 @@ Produtos são utilizados nas vendas e controle de estoque.
                 }
               ]
           }
+
+### Novo (Create) [POST]
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
+  + Body
+
+            {
+              "codPlanoContas": 1,
+              "codFormaPgto": 0,
+              "numDoc": "",
+              "descricao": "Pagamento de Luz",
+              "valor": 123,
+              "dtVenc": "2017-09-02",
+              "dtPgto": "0000-00-00",
+              "dtCad": "2017-06-02 11:57:03",
+              "codContato": 7,
+              "obs": "",
+              "tags": [ "tag1", "tag2" ]
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "descricao": "Pagamento de Luz",
+              "situacao": 10,
+              "origem": "financeiro"
+            }
 
 
 ### Detalhar [GET /pagamentos/{codigo}]
