@@ -10,6 +10,7 @@ Recursos disponíveis para acesso via API:
 * [**Contatos**](#reference/recursos/contatos)
 * [**Categoria de produtos**](#reference/recursos/categorias)
 * [**Produtos**](#reference/recursos/produtos)
+* [**Ajuste de estoque**](#reference/recursos/ajuste-de-estoque)
 * [**Serviços**](#reference/recursos/servicos)
 * [**Disponíveis**](#reference/recursos/disponiveis)
 * [**Formas de pagamento**](#reference/recursos/formas-de-pagamento)
@@ -805,6 +806,7 @@ Produtos são utilizados nas vendas e controle de estoque.
                 {
                   "descricao": "Novo produto",
                   "codigoProprio": "001",
+                  "codCategoria": 1,
                   "estoque": 100,
                   "estoqueMinimo": 0,
                   "controlarEstoque": true,
@@ -863,6 +865,7 @@ Produtos são utilizados nas vendas e controle de estoque.
               "codigo": "1",
               "descricao": "Novo produto",
               "codigoProprio": "",
+              "codCategoria": 1,
               "estoque": 100,
               "estoqueMinimo": 0,
               "controlarEstoque": true,
@@ -924,6 +927,7 @@ Produtos são utilizados nas vendas e controle de estoque.
             {
                   "descricao": "Novo produto editado",
                   "codigoProprio": "007",
+                  "codCategoria": 1,
                   "estoque": 50,
                   "estoqueMinimo": 25,
                   "controlarEstoque": true,
@@ -1004,6 +1008,191 @@ Produtos são utilizados nas vendas e controle de estoque.
               "msg": "Produto com código 1 excluído com sucesso.",
               "obs": null,
               "fields": null
+            }
+
+# Ajuste de estoque [/ajusteEstoque]
+
+Permite definir o estoque atual dos produtos. 
+Os ajustes de estoque não podem ser editados nem excluídos, caso seja necessário realize um novo ajuste.
+
+| motivo | Descrição |
+|------|------------|
+| `10` | Ajuste geral. |
+| `20` | Envio de RMA. |
+| `30` | Retorno de RMA. |
+| `40` | Devolução de venda. |
+| `50` | Devolução de compra. |
+
+
+### Listar (List) [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+          {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 1,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 50,
+              "data": [
+                {
+                  "codigo": 1,
+                  "codContato": 1,
+                  "nomeContato": "Cliente padrão",
+                  "motivo": 10,
+                  "dtCad": "2019-05-15 10:56:58",
+                  "obs": "Ajusta por quebra",
+                  "tags": [
+                      "api,teste"
+                  ]
+                }
+              ]
+          }
+
++ Response 401 (application/json)
+
+          {
+              "errCode": 401,
+              "errMsg": "Não foi possível acessar o sistema. Verifique seu \"access_token\".",
+              "errObs": "access_denied",
+              "errFields": null,
+              "errUrl": "/v1/ajusteEstoque"
+          }
+
+### Novo (Create) [POST]
+
++ Attributes (object)
+
+    + motivo (number, required) - Motivo do ajuste (ver tabela)
+    + codContato (number, optional) - Código do responsável pelo ajuste
+    + obs (string, optional) - Observações gerais
+    + tags (array, optional) - Palavras-chave
+    + produtos (array, required) - Produtos que serão ajustados
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "codContato": 1,
+              "motivo": 10,
+              "obs": "",
+              "tags": ["api", "teste"],
+              "produtos": [
+                {
+                  "codProduto": 1,
+                  "estoqueFinal": 300
+                },
+                {
+                  "codProduto": 2,
+                  "estoqueFinal": 50
+                }
+              ]
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codigo": 1
+            }
+
+### Detalhar (Read) [GET /ajusteEstoque/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código do ajuste
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+  Todos os dados do ajuste
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "codContato": 1,
+              "nomeContato": "Cliente padrão",
+              "motivo": 10,
+              "dtCad": "2019-05-15 10:56:58",
+              "obs": "",
+              "tags": [
+                  "api,teste"
+              ],
+              "produtos": [
+                  {
+                      "estoqueFinal": 300,
+                      "quantidade": -402,
+                      "codProduto": 1,
+                      "nomeProduto": "Produto padrão 1",
+                      "codProprio": ""
+                  },
+                  {
+                      "estoqueFinal": 50,
+                      "quantidade": -602,
+                      "codProduto": 2,
+                      "nomeProduto": "Produto padrão 2",
+                      "codProprio": ""
+                  }
+              ]
+            }
+
++ Response 404 (application/json)
+  Quando registro não for encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum registro com código 1 econtrado",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 410 (application/json)
+  Quando registro foi apagado do sistema, o código de retorno é 410.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+    + Body
+
+            {
+              "errCode": 410,
+              "errMsg": "Registro com código 1 não existe.",
+              "errObs": null,
+              "errFields": null
             }
 
 # Serviços [/servicos]
@@ -1733,7 +1922,7 @@ Todo plano de conta precisa estar vinculado a um dos planos de conta padrão já
 + Attributes (object)
 
     + nome (string, required)
-    + codPai (number, required) - codigo do registro pai
+    + codPai (number, required) - Código do registro pai
     + debitar (number, optional) - Conta contábil para débito
     + creditar (number, optional) - Conta contábil para crédito
 
