@@ -22,6 +22,7 @@ Recursos disponíveis para acesso via API:
 * [**Boletos**](#reference/recursos/boletos)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
+* [**Webhooks**](#reference/recursos/webhooks)
 
 # Biblioteca
 Integre seu sistema de forma rápida e fácil utilizando nossa [biblioteca para PHP](https://github.com/eGestor/egestor-sdk-php).
@@ -3115,7 +3116,7 @@ Somente podem ser excluídas compras na situação de `Orçamento`. Ao excluir a
 
 As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma nova.
 
-### Listar (List) [GET /vendas{?filtro,dtTipo,dtIni,dtFim,vendedor,tipo,formaPgto,contaDest,situOS,buscaObs,fiscal,fields,orderBy}]
+### Listar (List) [GET /vendas{?filtro,dtTipo,dtIni,dtFim,vendedor,tipo,formaPgto,contaDest,situOS,buscaObs,fiscal,listarCanceladas,fields,orderBy}]
 
 + Parameters
     + filtro (optional, string) - Busca a string informada nos campos: código da venda, palavras-chave e nome do cliente.
@@ -3139,10 +3140,11 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
     + fiscal (optional, string) - Permite filtrar por vendas com ou sem nota fiscal. Valores possíveis:
         * comNFe
         * semNFe
+    + listarCanceladas (optional, boolean) - Define se as vendas canceladas também serão listadas
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
         * codigo, codContato, nomeContato, codVendedor, dtVenda, dtEntrega, dtCad, valorTotal, valorFinanc, valorEntrada, numParcelas, codsNFe, clienteFinal, situacao, tags
         * ex: &fields=nomeContato,valorTotal
-        * Padrão: codigo, codContato, nomeContato, codVendedor, dtVenda, valorTotal, valorFinanc, codsNFe, situacao, tags
+        * Padrão: codigo, codContato, nomeContato, codVendedor, dtVenda, valorTotal, valorFinanc, codsNFe, situacao, tags, ativo
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
         * codigocodigo, codContato, codVendedor, clienteFinal, dtVenda, dtEntrega, dtCad, dtDel, valorTotal, valorFinanc, valorEntrada, numParcelas, tags, situOS, situacao, nomeContato, nomeVendedor
         * ex: &orderBy=nomeVendedor,desc
@@ -6214,4 +6216,83 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
               "errMsg": "Registro com código 1 não existe.",
               "errObs": null,
               "errFields": null
+            }
+            
+# Webhooks [/webhooks]
+O eGestor conta com uma estrutura de webhooks. Através dela, será disparada uma requisição para determinada URL do seu sistema sempre que algum registro for criado, editado ou excluído. Importante: Enviaremos um parâmetro chave na requisição, chamado de "securityToken". Esta é uma chave única e diferente de seu token. Você pode usá-la para autenticar o webhook recebido e confirmar a autenticidade da requisição.
+Os módulos disponíveis são os seguintes:
+* Produtos
+* Contatos
+* Vendas
+
+Dessa forma, sempre que um produto, cliente ou venda for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato:
+        
+        {
+
+            "action": "updated", // Valores possíveis: "created", "updated" ou "deleted"
+            "codigo": "1", // Código do registro
+            "date": "2019-01-11 14:55:19", // Data que a alteração ocorreu no eGestor
+            "module": "contatos", // Valores possíveis: "produtos", "contatos" ou "vendas"
+            "securityToken": "01a161daaaf265968c1f36a19ef8f4" // Sua chave de segurança
+    }
+
+No momento do cadastro, deve-se definir quais os módulos serão ativos, através dos parâmetros "produtos", "contatos" e "vendas".
+
+### Detalhar [GET /webhooks]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+
+    + Body
+            
+            {
+              "endpoint": "http://www.example.com/webhookEgestor"
+              "securityToken": "01a161daaaf265968c1f36a19ef8f4",
+              "produtos": true,
+              "contatos": false,
+              "vendas": true
+            }
+
+### Cadastrar [POST /webhooks]
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
+  + Body
+
+            {
+              "endpoint": "http://www.example.com/webhookEgestor",
+              "produtos": true,
+              "contatos": false,
+              "vendas": true
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "endpoint": "http://www.example.com/webhookEgestor",
+              "securityToken": "b7e7d8d9185313c8738636c6bfc57d",
+              "produtos": true,
+              "contatos": false,
+              "vendas": true,
             }
