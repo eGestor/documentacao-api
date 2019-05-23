@@ -197,9 +197,23 @@ O `access_token` é válido por 15 minutos. Utilize o `refresh_token` para solic
 Os contatos podem ser clientes, fornecedores e transportadoras.
 
 
-### Listar (List) [GET /contatos{?filtro,fields,orderBy}]
+### Listar (List) [GET /contatos{?filtro,endereco,telefone,email,clienteFinal,indIE,IE,IM,suframa,obs,fields,orderBy}]
 + Parameters
     + filtro (string, optional) - Busca a string informada nos campos: nome, fantasia, código, contato, email, telefone e tags.
+    + endereco (string, optional) - Busca a string informada no endereço do contato (rua, cep, bairro, cidade e estado)
+    + telefone (string, optional) - Busca o valor informado no campo "Telefones" do contato
+    + email (string, optional) - Busca o valor informado no campo "E-mails" do contato
+    + clienteFinal (number, optional) - Filtrar por cliente final. Valores possíveis:
+        * 1 - Sim
+        * 2 - Não
+    + indIE (number, optional) - Filtrar por indicador de IE. Valores possíveis:
+        * 1 - Contribuinte
+        * 2 - Isento de IE
+        * 9 - Não contribuinte
+    + IE (string, optional) - Filtra por inscrição estadual 
+    + IM (string, optional) - Filtra por inscrição municipal
+    + suframa (string, optional) - Filtra pelo código SUFRAMA 
+    + obs (string, optional) - Busca a string informada nas observações do contato
     + fields (string, optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
         * codigo, nome, fantasia, nomeParaContato, cpfcnpj, tipo, dtNasc, dtCad, emails, fones, cidade, uf, clienteFinal, indicadorIE, inscricaoMunicipal, inscricaoEstadual, obs, tags
         * ex: &fields=nome,fantasia
@@ -3179,7 +3193,8 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
                     "valorFinanc": 500,
                     "codsNFe": [],
                     "situacao": 50,
-                    "tags": []
+                    "tags": [],
+                    "ativo": true
                 }
               ]
           }
@@ -3808,6 +3823,13 @@ Quando o boleto já estiver pago.
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + comContato (boolean, optional) - Mostrar nome do contato
       + semSaldoAnterior (boolean, optional) - Ocultar saldo anterior
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Data de pagamento
+          + 2 - Código interno
+          + 3 - Descrição
+          + 4 - Valor
+          + 5 - Contato
       
   + Request (application/json)
 
@@ -4002,6 +4024,11 @@ Quando o boleto já estiver pago.
       + semPlano (number, optional) - Mostrar lançamentos sem Plano de Contas
       + comTransf (number, optional) - Mostrar transferências entre contas
       + comSomaGrupos (number, optional) - Mostrar somatório dos grupos
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Ordem configurada
+          + 2 - Descrição
+          + 3 - Valor
 
   + Request (application/json)
 
@@ -4261,6 +4288,14 @@ Quando o boleto já estiver pago.
   + Attributes (object)
       + de (string, required) - Data de cancelamento inicial, formato YYYY-MM-DD
       + ate (string, required) - Data de cancelamento final, formato YYYY-MM-DD
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Código interno
+          + 2 - Descrição
+          + 3 - Data cadastro
+          + 4 - Data cancelamento
+          + 5 - Valor
+          + 6 - Usuário
 
   + Request (application/json)
 
@@ -4524,6 +4559,15 @@ Quando o boleto já estiver pago.
       + ate (string, required) - Data de pagamento final, formato YYYY-MM-DD
       + vendedor (number, optional) - Código do vendedor 
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Data pagamento
+          + 2 - Código interno
+          + 3 - Descrição
+          + 4 - Cliente
+          + 5 - Base de cálculo
+          + 6 - Valor comissão
+          + 7 - Data venda
 
   + Request (application/json)
 
@@ -4587,6 +4631,16 @@ Quando o boleto já estiver pago.
           + 20 - Apenas a receber
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + ocultarZeradas (boolean, optional) - Ocultar cobranças com custo zerado
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Código interno
+          + 2 - Descrição
+          + 3 - Forma de pgto
+          + 4 - Data cadastro
+          + 5 - Data vencimento
+          + 6 - Valor
+          + 7 - Taxa
+          + 8 - Saldo
 
   + Request (application/json)
 
@@ -4638,6 +4692,17 @@ Quando o boleto já estiver pago.
     + de (string, required) - Data inicial, formato YYYY-MM-DD
     + ate (string, required) - Data final, formato YYYY-MM-DD
     + disponivel (number, optional) - Código da conta disponível
+    + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Data
+          + 2 - Desc. conciliação
+          + 3 - Desc. financeiro
+          + 4 - Cód. conciliação
+          + 5 - Cód. financeiro
+          + 6 - Caixa
+          + 7 - Transfer
+          + 8 - Valor
+          + 9 - Valor financeiro
 
   + Request (application/json)
 
@@ -5075,6 +5140,15 @@ Quando o boleto já estiver pago.
           + 'Em execução'
           + 'Finalizada'
           + 'Entregue'
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Data
+          + 2 - Código venda
+          + 3 - Cliente
+          + 4 - Base serviços
+          + 5 - Base produtos
+          + 6 - Valor comissão
+      
 
   + Request (application/json)
 
@@ -5304,6 +5378,10 @@ Quando o boleto já estiver pago.
           + 'Finalizada'
           + 'Entregue'
       + tipoDoc (number, optional) - Tipo de documento, informe -1 para mostrar todos
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Data da venda
+          + 2 - Vendedor
 
   + Request (application/json)
 
@@ -5370,6 +5448,12 @@ Quando o boleto já estiver pago.
           + 'Finalizada'
           + 'Entregue'
       + mostrarObsAdic (boolean, optional) - Mostrar obs adicionais do produto
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Produto
+          + 2 - Tipo
+          + 3 - Quantidade
+          + 4 - Unidade
 
   + Request (application/json)
 
@@ -5428,6 +5512,642 @@ Quando o boleto já estiver pago.
                 }
             ]
             
+### Detalhes dos produtos comprados [POST /relatorios/detalhesProdutosComprados]
+  Mostra cada produto comprado em uma linha, mesmo que repita o número da compra, nome do fornecedor, etc.
+
+  + Attributes (object)
+      + tipoData (enum[string], required) - Tipo de data que será considerada para realizar os filtros
+        + Members
+          + dtCompra - Data da compra
+          + dtCad - Data de cadastro
+      + de (string, required) - Data inicial, formato YYYY-MM-DD
+      + ate (string, required) - Data final, formato YYYY-MM-DD
+      + contato (number, optional) - Código do fornecedor
+      + numNota (string, optional) - Número da nota fiscal
+      + tags (string, optional) - Filtrar por palavras-chave da compra
+      + observacoes (string, optional) - Filtrar nas observações gerais da compra
+      + mostrarAbertas (boolean, optional) - Mostrar orçamentos
+      + mostrarCodigo (boolean, optional) - Mostrar código interno do produto
+      + mostrarIcProd (boolean, optional) - Mostrar código personalizado
+      + mostrarCategorias (boolean, optional) - Mostrar categorias do produto
+      + mostrarNumNota (boolean, optional) - Mostrar número da nota
+      + mostrarCpfCnpj (boolean, optional) - Mostrar CPF/CNPJ do fornecedor
+      + mostrarDtCad (boolean, optional) - Mostrar data de cadastro
+      + mostrarDtCompra (boolean, optional) - Mostrar data da compra
+      + mostrarDtNf (boolean, optional) - Mostrar data da Nota Fiscal
+      + mostrarCustoBruto (boolean, optional) - Mostrar custo bruto do produto
+      + mostrarCustoLiquido (boolean, optional) - Mostrar custo calculado do produto
+      + mostrarTotalBruto (boolean, optional) - Total bruto do custo
+      + mostrarTotalLiquido (boolean, optional) - Total calculado do custo
+      + mostrarPrecoSugerido (boolean, optional) - Mostrar preço sugerido do produto
+      + mostrarPrecoVenda (boolean, optional) - Mostrar preço atual do produto
+      + mostrarTags (boolean, optional) - Mostrar palavras-chave
+      + mostrarObserv (boolean, optional) - Mostrar observações compra
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Código compra
+          + 2 - Produto
+          + 3 - Categoria
+          + 4 - Fornecedor
+          + 5 - Quantidade
+          + 6 - Total bruto
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "tipoData": "dtCad",
+                "de": "2019-04-01",
+                "ate": "2019-04-30",
+                "contato": "",
+                "numNota": "",
+                "tags": "",
+                "observacoes": "",
+                "mostrarAbertas": true,
+                "mostrarCodigo": true,
+                "mostrarIcProd": true,
+                "mostrarCategorias": true,
+                "mostrarNumNota": true,
+                "mostrarCpfCnpj": true,
+                "mostrarDtCad": true,
+                "mostrarDtCompra": true,
+                "mostrarDtNf": true,
+                "mostrarCustoBruto": true,
+                "mostrarCustoLiquido": true,
+                "mostrarTotalBruto": true,
+                "mostrarTotalLiquido": true,
+                "mostrarPrecoSugerido": true,
+                "mostrarPrecoVenda": true,
+                "mostrarTags": true,
+                "mostrarObserv": true
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "compra": "1",
+                    "dtCompra": "2019-04-04",
+                    "dtCad": "2019-04-04",
+                    "numNota": "",
+                    "tags": "",
+                    "obs": "",
+                    "codProd": "1",
+                    "quant": "500.0000",
+                    "custoBruto": "7.5500000000",
+                    "totalBruto": "3775.00000000000000",
+                    "custoCalculado": "7.5500000000",
+                    "precoSugerido": "14.0000000000",
+                    "totalLiquido": "3775.00000000000000",
+                    "produto": "Produto padrão",
+                    "IcProd": "codigo interno",
+                    "precoVenda": "15.0000000000",
+                    "categoria": "Material de escritório",
+                    "fornecedor": "Fornecedor padrão",
+                    "cpfcnpj": "1234567891011"
+                }
+            ]
+
+### Produções detalhadas [POST /relatorios/producoesDetalhadas]
+  Lista de produções abertas ou concluídas.
+
+  + Attributes (object)
+      + tipoData (enum[string], required) - Tipo de data que será considerada para realizar os filtros
+        + Members
+          + dtInicio - Data de início
+          + dtConclusao - Data de conclusão
+      + de (string, required) - Data inicial, formato YYYY-MM-DD
+      + ate (string, required) - Data final, formato YYYY-MM-DD
+      + tags (string, optional) - Filtrar por palavras-chave da produção
+      + situacao (enum[number], required) - Situação da produção
+        + Members
+          + 0 - Todas as situações
+          + 10 - Somente em aberto
+          + 50 - Somente concluidas
+      + cods (string, optional) - Código das produções, separados por virgula
+      + esconderValores (boolean, optional) - Esconder valor monetário
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "tipoData": "dtInicio",
+                "de": "2019-04-01",
+                "ate": "2019-04-30",
+                "tags": "",
+                "situacao": 0,
+                "cods": "",
+                "esconderValores": false
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "cod": "12",
+                    "insumos": [
+                      {
+                        "tipo": "Insumo",
+                        "codProduto": "5",
+                        "IxProd": "Insumo 1",
+                        "IcProd": "ins",
+                        "IuCom": "GR",
+                        "quant": 0.12,
+                        "pPerda": 0,
+                        "custoInsumo": 6.12,
+                        "custoUnit": 51,
+                        "custoExtra": 0,
+                        "custo": 6.12
+                      },
+                      {
+                        "tipo": "Insumo",
+                        "codProduto": "6",
+                        "IxProd": "Insumo 2",
+                        "IcProd": "ins2",
+                        "IuCom": "Quilo",
+                        "quant": 3.6,
+                        "pPerda": 0.02,
+                        "custoInsumo": 32.04,
+                        "custoUnit": 8.9,
+                        "custoExtra": 0,
+                        "custo": 32.04
+                      }
+                    ],
+                    "produto": [
+                      {
+                        "tipo": "Produto",
+                        "codProduto": "2",
+                        "IxProd": "Produto final",
+                        "IcProd": "prodFin",
+                        "IuCom": "UN",
+                        "quant": 12,
+                        "pPerda": 0,
+                        "custoInsumo": 62.16,
+                        "custoUnit": 5.18,
+                        "custoExtra": 222,
+                        "custo": 284.15999999999997
+                      }
+                    ]
+                }
+            ]
+
+### Composições [POST /relatorios/composicoes]
+  Lista as composições cadastradas para cada produto final.
+
+  + Attributes (object)
+      + codProds (string, optional) - Código dos produtos, separados por vírgula
+      + categoria (number, optional) - Código da categoria de produto
+      + tags (string, optional) - Filtrar por palavras-chave dos produtos
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "codProds": "",
+                "categoria": "",
+                "tags": ""
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                  "cod": "2",
+                  "produto": "Produto final",
+                  "insumos": [
+                    {
+                        "codInsumo": "5",
+                        "insumo": "Insumo 1",
+                        "codProprio": "ins",
+                        "unidade": "GR",
+                        "quant": "20.12",
+                        "pPerda": "0"
+                    },
+                    {
+                        "codInsumo": "6",
+                        "insumo": "Insumo 2",
+                        "codProprio": "ins2",
+                        "unidade": "Quilo",
+                        "quant": "3.6",
+                        "pPerda": "0.02"
+                    }
+                  ]
+                }
+            ]
+
+### Histórico de um contato [POST /relatorios/historicoContato]
+  Mostra o histórico de um contato (cliente ou fornecedor) nos módulos do sistema.
+
+  + Attributes (object)
+
+      + contato (number, required) - Código do contato
+      + de (string, required) - Data inicial, formato YYYY-MM-DD
+      + ate (string, required) - Data final, formato YYYY-MM-DD
+      + dtFinanceiro (enum[string], required) - Tipo de data do financeiro que será considerada para realizar os filtros
+        + Members
+          + dtVenc - Data de vencimento
+          + dtCad - Data de cadastro
+          + dtPgto - Data de pagamento
+          + naoMostrar - Não listar financeiros
+      + dtVendas (enum[string], required) - Tipo de data da venda que será considerada para realizar os filtros
+        + Members
+          + dtVenda - Data da venda
+          + dtEntrega - Data da entrega
+          + naoMostrar - Não listar vendas
+      + dtCompras (enum[string], required) - Tipo de data da compra que será considerada para realizar os filtros
+        + Members
+          + dtCompra - Data da compra
+          + dtCad - Data de cadastro
+          + naoMostrar - Não listar compras
+      + ordem  (enum[string], required) - Ordenação dos registros
+        + Members
+          + data
+          + codigo
+          + descricao
+          + valor
+          + situacao
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "contato": "109",
+                "de": "2019-04-16",
+                "ate": "2019-05-16",
+                "dtFinanceiro": "dtVenc",
+                "dtVendas": "dtVenda",
+                "dtCompras": "dtCompra",
+                "ordem": "valor"
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              "Financeiro": [
+                {
+                  "data": "2019-05-17",
+                  "codigo": "2471",
+                  "descricao": "Compra 206",
+                  "valor": "477.00",
+                  "situacao": "Pago"
+                },
+                {
+                  "data": "2019-05-15",
+                  "codigo": "2467",
+                  "descricao": "Venda código 586, parc 1/1 nota ",
+                  "valor": "73.50",
+                  "situacao": "A receber"
+                },
+              ],
+              "Vendas": [
+                {
+                  "data": "2019-05-15",
+                  "codigo": "586",
+                  "descricao": "Venda teste",
+                  "valor": "73.50",
+                  "situacao": "Concluída"
+                }
+              ],
+              "Compras": [
+                {
+                  "data": "2019-05-17",
+                  "codigo": "206",
+                  "descricao": "",
+                  "valor": "477.00",
+                  "situacao": "Concluída"
+                }
+              ]
+            ]
+
+### Personalizado de contatos [POST /relatorios/personalizadoContatos]
+  Lista os contatos com os campos escolhidos. O nome do contato e seu código interno sempre são listados.
+
+  + Attributes (object)
+
+      + contato (number, required) - Código do contato
+      + tipoContato (enum[number], optional) - Tipo de contato
+        + Members
+          + 1 - Clientes
+          + 2 - Fornecedores
+          + 4 - Transportadoras
+      + tags (string, optional) - Filtrar por palavras-chave dos contatos
+      + tipoData (enum[string], required) - Tipo de data que será considerada para realizar os filtros
+        + Members
+          + dtCad - Data de cadastro
+          + dtNasc - Data de nascimento
+      + de (string, required) - Data inicial, formato YYYY-MM-DD
+      + ate (string, required) - Data final, formato YYYY-MM-DD
+      + ordenarPor (enum[string], required) - Ordenação dos registros
+        + Members
+          + codigo
+          + nome
+          + fantasia
+          + dtNasc
+      + mostrar_tipo (boolean, optional) - Mostrar tipo
+      + mostrar_fantasia (boolean, optional) - Mostrar nome fantasia
+      + mostrar_cpfcnpj (boolean, optional) - Mostrar CPF/CNPJ
+      + mostrar_ie (boolean, optional) - Mostrar IE
+      + mostrar_indIE (boolean, optional) - Mostrar indicador de IE 
+      + mostrar_iest (boolean, optional) - Mostrar IE ST
+      + mostrar_im (boolean, optional) - Mostrar IM
+      + mostrar_suframa (boolean, optional) - Mostrar Suframa
+      + mostrar_emails (boolean, optional) - Mostrar e-mails
+      + mostrar_end (boolean, optional) - Mostrar endereço
+      + mostrar_num (boolean, optional) - Mostrar número
+      + mostrar_compl (boolean, optional) - Mostrar complemento
+      + mostrar_bairro (boolean, optional) - Mostrar bairro
+      + mostrar_cidadeNome (boolean, optional) - Mostrar cidade
+      + mostrar_cidadeCod (boolean, optional) - Mostrar cód. IBGE
+      + mostrar_uf (boolean, optional) - Mostrar UF
+      + mostrar_cep (boolean, optional) - Mostrar CEP
+      + mostrar_pais (boolean, optional) - Mostrar país
+      + mostrar_fones (boolean, optional) - Mostrar fones
+      + mostrar_dtNasc (boolean, optional) - Mostrar data de nascimento
+      + mostrar_dtCad (boolean, optional) - Mostrar data de cadastro
+      + mostrar_tags (boolean, optional) - Mostrar palavras-chave
+      + mostrar_obs (boolean, optional) - Mostrar anotações
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "contato": "",
+              "tipoContato": "",
+              "tags": "",
+              "tipoData": "dtCad",
+              "de": "",
+              "ate": "",
+              "ordenarPor": "codigo",
+              "mostrar_tipo": false,
+              "mostrar_fantasia": true,
+              "mostrar_cpfcnpj": true,
+              "mostrar_ie": true,
+              "mostrar_indIE": true,
+              "mostrar_iest": true,
+              "mostrar_im": true,
+              "mostrar_suframa": true,
+              "mostrar_emails": true,
+              "mostrar_end": true,
+              "mostrar_num": true,
+              "mostrar_compl": true,
+              "mostrar_bairro": true,
+              "mostrar_cidadeNome": true,
+              "mostrar_cidadeCod": true,
+              "mostrar_uf": true,
+              "mostrar_cep": true,
+              "mostrar_pais": true,
+              "mostrar_fones": true,
+              "mostrar_dtNasc": true,
+              "mostrar_dtCad": true,
+              "mostrar_tags": true,
+              "mostrar_obs": true
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              "codigo": "1",
+              "nome": "Cliente padrão",
+              "fantasia": "",
+              "cpfcnpj": "",
+              "ie": "",
+              "indIE": "Não informado",
+              "iest": "",
+              "im": "",
+              "suframa": "",
+              "emails": "",
+              "end": "",
+              "num": "",
+              "compl": "",
+              "bairro": "",
+              "cidadeNome": "Santa Maria",
+              "cidadeCod": "",
+              "uf": "RS",
+              "cep": "",
+              "pais": "",
+              "fones": "",
+              "dtNasc": "0000-00-00",
+              "dtCad": "2016-10-17 15:40:50",
+              "tags": "",
+              "obs": ""
+            ]
+
+### Aniversariantes do mês [POST /relatorios/aniversariantesDoMes]
+  Lista dos contatos aniversariantes do mês selecionado.
+
+  + Attributes (object)
+
+      + mes (number, required) - Mês de referência, iniciando em 0 (Janeiro)
+      + mostrarEmails (boolean, optional) - Mostrar email do contato
+      + mostrarFones (boolean, optional) - Mostrar fone do contato
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Código
+          + 2 - Nome
+          + 3 - Data de nascimento
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "mes": 2,
+              "mostrarEmails": true,
+              "mostrarFones": true
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              "codigo": "16",
+              "nome": "Cliente padrão",
+              "emails": "cliente@padrao.com",
+              "fones": "12345677",
+              "dtNasc": "1981-03-29"
+            ]
+
+### Inatividade de clientes [POST /relatorios/inatividadeClientes]
+  Lista de clientes inativos.
+
+  + Attributes (object)
+
+      + tipoInatividade (enum[string], required) - Tipo do período de inatividade
+        + Members
+          + maiorque
+          + menorque
+      + diasInativos (number, required) - Período de inatividade (dias)
+      + tags (string, optional) - Filtrar por palavras-chave dos clientes
+      + tipoDataVendas (enum[string], required) - Data utilizada na venda
+        + Members
+          + dtVenda
+          + dtCad
+          + dtEntrega
+      + ordem (enum[string], required) - Ordenar por
+        + Members
+          + nomeContato
+          + inatividade
+      + considerarOrcamentos (boolean, optional) - Considera orçamentos
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "tipoInatividade": "maiorque",
+              "diasInativos": 50,
+              "tags": "",
+              "tipoDataVendas": "dtVenda",
+              "ordem": "inatividade",
+              "considerarOrcamentos": false
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              {
+                "codigo": "1",
+                "nome": "Cliente padrão",
+                "dataUltOper": "2019-03-22",
+                "codUltOper": "Venda: 445",
+                "inatividade": 56
+              }
+            ]
+
+### Contatos duplicados [POST /relatorios/contatosDuplicados]
+  Este relatório mostra todos os contatos que estão cadastrados em duplicidade no sistema.
+
+  + Attributes (object)
+
+      + ordem (enum[string], required) - Ordenar por
+        + Members
+          + nome
+          + quantidade - Quantidade de vezes que o registro se repete
+      + usarCpfCnpj (boolean, optional) - Considerar o CNPJ ao comparar
+      + usarIe (boolean, optional) - Considerar a Inscrição estadual ao comparar
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "ordem": "quantidade",
+              "usarCpfCnpj": true,
+              "usarIe": true
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              {
+                "vezes": "4",
+                "nome": "Cliente modelo",
+                "cpfcnpj": "12345678912345",
+                "ie": "ISENTO",
+                "codigos": "56, 57, 58, 55"
+              }
+            ]
+
 ### Produtos por fornecedor [POST /relatorios/produtosPorFornecedor]
   Relatório de produtos por fornecedor com preço de compra.
 
@@ -5444,6 +6164,19 @@ Quando o boleto já estiver pago.
       + agruparForn (boolean, optional) - Agrupar por fornecedor
       + agruparProd (boolean, optional) - Juntar produtos iguais e fazer preço médio
       + apresentarArquivados (boolean, optional) - Apresentar produtos arquivados
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Fornecedor
+          + 2 - Produto
+          + 3 - Código compra
+          + 4 - Data compra
+          + 5 - Custo bruto
+          + 6 - Quantidade
+          + 7 - Desconto
+          + 8 - Despesas
+          + 9 - IPI
+          + 10 - ST
+          + 11 - Total
 
   + Request (application/json)
 
@@ -5500,6 +6233,14 @@ Quando o boleto já estiver pago.
       + categoria (number, optional) - Código da categoria
       + mostrarIgual (boolean, optional) - Também mostrar com estoque igual ao mínimo
       + apresentarArquivados (boolean, optional) - Apresentar produtos arquivados
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Código
+          + 2 - Categoria
+          + 3 - Produto
+          + 4 - Estoque
+          + 5 - Mínimo
+          + 6 - Custo unit.
 
   + Request (application/json)
 
@@ -5552,6 +6293,13 @@ Quando o boleto já estiver pago.
       + mostrarEstoqueNegativo (boolean, optional) - Mostrar estoque negativo
       + mostrarCodProprio (boolean, optional) - Mostrar código próprio do produto
       + apresentarArquivados (boolean, optional) - Apresentar produtos arquivados
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Produto
+          + 2 - Código
+          + 3 - Estoque
+          + 4 - Custo
+          + 5 - Total
 
   + Request (application/json)
 
@@ -5644,6 +6392,17 @@ Quando o boleto já estiver pago.
       + apenasAComprar (boolean, optional) - Mostrar apenas produtos necessários
       + apresentarArquivados (boolean, optional) - Apresentar produtos arquivados
       + apresentarCodProprio (boolean, optional) - Apresentar código próprio
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Produto
+          + 2 - Código
+          + 3 - Últ. custo
+          + 4 - Total vendas
+          + 5 - Giro diário
+          + 6 - Estoque atual
+          + 7 - Dias estoque
+          + 8 - Estoque mín.
+          + 9 - Sug. Compra
 
   + Request (application/json)
 
@@ -5926,6 +6685,158 @@ Quando o boleto já estiver pago.
                     "codigo": "20",
                     "IxProd": "Produto padrão"
                 }
+            ]
+
+### Registro de eventos [POST /relatorios/registroEventos]
+  Lista os eventos ocorridos no sistema.
+
+  + Attributes (object)
+
+      + de (string, required) - data inicial, formato YYYY-MM-DD
+      + ate (string, required) - data final, formato YYYY-MM-DD
+      + buscar (string, optional) - Apenas eventos contendo a string informada
+      + usuario (number, optional) - Filtrar por usuário que realizou a ação
+      + modulo (enum[string], optional) - Filtrar apenas por registros de determinado módulo
+        + Members
+          + boletos
+          + produtosCateg - Categoria de produtos
+          + composicao
+          + compras
+          + conciliacao
+          + configBoletos - Configuração dos boletos
+          + config - Configurações gerais do sistema
+          + contatos
+          + configTrib - Dados tributários
+          + disponiveis - Disponíveis (Contas Caixa)
+          + financeiro
+          + formasPgto - Formas de pagamento
+          + nfse
+          + planoContas - Plano de Contas
+          + produtos
+          + producao
+          + recibos
+          + recorrencia
+          + relatorios
+          + configTemplates - Templates de impressão
+          + transferencia
+          + usuarios
+          + vendas
+      + codModulo (number, optional) - Filtrar apenas por registro com o código interno informado.
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Código
+          + 2 - Usuário
+          + 3 - Evento
+          + 4 - Módulo
+          + 5 - Cód. módulo
+          + 6 - Data
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "de": "2019-05-17",
+              "ate": "2019-05-17",
+              "buscar": "",
+              "usuario": "",
+              "modulo": "vendas",
+              "codModulo": "5"
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              {
+                  "codigo": "1",
+                  "codModulo": "5",
+                  "modulo": "vendas",
+                  "usuario": "userPadrao",
+                  "msg": "Adicionou item",
+                  "obs": "codVenda: 5; codProduto: 24; tipoProd: servico; preco: 90.9; quant: 1; vDesc: 0; vIPI: 0; vST: 0; vFCPST: 0; vFrete: 0; vRetencao: 0; vDeducao: ; obs: ; codConfigTrib: 8; custo: 0.0000000000; codItem: 12; ",
+                  "data": "2019-05-17 11:38:08"
+              },
+              {
+                  "codigo": "2",
+                  "codModulo": "5",
+                  "modulo": "vendas",
+                  "usuario": "userPadrao",
+                  "msg": "Alterou",
+                  "obs": "valorTotal: 105.9; ",
+                  "data": "2019-05-17 11:38:08"
+              }
+            ]
+
+### Registro de acessos [POST /relatorios/registroAcessos]
+  Registro de acessos ao sistema.
+
+  + Attributes (object)
+
+      + de (string, required) - data inicial, formato YYYY-MM-DD
+      + ate (string, required) - data final, formato YYYY-MM-DD
+      + usuario (number, optional) - Filtrar por usuário
+      + ordem (enum[number], optional) - Ordenação
+        + Members
+          + 1 - Entrada
+          + 2 - Código
+          + 3 - Usuário
+          + 4 - IP
+          + 5 - Saída
+          + 6 - Duração
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "de": "2019-05-15",
+              "ate": "2019-05-17",
+              "usuario": ""
+            }
+              
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+              {
+                "codigo": "1",
+                "usuario": "Usuario padrão",
+                "ip": "192.168.0.12",
+                "entrada": "15/05/2019 09:13",
+                "saida": "15/05/2019 09:22",
+                "duracao": 9
+              },
+              {
+                "codigo": "2",
+                "usuario": "Usuario dois",
+                "ip": "192.168.0.13",
+                "entrada": "15/05/2019 09:37",
+                "saida": "15/05/2019 17:59",
+                "duracao": 503
+              }
             ]
 
 # NFSe [/nfse]
@@ -6229,12 +7140,19 @@ Dessa forma, sempre que um produto, cliente ou venda for criado, editado ou excl
         
         {
 
-            "action": "updated", // Valores possíveis: "created", "updated" ou "deleted"
-            "codigo": "1", // Código do registro
-            "date": "2019-01-11 14:55:19", // Data que a alteração ocorreu no eGestor
-            "module": "contatos", // Valores possíveis: "produtos", "contatos" ou "vendas"
-            "securityToken": "01a161daaaf265968c1f36a19ef8f4" // Sua chave de segurança
+            "action": "updated",
+            "codigo": "1",
+            "date": "2019-01-11 14:55:19",
+            "module": "contatos",
+            "securityToken": "01a161daaaf265968c1f36a19ef8f4"
     }
+    
+
++ action: Ação realizada. Valores possíveis: "created", "updated" ou "deleted".
++ codigo: Código do registro
++ date: Data que a alteração ocorreu no eGestor
++ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos" ou "vendas"
++ securityToken: Sua chave de segurança
 
 No momento do cadastro, deve-se definir quais os módulos serão ativos, através dos parâmetros "produtos", "contatos" e "vendas".
 
