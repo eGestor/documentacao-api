@@ -22,6 +22,7 @@ Recursos disponíveis para acesso via API:
 * [**Boletos**](#reference/recursos/boletos)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
+* [**Disco virtual**](#reference/recursos/disco-virtual)
 * [**Webhooks**](#reference/recursos/webhooks)
 
 # Biblioteca
@@ -215,7 +216,7 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
     + suframa (string, optional) - Filtra pelo código SUFRAMA 
     + obs (string, optional) - Busca a string informada nas observações do contato
     + fields (string, optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
-        * codigo, nome, fantasia, nomeParaContato, cpfcnpj, tipo, dtNasc, dtCad, emails, fones, cidade, uf, clienteFinal, indicadorIE, inscricaoMunicipal, inscricaoEstadual, obs, tags
+        * codigo, nome, fantasia, nomeParaContato, cpfcnpj, tipo, dtNasc, dtCad, emails, fones, logradouro, numero, complemento, bairro, cep, cidade, uf, clienteFinal, indicadorIE, inscricaoMunicipal, inscricaoEstadual, obs, tags
         * ex: &fields=nome,fantasia
         * Padrão: codigo, nome, tipo, emails, fones, cidade, uf, tags
     + orderBy (string, optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
@@ -301,6 +302,15 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
     + suframa (string, optional)
     + obs (string, optional)
     + tags (array, optional)
+    + cepEntrega (number, optional)
+    + cpfCnpjEntrega (number, optional)
+    + logradouroEntrega (string, optional)
+    + numeroEntrega (number, optional)
+    + complementoEntrega (string, optional)
+    + bairroEntrega (string, optional)
+    + codIBGEEntrega (number, optional)
+    + ufEntrega (string, optional)
+    + pontoRefEntrega (string, optional)
 
 + Request (application/json)
 
@@ -336,6 +346,16 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "inscricaoMunicipal": "",
               "inscricaoEstadual": "",
               "inscricaoEstadualST": "",
+              "cpfCnpjEntrega": "",
+              "logradouroEntrega": "",
+              "numeroEntrega": "",
+              "complementoEntrega": "",
+              "bairroEntrega": "",
+              "codIBGEEntrega": "",
+              "cidadeEntrega": "",
+              "ufEntrega": "",
+              "cepEntrega": "",
+              "pontoRefEntrega": ""
               "suframa": "",
               "obs": "",
               "tags": []
@@ -402,7 +422,17 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "tags": [],
               "obs": "",
               "dtNasc": "1990-05-12",
-              "dtCad": "2017-01-15 11:20:15"
+              "dtCad": "2017-01-15 11:20:15",
+              "cpfCnpjEntrega": "",
+              "logradouroEntrega": "",
+              "numeroEntrega": 0,
+              "complementoEntrega": "",
+              "bairroEntrega": "",
+              "codIBGEEntrega": "0",
+              "cidadeEntrega": "",
+              "ufEntrega": "",
+              "cepEntrega": 0,
+              "pontoRefEntrega": ""
             }
 
 + Response 404 (application/json)
@@ -472,6 +502,16 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "inscricaoMunicipal": "",
               "inscricaoEstadual": "",
               "inscricaoEstadualST": "",
+              "cpfCnpjEntrega": "",
+              "logradouroEntrega": "",
+              "numeroEntrega": "",
+              "complementoEntrega": "",
+              "bairroEntrega": "",
+              "codIBGEEntrega": "",
+              "cidadeEntrega": "",
+              "ufEntrega": "",
+              "cepEntrega": "",
+              "pontoRefEntrega": "",
               "suframa": "",
               "obs": "",
               "tags": []
@@ -513,7 +553,17 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "tags": [],
               "obs": "",
               "dtNasc": "1990-05-12",
-              "dtCad": "2017-01-15 11:20:15"
+              "dtCad": "2017-01-15 11:20:15",
+              "cpfCnpjEntrega": "",
+              "logradouroEntrega": "",
+              "numeroEntrega": 0,
+              "complementoEntrega": "",
+              "bairroEntrega": "",
+              "codIBGEEntrega": "0",
+              "cidadeEntrega": "",
+              "ufEntrega": "",
+              "cepEntrega": 0,
+              "pontoRefEntrega": ""
             }
 
 ### Remover (Delete) [DELETE  /contatos/{codigo}]
@@ -3145,11 +3195,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
         * 50 - Venda.
     + formaPgto (optional, integer) - Filtra pela forma de pagamento dos financeiros da venda.
     + contaDest (optional, integer) - Filtra pela conta destino dos financeiros da venda.
-    + situOS (optional, string) - Situação da venda.  Valores possíveis: 
-        * 'Em espera'
-        * 'Em execução'
-        * 'Finalizada'
-        * 'Entregue'
+    + situOS (optional, string) - Situação da venda.
     + buscaObs (optional, string) - Pesquisa nas observações da venda.
     + fiscal (optional, string) - Permite filtrar por vendas com ou sem nota fiscal. Valores possíveis:
         * comNFe
@@ -3226,7 +3272,10 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "tags": [],
               "valorFrete": 15.45,
               "valorDesc": 7.51,
+              "valorDespesasAcessorias": 12.50,
               "clienteFinal":1,
+              "enderecoEntrega":1,
+              "situacaoOS": "Em espera",
               "customizado": {
                 "xCampo1": "Observações gerais"
               },
@@ -3246,6 +3295,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
                 "dtComp":"2017-05-20",
                 "pago": false,
                 "codFormaPgto": 4,
+                "codPlanoContas": 1,
                 "codCaixa": 1,
                 "valor": 57.84,
                 "tags": ["API", "Desconto"],
@@ -3309,6 +3359,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               },
               "clienteFinal": true,
               "situacao": 50,
+              "situacaoOS": "Em espera",
               "tags": [],
               "produtos": [
                 {
@@ -3349,6 +3400,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
                     "codigo": 337,
                     "codBoleto": 0,
                     "codFormaPgto": 0,
+                    "codPlanoContas": 1,
                     "descricao": "Cobrança da venda de produtos, parcela 1/1",
                     "codCaixa": 1,
                     "codRecibo": 0,
@@ -4892,6 +4944,7 @@ Quando o boleto já estiver pago.
       + ocultarCustoLucro (boolean, optional) - Ocultar lucro e preço de custo
       + mostrarMarkup (boolean, optional) - Mostrar Markup
       + mostrarFoneContato (boolean, optional) - Mostrar telefone do cliente
+      + mostrarVOutros (boolean, optional) - Mostrar despesas acessórias
 
   + Request (application/json)
 
@@ -4918,6 +4971,7 @@ Quando o boleto já estiver pago.
                 "mostrarOrcamentos": 1,
                 "mostrarObsProd": 1,
                 "mostrarMLucro": 1,
+                "mostrarVOutros": 1,
                 "mostrarEndContato": 1,
                 "mostrarDesconto": 1,
                 "listarIcProd": 1,
@@ -4956,6 +5010,7 @@ Quando o boleto já estiver pago.
                             "custo": 5,
                             "venda": 559.9,
                             "desconto": "0.0000",
+                            "outros": "0.0000",
                             "obsProd": "",
                             "lucro": 554.9,
                             "markup": 11097.999999999998,
@@ -4969,6 +5024,7 @@ Quando o boleto já estiver pago.
                             "custo": 0,
                             "venda": 272.70000000000005,
                             "desconto": "0.0000",
+                            "outros": "0.0000",
                             "obsProd": "",
                             "lucro": 272.70000000000005,
                             "markup": 0,
@@ -5030,6 +5086,7 @@ Quando o boleto já estiver pago.
       + mostrarIcProd (boolean, optional) - Mostrar cód. próprio
       + listarServicos (boolean, optional) - Listar serviços
       + mostrarAbertas (boolean, optional) - Listar orçamentos
+      + mostrarVOutros (boolean, optional) - Mostrar despesas acessórias
 
   + Request (application/json)
 
@@ -5070,6 +5127,7 @@ Quando o boleto já estiver pago.
                 "mostrarNCM": 1,
                 "mostrarIcProd": 1,
                 "listarServicos": 1,
+                "mostrarVOutros": 1,
                 "mostrarAbertas": 0
             }
               
@@ -5095,6 +5153,7 @@ Quando o boleto já estiver pago.
                     "quant": "1.0000",
                     "preco": "1.0000000000",
                     "vFrete": "0.0000",
+                    "vOutro": 
                     "vDesc": "0.0000",
                     "vIPI": "0.0000",
                     "vST": "0.0000",
@@ -6300,6 +6359,40 @@ Quando o boleto já estiver pago.
           + 3 - Estoque
           + 4 - Custo
           + 5 - Total
+      + mostrar_categNome (boolean, optional) - Mostrar categoria
+      + mostrar_codConfigTrib (boolean, optional) - Mostrar código grupo tributo
+      + mostrar_precoCusto (boolean, optional) - Mostrar preço custo
+      + mostrar_precoVenda (boolean, optional) - Mostrar preço venda
+      + mostrar_margem (boolean, optional) - Mostrar margem cadastrada
+      + mostrar_margemAtual (boolean, optional) - Mostrar margem atual
+      + mostrar_controlarEstoque (boolean, optional) - Mostrar controla estoque
+      + mostrar_estoque (boolean, optional) - Mostrar quant. estoque
+      + mostrar_totalCusto (boolean, optional) - Mostrar total (custo x quant)
+      + mostrar_totalVenda (boolean, optional) - Mostrar total (venda x quant)
+      + mostrar_estoqueMinimo (boolean, optional) - Mostrar estoque mínimo
+      + mostrar_tipoUso (boolean, optional) - Mostrar tipo de uso
+      + mostrar_anotacoes (boolean, optional) - Mostrar anotações gerais
+      + mostrar_VinfAdProd (boolean, optional) - Mostrar anotações NFe
+      + mostrar_tags (boolean, optional) - Mostrar palavras-chave
+      + mostrar_IcEAN (boolean, optional) - Mostrar EAN/GTIN
+      + mostrar_INCM (boolean, optional) - Mostrar NCM
+      + mostrar_ICEST (boolean, optional) - Mostrar CEST
+      + mostrar_IEXTIPI (boolean, optional) - Mostrar EXTIPI
+      + mostrar_IuCom (boolean, optional) - Mostrar unidade
+      + mostrar_pesoB (boolean, optional) - Mostrar peso bruto
+      + mostrar_pesoL (boolean, optional) - Mostrar peso líquido
+      + mostrar_Norig (boolean, optional) - Mostrar origem
+      + mostrar_cfop (boolean, optional) - Mostrar CFOP
+      + mostrar_NCST (boolean, optional) - Mostrar código ICMS
+      + mostrar_NpICMS (boolean, optional) - Mostrar alíquota ICMS
+      + mostrar_NpICMSST (boolean, optional) - Mostrar alíquota ICMS ST
+      + mostrar_NpMVAST (boolean, optional) - Mostrar MVA ST
+      + mostrar_OCST (boolean, optional) - Mostrar código IPI
+      + mostrar_OpIPI (boolean, optional) - Mostrar alíquota IPI
+      + mostrar_QCST (boolean, optional) - Mostrar código PIS
+      + mostrar_QpPIS (boolean, optional) - Mostrar alíquota PIS
+      + mostrar_SCST (boolean, optional) - Mostrar código COFINS
+      + mostrar_SpCOFINS (boolean, optional) - Mostrar alíquota COFINS
 
   + Request (application/json)
 
@@ -6870,10 +6963,11 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
 | `3` | Fora do município |
 | `6` | Outro (Exterior) |
 
-### Listar (List) [GET /nfse{?filtro,dtTipo,dtIni,dtFim,origNota,situacao,fields}]
+### Listar (List) [GET /nfse{?filtro,buscaObs,dtTipo,dtIni,dtFim,origNota,situacao,fields}]
 
 + Parameters
     + filtro (optional, string) - Busca a string informada nos campos: código da nota, código da venda, palavras-chave e nome do cliente.
+    + buscaObs (optional, string) - Busca a string informada nas observações da nota fiscal
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
         * dtEmissao(default) - Data da emissão da nota fiscal.
         * dtCad - Data de cadastro.
@@ -7128,6 +7222,213 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
               "errObs": null,
               "errFields": null
             }
+
+# Disco virtual [/discoVirtual]
+Módulo para upload de arquivos, que podem ser vinculados a registros de outros módulo, ou serem enviados de maneira avulsa.
+Não é possível editar um registro no disco virtual. A URL para download é obtida através do método Detalhar, e tem validade de 10 minutos após a requisição.
+
+### Listar (List) [GET /discoVirtual{?filtro,dtIni,dtFim,modulo,codModulo,fields,orderBy}]
+
++ Parameters
+  + filtro (optional) - Busca a string informada nos campos: código, nome e descrição do arquivo.
+  + dtIni (optional, date) - Data inicial do upload, no formato yyyy-mm-dd
+  + dtFim (optional, date) - Data final do upload, no formato yyyy-mm-dd
+  + modulo (optional, string) - Filtrar apenas por registros de determinado módulo. Valores possíveis:
+        * financeiro
+        * vendas
+        * usuarios
+        * produtos
+        * contatos
+        * producao
+        * composicao
+        * compras
+        * recibos
+  + codModulo (number, optional) - Filtrar apenas por registro com o código interno informado.
+  + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
+      * codigo, codModulo, modulo, nome, descricao, tags, tipo, dtEnvio, tamanho 
+      * ex: &fields=nomeContato,valor
+  + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
+      * codigo, codModulo, modulo, nome, descricao, tags, tipo, dtEnvio, tamanho
+      * ex: &orderBy=situacao,desc
+      * ex: &orderBy=nomeContato,asc
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+          {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 4,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 50,
+              "data": [
+                {
+                  "codigo": 1,
+                  "codModulo": 12,
+                  "modulo": "financeiro",
+                  "nome": "credit-card.png",
+                  "descricao": "Dados do cartão",
+                  "tags": [],
+                  "tipo": "image/png",
+                  "dtEnvio": "2019-05-31 10:43:44",
+                  "tamanho": 11477
+                }
+              ]
+          }
+
++ Response 401 (application/json)
+
+          {
+              "errCode": 401,
+              "errMsg": "Não foi possível acessar o sistema. Verifique seu \"access_token\".",
+              "errObs": "access_denied",
+              "errFields": null,
+              "errUrl": "/v1/discoVirtual"
+          }
+
+### Novo (Create) [POST]
+
++ Attributes (object)
+
+    + arquivo (required) - Arquivo que será enviado
+    + tags (array, optional) - Palavras-chave do arquivo
+    + modulo (string, optional) - Módulo a qual o pertence o arquivo
+    + codModulo (number, optional) - Código do registro a qual pertence o arquivo. Deve ser informado caso o `modulo` seja informado
+    + descricao (string, optional) - Observações do arquivo
+
++ Request (multipart/form-data)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "arquivo": "comprovante.pfd",
+              "tags": [],
+              "modulo": "vendas",
+              "codModulo": 200,
+              "descricao": "Comprovante de pagamento",
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codigo": 2,
+                "codModulo": 200,
+                "modulo": "vendas",
+                "nome": "comprovante.pfd",
+                "descricao": "Comprovante de pagamento",
+                "tags": [],
+                "tipo": "application/pdf",
+                "dtEnvio": "2019-05-31 14:21:52",
+                "tamanho": 101477
+            }
+
+### Detalhar (Read) [GET /discoVirtual/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código do arquivo
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+  Todos os dados do arquivo
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 2,
+              "codModulo": 200,
+              "modulo": "vendas",
+              "nome": "comprovante.pfd",
+              "descricao": "Comprovante de pagamento",
+              "tags": [],
+              "tipo": "image/png",
+              "dtEnvio": "2019-05-31 14:21:52",
+              "tamanho": 101477,
+              "linkDireto": "https://storage101.dfw1.clouddrive.com/v1/MossoCloudFS_ea4cd452-057c-46e4-b58f-aef2c5e52dfd/newgestor/new_1/discoVirtual/credit-card-vector2.png?temp_url_sig=37487e1d0a8fabeb6dc69acebd653ec6e982162a&temp_url_expires=1559324049"
+            }
+
++ Response 404 (application/json)
+  Quando registro não for encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum registro com código 1 encontrado",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 410 (application/json)
+  Quando registro foi apagado do sistema, o código de retorno é 410.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+    + Body
+
+            {
+              "errCode": 410,
+              "errMsg": "Registro com código 1 não existe.",
+              "errObs": null,
+              "errFields": null
+            }
+
+### Remover (Delete) [DELETE  /discoVirtual/{codigo}]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "code": "200",
+                "msg": "Arquivo com código 2 excluído com sucesso!",
+                "obs": null,
+                "fields": null
+            }
+
             
 # Webhooks [/webhooks]
 O eGestor conta com uma estrutura de webhooks. Através dela, será disparada uma requisição para determinada URL do seu sistema sempre que algum registro for criado, editado ou excluído. Importante: Enviaremos um parâmetro chave na requisição, chamado de "securityToken". Esta é uma chave única e diferente de seu token. Você pode usá-la para autenticar o webhook recebido e confirmar a autenticidade da requisição.
