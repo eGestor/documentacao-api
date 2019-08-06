@@ -23,6 +23,7 @@ Recursos disponíveis para acesso via API:
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
 * [**Disco virtual**](#reference/recursos/disco-virtual)
+* [**Usuários**](#reference/recursos/usuarios)
 * [**Webhooks**](#reference/recursos/webhooks)
 
 # Biblioteca
@@ -2251,6 +2252,7 @@ Todo plano de conta precisa estar vinculado a um dos planos de conta padrão já
               "dtVenc": "2017-09-02",
               "dtPgto": "0000-00-00",
               "dtComp": "2017-09-02",
+              "recebido": false,
               "codContato": 7,
               "codDisponivel": 1,
               "obs": "",
@@ -2548,6 +2550,8 @@ Todo plano de conta precisa estar vinculado a um dos planos de conta padrão já
               "valor": 123,
               "dtVenc": "2019-09-02",
               "dtComp": "2019-04-20",
+              "dtPgto": "2019-04-21",
+              "pago": true,
               "codContato": 7,
               "codDisponivel": 1,
               "obs": "",
@@ -7427,6 +7431,131 @@ Não é possível editar um registro no disco virtual. A URL para download é ob
                 "msg": "Arquivo com código 2 excluído com sucesso!",
                 "obs": null,
                 "fields": null
+            }
+
+# Usuários [/usuarios]
+Módulo permite listar e detalhar os usuários cadastrados no sistema.
+
+### Listar (List) [GET /usuarios{?filtro,vendedor,usuarioSistema,fields,orderBy}]
++ Parameters
+    + filtro (string, optional) - Busca a string informada nos campos: nome, login e email.
+    + vendedor (boolean, optional) - Filtrar apenas usuários vendedores.
+    + usuarioSistema (boolean, optional) - Filtrar apenas usuários com acesso ao sistema.
+    + fields (string, optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
+        * ex: &fields=login,email
+    + orderBy (string, optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
+        * ex: &orderBy=nome,desc
+        * ex: &orderBy=codigo,asc
+        
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+          {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 4,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 50,
+              "data": [
+                {
+                  "codigo": 1,
+                  "nome": "Usuario 1",
+                  "login": "user1",
+                  "email": "user1@user1.com",
+                  "tags": [],
+                  "usuarioSistema": true,
+                  "vendedor": true,
+                  "comisProd": 7.35,
+                  "comisServ": 5.00,
+                  "comisFin": 9.90
+                },
+              ]
+          }
+
++ Response 401 (application/json)
+
+          {
+              "errCode": 401,
+              "errMsg": "Não foi possível acessar o sistema. Verifique seu \"access_token\".",
+              "errObs": "access_denied",
+              "errFields": null,
+              "errUrl": "/v1/contatos"
+          }
+
+### Detalhar (Read) [GET /usuarios/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código do usuário
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+  Todos os dados do contato
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "nome": "Usuario 1",
+              "login": "user1",
+              "email": "user1@user1.com",
+              "tags": [],
+              "permissoes": [
+                  "acessoCompleto"
+              ],
+              "usuarioSistema": true,
+              "vendedor": true,
+              "comisProd": 7.35,
+              "comisServ": 5,
+              "comisFin": 9.9
+            }
+
++ Response 404 (application/json)
+  Quando registro não for encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum registro com código 1 econtrado",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 410 (application/json)
+  Quando registro foi apagado do sistema, o código de retorno é 410.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+    + Body
+
+            {
+              "errCode": 410,
+              "errMsg": "Registro com código 1 não existe.",
+              "errObs": null,
+              "errFields": null
             }
 
             
