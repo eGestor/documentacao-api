@@ -3184,6 +3184,11 @@ Somente podem ser excluídas compras na situação de `Orçamento`. Ao excluir a
 
 As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma nova.
 
+|Situação|Descrição|
+|--------|---------|
+|10|Orçamento|
+|50|Venda|
+
 ### Listar (List) [GET /vendas{?filtro,dtTipo,dtIni,dtFim,vendedor,tipo,formaPgto,contaDest,situOS,buscaObs,fiscal,listarCanceladas,fields,orderBy}]
 
 + Parameters
@@ -3273,6 +3278,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "codContato":1,
               "codVendedor":12,
               "dtVenda":"2017-07-18",
+              "situacao": 50,
               "tags": [],
               "valorFrete": 15.45,
               "valorDesc": 7.51,
@@ -3605,7 +3611,9 @@ Permite gerar uma NFCe a partir de determinada venda. Informe o campo `cpfcnpj` 
     + Body
             
             {
-                "cpfcnpj": 12345678912
+                "cpfcnpj": 12345678912,
+                "indPres": 1,
+                "codTransportadora": 0
             }
 
 
@@ -7565,8 +7573,9 @@ Os módulos disponíveis são os seguintes:
 * Produtos
 * Contatos
 * Vendas
+* Usuários
 
-Dessa forma, sempre que um produto, cliente ou venda for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato:
+Dessa forma, sempre que um produto, cliente, venda ou usuários for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato:
         
         {
 
@@ -7581,10 +7590,10 @@ Dessa forma, sempre que um produto, cliente ou venda for criado, editado ou excl
 + action: Ação realizada. Valores possíveis: "created", "updated" ou "deleted".
 + codigo: Código do registro
 + date: Data que a alteração ocorreu no eGestor
-+ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos" ou "vendas"
++ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos", "vendas" ou "usuarios"
 + securityToken: Sua chave de segurança
 
-No momento do cadastro, deve-se definir quais os módulos serão ativos, através dos parâmetros "produtos", "contatos" e "vendas".
+No momento do cadastro, deve-se definir quais os módulos serão ativos, através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
 
 ### Detalhar [GET /webhooks]
 
@@ -7608,7 +7617,8 @@ No momento do cadastro, deve-se definir quais os módulos serão ativos, atravé
               "securityToken": "01a161daaaf265968c1f36a19ef8f4",
               "produtos": true,
               "contatos": false,
-              "vendas": true
+              "vendas": true,
+              "usuarios": true
             }
 
 ### Cadastrar [POST /webhooks]
@@ -7625,7 +7635,8 @@ No momento do cadastro, deve-se definir quais os módulos serão ativos, atravé
               "endpoint": "http://www.example.com/webhookEgestor",
               "produtos": true,
               "contatos": false,
-              "vendas": true
+              "vendas": true,
+              "usuarios": false
             }
 
 + Response 200 (application/json)
@@ -7643,4 +7654,5 @@ No momento do cadastro, deve-se definir quais os módulos serão ativos, atravé
               "produtos": true,
               "contatos": false,
               "vendas": true,
+              "usuarios": false
             }
