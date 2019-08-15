@@ -219,7 +219,7 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
     + fields (string, optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
         * codigo, nome, fantasia, nomeParaContato, cpfcnpj, tipo, dtNasc, dtCad, emails, fones, logradouro, numero, complemento, bairro, cep, cidade, uf, clienteFinal, indicadorIE, inscricaoMunicipal, inscricaoEstadual, obs, tags
         * ex: &fields=nome,fantasia
-        * Padrão: codigo, nome, tipo, emails, fones, cidade, uf, tags
+        * Padrão: codigo, nome, tipo, emails, fones, cidade, uf, clienteFinal, tags
     + orderBy (string, optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
         * codigo, tipo, nome, fantasia, nomeParaContato, cpfcnpj, clienteFinal, indicadorIE, inscricaoEstadual, inscricaoMunicipal, suframa, emails, cidade
         * ex: &orderBy=nome,desc
@@ -250,6 +250,7 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
                   "nome": "Nome do contato",
                   "emails": [],
                   "fones": [],
+                  "clienteFinal": false,
                   "tags": [],
                   "cidade": "Nome da cidade",
                   "uf": "UF"
@@ -3248,6 +3249,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
                     "valorFinanc": 500,
                     "codsNFe": [],
                     "situacao": 50,
+                    "clienteFinal
                     "tags": [],
                     "ativo": true
                 }
