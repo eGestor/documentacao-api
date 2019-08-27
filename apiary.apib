@@ -3678,7 +3678,7 @@ Boletos não podem ser **editados** ou **excluídos** via API.
 | `10` | Em aberto. |
 | `50` | Recebido. |
 
-### Listar (List) [GET /boletos{?filtro,dtTipo,dtIni,dtFim,codigosFin,situacaoBoleto,situacaoFin,formaPgto,fields,orderBy}]
+### Listar (List) [GET /boletos{?filtro,dtTipo,dtIni,dtFim,codigosFin,situacaoBoleto,situacaoRemessa,situacaoFin,formaPgto,fields,orderBy}]
 + Parameters
     + filtro (optional, string) - Busca a string informada nos campos: código do boleto, nome do cliente ou descrição do financeiro.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
@@ -3691,6 +3691,15 @@ Boletos não podem ser **editados** ou **excluídos** via API.
         * 10 - Em aberto
         * 50 - Recebido
         * 70 - Boleto de teste
+    + situacaoRemessa (optional, integer) - Filtra pela situação atual da remessa do boleto. Valores possíveis:
+        * 5 - Pendência
+        * 10 - Sem registro
+        * 17 - Aguarda Retorno
+        * 20 - Registrado
+        * 50 - Pago
+        * 105 - Pago (Pendência)
+        * 110 - Pago (Sem registro)
+        * 117 - Pago (Aguarda Retorno)
     + situacaoFin (optional, integer) - Filtra pela situação do financeiro vinculado ao boleto. Valores possíveis:
         * 20 - Financeiro a receber
         * 40 - Financeiro recebido
