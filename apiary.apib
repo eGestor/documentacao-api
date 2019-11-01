@@ -15,6 +15,7 @@ Recursos disponíveis para acesso via API:
 * [**Disponíveis**](#reference/recursos/disponiveis)
 * [**Formas de pagamento**](#reference/recursos/formas-de-pagamento)
 * [**Plano de contas**](#reference/recursos/plano-de-contas)
+* [**Grupo de tributos**](#reference/recursos/grupo-de-tributos)
 * [**Recebimentos**](#reference/recursos/recebimentos)
 * [**Pagamentos**](#reference/recursos/pagamentos)
 * [**Compras**](#reference/recursos/compras)
@@ -780,7 +781,7 @@ As categorias são utilizadas para agrupar produtos, podendo filtrar posteriorme
 Produtos são utilizados nas vendas e controle de estoque.
 
 
-### Listar (List) [GET /produtos{?filtro,codCategoria,controlarEstoque,tipoUso,arquivado,Norig,INCM,codConfigTrib,IcProd,fields,orderBy}]
+### Listar (List) [GET /produtos{?filtro,codCategoria,controlarEstoque,tipoUso,arquivado,Norig,INCM,codConfigTrib,IcProd,updatedBefore,updatedAfter,fields,orderBy}]
 
 + Parameters
     + filtro (optional) - Busca a string informada nos campos: código do produto, código próprio e nome do produto.
@@ -808,6 +809,8 @@ Produtos são utilizados nas vendas e controle de estoque.
     + INCM (optional, integer) - NCM dos produtos
     + codConfigTrib (optional, integer) - Código do grupo de tributos vinculado.
     + IcProd (optional, string) - Código interno do produto
+    + updatedBefore (optional, string) - Lista apenas produtos que sofreram alterações antes da data informada. Formato "YYYY-MM-DD HH:MM:SS"
+    + updatedAfter (optional, string) - Lista apenas produtos que sofreram alterações após a data informada. Formato "YYYY-MM-DD HH:MM:SS"
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula.
       * ex: &fields=descricao,codigoProprio
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
@@ -2145,6 +2148,231 @@ Todo plano de conta precisa estar vinculado a um dos planos de conta padrão já
                 "fields": null
             }
 
+# Grupo de tributos [/configTrib]
+
+Permite consultar os grupos tributários existentes. Não é possível cadastrar nem editar grupos.
+
+| icmsModBc | Modalidade BC ST |
+|------|------------|
+| `0` | Tabelado ou máx. sugerido |
+| `1` | Lista negativa (valor) |
+| `2` | Lista positiva (valor) |
+| `3` | Lista neutra (valor) |
+| `4` | Margem valor agregado (%) |
+| `5` | Pauta (Valor) |
+| `6` | Valor da operação |
+
+| pisTipoCalcSt | PIS - Tipo de cálculo ST |
+|------|------------|
+| `0` | Não usar |
+| `1` | Porcentagem |
+| `2` | Em valor |
+
+| cofinsTipoCalcSt | COFINS - Tipo de cálculo ST |
+|------|------------|
+| `0` | Não usar |
+| `1` | Porcentagem |
+| `2` | Em valor |
+
+| icmsMotivDeson | Motivo desoneração |
+|------|------------|
+| `0` | Não desejo usar |
+| `1` | Táxi |
+| `3` | Produtor agropecuário |
+| `4` | Frotista/locadora |
+| `5` | Diplomático/consular |
+| `6` | Util. e Motoc. Amazônia Oc. e  Livre Com. |
+| `7` | SUFRAMA |
+| `8` | Venda a Órgãos Públicos |
+| `9` | Outros |
+| `10` | Deficiente condutor |
+| `11` | Deficiente não condutor |
+| `90` | Solicitada pelo Fisco |
+
+### Listar (List) [GET /configTrib{?fields}]
++ Parameters
+    + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula.
+        * ex: &fields=codigo,pisAliquotaSt,ipiAliquota
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+          {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 4,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 50,
+              "data": [
+                {
+                    "codigo": 1,
+                    "descricao": "Tributação padrão",
+                    "cfop": "x102",
+                    "tipo": "produto",
+                    "padrao": true,
+                    "pisSitTrib": "99",
+                    "cofinsSitTrib": "99",
+                    "pisAliquota": "0",
+                    "pisValor": "0",
+                    "pisAliquotaSt": "0",
+                    "pisValorSt": "0",
+                    "cofinsAliquota": "0",
+                    "cofinsValor": "0",
+                    "cofinsAliquotaSt": "0",
+                    "cofinsValorSt": "0",
+                    "pisTipoCalcSt": "2",
+                    "cofinsTipoCalcSt": "1",
+                    "icmsSitTrib": "202",
+                    "icmsSitTribNFCe": "",
+                    "icmsModBc": "0",
+                    "icmsModBcSt": "4",
+                    "icmsRedBc": "0",
+                    "icmsRedBcSt": "0",
+                    "icmsAliquota": "0",
+                    "icmsAliquotaSt": "0",
+                    "icmsMotivDeson": "",
+                    "icmsCalcCred": "0",
+                    "icmsMvaSt": "0",
+                    "icmsBcOpPropriaSt": "0",
+                    "icmsPrecoUnitPautaSt": "0",
+                    "icmsUfPagSt": "",
+                    "ipiSitTrib": "55",
+                    "ipiCnpjProdutor": "92156290000185",
+                    "ipiCodSelo": "2",
+                    "ipiQtdSelo": "3",
+                    "ipiCodEnquadramento": "1",
+                    "ipiAliquota": "0",
+                    "ipiPrecoUnit": "0",
+                    "anpCodigo": "",
+                    "anpDesc": "",
+                    "anpPercentualGLP": "",
+                    "anpPercentualGasNac": "",
+                    "anpPercentualGasImp": "",
+                    "anpValorPartida": ""
+                }
+              ]
+          }
+
++ Response 401 (application/json)
+
+          {
+              "errCode": 401,
+              "errMsg": "Não foi possível acessar o sistema. Verifique seu \"access_token\".",
+              "errObs": "access_denied",
+              "errFields": null,
+              "errUrl": "/v1/configTrib"
+          }
+
+### Detalhar (Read) [GET /configTrib/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código do grupo de tributo
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+  Todos os dados do configtrib
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "descricao": "Tributação padrão",
+              "cfop": "x102",
+              "tipo": "produto",
+              "padrao": true,
+              "pisSitTrib": "99",
+              "cofinsSitTrib": "99",
+              "pisAliquota": "0",
+              "pisValor": "0",
+              "pisAliquotaSt": "0",
+              "pisValorSt": "0",
+              "cofinsAliquota": "0",
+              "cofinsValor": "0",
+              "cofinsAliquotaSt": "0",
+              "cofinsValorSt": "0",
+              "pisTipoCalcSt": "2",
+              "cofinsTipoCalcSt": "1",
+              "icmsSitTrib": "202",
+              "icmsSitTribNFCe": "",
+              "icmsModBc": "0",
+              "icmsModBcSt": "4",
+              "icmsRedBc": "0",
+              "icmsRedBcSt": "0",
+              "icmsAliquota": "0",
+              "icmsAliquotaSt": "0",
+              "icmsMotivDeson": "",
+              "icmsCalcCred": "0",
+              "icmsMvaSt": "0",
+              "icmsBcOpPropriaSt": "0",
+              "icmsPrecoUnitPautaSt": "0",
+              "icmsUfPagSt": "",
+              "ipiSitTrib": "55",
+              "ipiCnpjProdutor": "92156290000185",
+              "ipiCodSelo": "2",
+              "ipiQtdSelo": "3",
+              "ipiCodEnquadramento": "1",
+              "ipiAliquota": "0",
+              "ipiPrecoUnit": "0",
+              "anpCodigo": "",
+              "anpDesc": "",
+              "anpPercentualGLP": "",
+              "anpPercentualGasNac": "",
+              "anpPercentualGasImp": "",
+              "anpValorPartida": "",
+              "issqnBc": 100,
+              "pisBc": 100,
+              "cofinsBc": 100,
+              "csllBc": 100,
+              "irBc": 100,
+              "inssBc": 100
+            }
+
++ Response 404 (application/json)
+  Quando registro não for encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum registro com código 1 econtrado",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 410 (application/json)
+  Quando registro foi apagado do sistema, o código de retorno é 410.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+    + Body
+
+            {
+              "errCode": 410,
+              "errMsg": "Registro com código 1 não existe.",
+              "errObs": null,
+              "errFields": null
+            }
 
 
 # Recebimentos [/recebimentos]
@@ -3212,7 +3440,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
         * semNFe
     + listarCanceladas (optional, boolean) - Define se as vendas canceladas também serão listadas
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
-        * codigo, codContato, nomeContato, codVendedor, dtVenda, dtEntrega, dtCad, valorTotal, valorFinanc, valorEntrada, numParcelas, codsNFe, clienteFinal, situacao, situacaoOS, tags
+        * codigo, codContato, nomeContato, codVendedor, dtVenda, dtEntrega, dtCad, valorTotal, valorFrete, valorFinanc, valorEntrada, numParcelas, codsNFe, clienteFinal, situacao, situacaoOS, tags
         * ex: &fields=nomeContato,valorTotal
         * Padrão: codigo, codContato, nomeContato, codVendedor, dtVenda, valorTotal, valorFinanc, codsNFe, situacao, tags, ativo
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
@@ -3363,6 +3591,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "dtCad": "2017-06-11 14:15:20",
               "valorTotal": 500,
               "valorFinanc": 500,
+              "valorFrete": 15.45,
               "valorEntrada": 0,
               "numParcelas": 0,
               "codsNFe": [],
@@ -4935,6 +5164,8 @@ Quando o boleto já estiver pago.
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + vendedor (number, optional) - Código do vendedor
       + contato (number, optional) - Código do cliente
+      + codProduto (number, optional) - Filtra por vendas com o produto informado
+      + codServico (number, optional) - Filtra por vendas com o serviço informado
       + situOS (enum[string], optional) - Situação da venda
         + Members
           + 'Em espera'
@@ -4983,6 +5214,8 @@ Quando o boleto já estiver pago.
                 "ate": "2019-03-31",
                 "vendedor": "1",
                 "contato": "",
+                "codProduto": "",
+                "codServico": "",
                 "situOS": "",
                 "tipoProd": "",
                 "tags": "",
