@@ -5830,6 +5830,106 @@ Quando o boleto já estiver pago.
                     ]
                 }
             ]
+
+### Compras detalhadas [POST /relatorios/comprasDetalhadas]
+  Mostra a lista das compras, com detalhes como quantidade, valor de compra e totais.
+
++ Attributes (object)
+    + tipoData (enum[string], required) - Tipo de data que será considerada para realizar os filtros
+        + Members
+            + dtCompra - Data da compra
+            + dtCad - Data de cadastro
+    + de (string, required) - Data inicial, formato YYYY-MM-DD
+    + ate (string, required) - Data final, formato YYYY-MM-DD
+    + contato (number, optional) - Código do fornecedor
+    + codProduto (number, optional) - Filtra por compras com o produto informado
+    + situacao (enum[string], optional) - Situação da compra
+        + Members
+            + '10' - Orçamento
+            + '50' - Concluída
+    + tags (string, optional) - Filtrar por palavras-chave da compra
+    + ordem (enum[string], optional) - Ordenação padrão
+      + Members
+        + 'codigo'
+        + 'nome'
+        + 'dtCompra'
+        + 'dtCad'
+        + 'valorTotal'
+    + formaPgto (number, optional) - Filtrar por forma de pagamento
+    + contaDestino (number, optional) - Filtrar por conta destino
+    + mostrarFoneContato (boolean, optional) - Mostrar o telefone do fornecedor
+    + mostrarEndContato (boolean, optional) - Mostrar o endereço do fornecedor
+    + mostrarDesconto (boolean, optional) -  Mostrar desconto nos itens
+    + listarIcProd (boolean, optional) - Listar o código próprio dos produtos
+    + mostrarSaldoAtual(boolean, optional) - Mostrar o saldo atual dos produtos
+    + mostrarTags(boolean, optional) - Mostrar palavra-chave das compras
+    + mostrarFormaPgto(boolean, optional) - Mostrar forma de pagamento das compras
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            [
+                {
+                    "tipoData": "dtCompra",
+                    "de": "2019-04-01",
+                    "ate": "2019-12-30",
+                    "contato": 0,
+                    "situacao": 50,
+                    "codProduto": 0,
+                    "tags": "",
+                    "formaPgto": 0,
+                    "contaDestino": 0,
+                    "ordem": "codigo",
+                    "mostrarFormaPgto": 1,
+                    "mostrarTags": 1,
+                    "mostrarDesconto": 1,
+                    "listarIcProd": 1,
+                    "mostrarEndContato": 1,
+                    "mostrarFoneContato": 1,
+                    "mostrarSaldoAtual": 1
+                }
+            ]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "codCompra": "1",
+                    "dtCad": "2019-08-02 17:11:14",
+                    "dtCompra": "2019-08-02",
+                    "fornecedor": "Zipline Tecnologia Ltda",
+                    "cpfcnpj": "25098282000132",
+                    "endereco": "Rua Doutor Alberto Pasqualini, 111, Centro, Santa Maria - RS",
+                    "fone": "5530263336",
+                    "tags": [
+                        "compra",
+                        "zip"
+                    ],
+                    "formaPgto": "Não informada.",
+                    "comprasItens": [
+                        {
+                            "codPerson": "KB123",
+                            "produto": "Teclado 107 teclas padrão ABNT",
+                            "quant": "5.0000",
+                            "valorTotal": 150,
+                            "desconto": "0.00",
+                            "saldoAtual": "111.0000"
+                        }
+                    ]
+                }
+            ]
             
 ### Detalhes dos produtos comprados [POST /relatorios/detalhesProdutosComprados]
   Mostra cada produto comprado em uma linha, mesmo que repita o número da compra, nome do fornecedor, etc.
