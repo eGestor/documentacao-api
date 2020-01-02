@@ -781,7 +781,7 @@ As categorias são utilizadas para agrupar produtos, podendo filtrar posteriorme
 Produtos são utilizados nas vendas e controle de estoque.
 
 
-### Listar (List) [GET /produtos{?filtro,codCategoria,controlarEstoque,tipoUso,arquivado,Norig,INCM,codConfigTrib,IcProd,updatedBefore,updatedAfter,fields,orderBy}]
+### Listar (List) [GET /produtos{?filtro,codCategoria,controlarEstoque,tipoUso,arquivado,anotInternas,Norig,INCM,codConfigTrib,IcProd,updatedBefore,updatedAfter,fields,orderBy}]
 
 + Parameters
     + filtro (optional) - Busca a string informada nos campos: código do produto, código próprio e nome do produto.
@@ -809,6 +809,7 @@ Produtos são utilizados nas vendas e controle de estoque.
     + INCM (optional, integer) - NCM dos produtos
     + codConfigTrib (optional, integer) - Código do grupo de tributos vinculado.
     + IcProd (optional, string) - Código interno do produto
+    + anotInternas (optional, string) - Filtro baseado nas observações internas do produto
     + updatedBefore (optional, string) - Lista apenas produtos que sofreram alterações antes da data informada. Formato "YYYY-MM-DD HH:MM:SS"
     + updatedAfter (optional, string) - Lista apenas produtos que sofreram alterações após a data informada. Formato "YYYY-MM-DD HH:MM:SS"
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula.
@@ -7137,6 +7138,79 @@ Quando o boleto já estiver pago.
                 {
                     "codigo": "20",
                     "IxProd": "Produto padrão"
+                }
+            ]
+            
+### Impostos NFSe [POST /relatorios/nfseImpostos]
+  Relatório que detalha os impostos das notas fiscais de serviço
+
++ Attributes (object)
+    + de (string, required) - Data de emissão inicial, formato YYYY-MM-DD
+    + ate (string, required) - Data de emissão final, formato YYYY-MM-DD
+    + cliente (number, optional) - Código do cliente
+    + tags (string, optional) - Filtrar por palavras-chave da NFSe
+    + order (enum[string], optional) - Ordenação padrão
+      + Members
+        + 'codigo'
+        + 'nome' - Nome do cliente
+        + 'numeroNFSe'
+        + 'dtEmissao'
+    + retido (enum[string], optional) - Filtrar por retenção
+      + Members
+        + '1' - Somente notas com retenção
+        + '2' - Somente notas sem retenção
+    + situacao (enum[string], optional) - Situação da NFSe
+      + Members
+        + '10' - Autorizada
+        + '20' - Ag. prefeitura/Envio
+        + '25' - Ag. prefeitura/Cancelamento
+        + '30' - Rejeitada
+        + '40' - Denegada
+        + '90' - Cancelada
+        + '99' - Não enviada
+        + '100' - Todas
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            [
+                {
+                    "de": "2019-12-01",
+                    "ate": "2019-12-31",
+                    "cliente": 0,
+                    "tags": "",
+                    "retido": 0,
+                    "order": "numeroNFSe",
+                    "situacao": 30
+                }
+            ]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "codigo": "1",
+                    "dtEmissao": "2019-12-10 14:45:15",
+                    "numeroNFSe": "1",
+                    "valorLiquido": "34.68",
+                    "nome": "Cliente teste",
+                    "issqn": 0,
+                    "inss": 1.61,
+                    "pis": 0.24,
+                    "cofins": 1.1,
+                    "csll": 0.37,
+                    "irrf": 0.37
                 }
             ]
 
