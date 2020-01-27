@@ -23,6 +23,7 @@ Recursos disponíveis para acesso via API:
 * [**Boletos**](#reference/recursos/boletos)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
+* [**NFe**](#reference/recursos/nfe)
 * [**Disco virtual**](#reference/recursos/disco-virtual)
 * [**Usuários**](#reference/recursos/usuarios)
 * [**Webhooks**](#reference/recursos/webhooks)
@@ -3837,6 +3838,16 @@ Envia o documento automaticamente para o cliente por email.
 Permite gerar uma NFCe a partir de determinada venda. Informe o campo `cpfcnpj` quando o contato da venda não possuir um CPF ou CNPJ definido no cadastro.
 + Parameters
     + codigo (required, number, `1`) ... Código da venda
+    + indPres (required, number) ... Indicador de presença do consumidor
+        + 0 = Não se aplica
+        + 1 = Operação presencial
+        + 2 = Operação não presencial, pela internet
+        + 3 = Operação não presencial, teleatendimento
+        + 4 = NFC-e em operação com entrega a domicílio
+        + 5 = Operação presencial, fora do estabelecimento
+        + 9 = Operação não presencial, outros
+
+        
 
 + Request (application/json)
 
@@ -4669,6 +4680,7 @@ Quando o boleto já estiver pago.
       + planoContas (number, optional) - Código do plano de contas
       + negativar (boolean, optional) - Valores negativos nas contas a pagar
       + semTransf (boolean, optional) - Esconder transferência entre contas
+      + apenasFornTransport (boolean, optional) - Mostrar apenas registros de fornecedores e transportadoras
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
@@ -7028,6 +7040,7 @@ Quando o boleto já estiver pago.
           + precoCusto
           + estoque
           + palavrasChave
+          + ean
       + tipoProduto (enum[string], optional) - Filtrar apenas produtos ou serviços
         + Members
           + produto
@@ -7653,6 +7666,122 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
             {
               "errCode": 410,
               "errMsg": "Registro com código 1 não existe.",
+              "errObs": null,
+              "errFields": null
+            }
+            
+# NFe [/nfe]
+Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XML de documentos autorizados.
+
+| Situação | Descrição |
+|------|--------|
+| `5` | Criada |
+| `10` | Em digitação |
+| `15` | Rejeitada |
+| `20` | Assinada |
+| `30` | Validada |
+| `35` | Form. Segur. |
+| `40` | Enviada |
+| `50` | Autorizada |
+| `80` | Denegada |
+| `90` | Cancelada |
+| `91` | Inutilizada |
+
+### Detalhar (Read) [GET /nfe/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código da NFe
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": "1",
+              "numero": "1",
+              "chave": "43123456789123456789123456789123456789123456",
+              "modelo": "65",
+              "dt_emissao": "2019-12-19",
+              "situacao": "50"
+            }
+
++ Response 404 (application/json)
+  Quando o registro não foi encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum nfe encontrado para o código 1",
+              "errObs": null,
+              "errFields": null
+            }
+            
+### Download XML (Read) [GET /nfe/{codigo}/xml]
+    Retorna o XML (binário) de um documento autorizado.
++ Parameters
+    + codigo (required, number, `1`) ... Código da NFe
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              
+            }
+
++ Response 404 (application/json)
+  Quando o registro não foi encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum nfe encontrado para o código 1",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 404 (application/json)
+  Quando o documento ainda não foi autorizado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Documento não se encontra autorizado, impossível fazer download do XML.",
               "errObs": null,
               "errFields": null
             }
