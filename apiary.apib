@@ -2,11 +2,12 @@ quasFORMAT: 1A
 
 # eGestor API
 
-O [eGestor](https://www.egestor.com.br) disponibiliza uma API REST que permite o acesso aos contatos, produtos e vendas do sistema.
+O [eGestor](https://www.egestor.com.br) disponibiliza uma API RESTful que permite o acesso aos módulos do sistema.
 
-As dúvidas e solicitações, relacionadas ao acesso da API, devem ser enviadas para o e-mail suporte@zipline.com.br.
+Dúvidas e solicitações relacionadas a integração e API, devem ser enviadas para o e-mail kasper@zipline.com.br.
 
 Recursos disponíveis para acesso via API:
+* [**Dados da empresa**](#reference/recursos/empresa)
 * [**Contatos**](#reference/recursos/contatos)
 * [**Categoria de produtos**](#reference/recursos/categorias)
 * [**Produtos**](#reference/recursos/produtos)
@@ -19,7 +20,7 @@ Recursos disponíveis para acesso via API:
 * [**Recebimentos**](#reference/recursos/recebimentos)
 * [**Pagamentos**](#reference/recursos/pagamentos)
 * [**Compras**](#reference/recursos/compras)
-* [**Vendas**](#reference/recursos/vendas)
+* [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas)
 * [**Boletos**](#reference/recursos/boletos)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
@@ -30,6 +31,15 @@ Recursos disponíveis para acesso via API:
 
 # Biblioteca
 Integre seu sistema de forma rápida e fácil utilizando nossa [biblioteca para PHP](https://github.com/eGestor/egestor-sdk-php).
+
+## URLs de acesso
+O eGestor não possui sandbox (ambiente de homologação). Cada conta do eGestor é isolada das outras (multi-tenant), sugerimos aos desenvolvedores que criem uma conta de testes, e depois utilizem a conta de produção com os dados dos clientes.
+
+Para testar a API, crie uma conta gratuitamente, acesse o sistema e clique no menu configurações. Na aba API você gera o personal_token.
+
+URL homologação/produção (access_token): https://api.egestor.com.br/api/oauth/access_token
+
+URL homologação/produção (ex: contatos): https://api.egestor.com.br/api/v1/contatos
 
 
 ## Métodos
@@ -63,7 +73,7 @@ Você pode acompanhar esses limites nos `headers`: `X-RateLimit-Limit`, `X-RateL
 
 Ações de `listar` exibem `50` registros por página. Não é possível alterar este número.
 
-Por questões de segurança, todas as requisições devem ser feitas através do protocolo `HTTPS`.
+Por questões de segurança, todas as requisições serão feitas através do protocolo `HTTPS`.
 
 ## Listar
 As ações de `listar` permitem o envio dos seguintes parâmetros:
@@ -84,9 +94,7 @@ Nossa API utiliza [OAuth2](https://oauth.net/2/) como forma de autenticação/au
 
 ### Utilizando personal_token [POST]
 
-O `personal_token` é do formato JWT e contém informações da aplicação e do cliente (usuário). Este é o tipo de token recomendado para utilização em sistemas de e-Commerce e sites integrados ao eGestor.
-
-Os dados desse token podem ser obtidos diretamente no eGestor, na aba `Configurações -> Aplicativos conectados`.
+O `personal_token` é do formato JWT e contém informações da empresa (subdomínio) e do usuário. Este é o token utilizado em sistemas de e-Commerce e sites integrados ao eGestor.
 
 #### Dados para envio no POST
 | Parâmetro | Descrição |
@@ -115,91 +123,64 @@ Os dados desse token podem ser obtidos diretamente no eGestor, na aba `Configura
                 "refresh_token": "[refresh_token]"
             }
 
-
-### Utilizando refresh_token [POST]
-
-Utilize o último `refresh_token` recebido para solicitar um novo `access_token`. Após utilizado o `refresh_token`, este será invalidado e um novo será fornecido em conjunto com o `access_token`.
-
-#### Dados para envio no POST
-| Parâmetro | Descrição |
-|---|---|
-| `grant_type` | Informar: `refresh_token` |
-| `client_id` | Código de identificação da aplicação no sistema. |
-| `client_secret` | `client_secret` da aplicação no sistema. |
-| `redirect_uri` | Url de redirecionamento informada na configuração da aplicação. |
-| `refresh_token` | Último refresh_token recebido. |
-
-
-+ Request (application/json)
-
-    + Body
-
-            {
-                "refresh_token": "qkUb1vx8yBmySV6dq7mPR",
-                "client_id": "4Lbr9ubFDFPo8pz1Z",
-                "client_secret": "4Lbr9ubFDFPo",
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
-                "grant_type": "refresh_token"
-            }
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-                "access_token": "[access_token]",
-                "token_type": "Bearer",
-                "expires_in": 900,
-                "refresh_token": "[refresh_token]"
-            }
-
-
-
-
-
-### Utilizando o código de acesso [POST]
-Utilizando o `code` enviado pelo servidor de autorização, envie um POST com seus dados para receber um `access_token`.
-O `access_token` é válido por 15 minutos. Utilize o `refresh_token` para solicitar um novo `access_token`, para não solicitar ao usuário suas credenciais (login e senha) novamente.
-
-| Parâmetro | Descrição |
-|---|---|
-| `grant_type` | Informar: `authorization_code` |
-| `client_id` | Código de identificação da aplicação no sistema. |
-| `client_secret` | `client_secret` da aplicação no sistema. |
-| `redirect_uri` | Url de redirecionamento informada na configuração da aplicação. |
-| `code` | Código recebido pela autorização do usuário. |
-
-+ Request (application/json)
-
-    + Body
-
-            {
-                "code": "1rbUURjcp1KErn7Jgx7d",
-                "client_id": "e70654d7f568d0",
-                "client_secret": "156762a28c007a64ff",
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob:auto",
-                "grant_type": "authorization_code"
-            }
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-                "access_token": "[access_token]",
-                "token_type": "Bearer",
-                "expires_in": 900,
-                "refresh_token": "[refresh_token]",
-                "personal_token": "[token_string]"
-            }
-
 # Group Recursos
+
+# Dados da empresa [/empresa]
+
+Buscar detalhes da conta.
+
+### Listar (List) [GET /empresa]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+
++ Response 200 (application/json)
+
+          {
+    "subdom": "zip",
+    "nome": "ZIPLINE TECNOLOGIA LTDA",
+    "fantasia": "",
+    "cpfcnpj": "04693497000121",
+    "fones": "5530263336",
+    "emails": "suporte@zipline.com.br",
+    "end": "Rua do Acampamento",
+    "num": "380",
+    "compl": "SALA  1 - 2 E 3",
+    "bairro": "Centro",
+    "cidadeNome": "Santa Maria",
+    "cidadeCod": "4316907",
+    "uf": "RS",
+    "cep": "97050002",
+    "cifrao": "",
+    "crt": 10,
+    "atividade": 10,
+    "pSimples": 4,
+    "pICMS": "",
+    "pPIS": "",
+    "pCOFINS": "",
+    "baseIRPJ": "",
+    "baseCSLL": "",
+    "pIRPJ": "",
+    "pCSLL": "",
+    "inscMunicipal": "4628202",
+    "tipoIE": "",
+    "inscEstadual": "",
+    "cnae": "6203100",
+    "codTributMunicipio": "724",
+    "regimeTributacao": "0",
+    "cmc": "",
+    "RNTRC": ""
+}
+
 
 
 # Contatos [/contatos]
 
-Os contatos podem ser clientes, fornecedores e transportadoras.
-
+Os contatos podem ser clientes, fornecedores e transportadores.
 
 ### Listar (List) [GET /contatos{?filtro,endereco,telefone,email,clienteFinal,indIE,IE,IM,suframa,obs,fields,orderBy}]
 + Parameters
@@ -291,8 +272,8 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
     + complemento (string, optional)
     + bairro (string, optional)
     + cidade (string, optional)
-    + codIBGE (string, optional)
-    + uf (string, optional)
+    + codIBGE (string, optional) - Informe um código IBGE válido
+    + uf (string, optional) - O UF deverá ser referente ao código do IBGE informado
     + pais (string, optional)
     + clienteFinal (optional)
     + indicadorIE (enum[number], optional)
@@ -312,8 +293,8 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
     + numeroEntrega (number, optional)
     + complementoEntrega (string, optional)
     + bairroEntrega (string, optional)
-    + codIBGEEntrega (number, optional)
-    + ufEntrega (string, optional)
+    + codIBGEEntrega (number, optional) - Informe um código IBGE válido
+    + ufEntrega (string, optional) - O UF deverá ser referente ao código do IBGE informado
     + pontoRefEntrega (string, optional)
 
 + Request (application/json)
@@ -328,7 +309,7 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "nome": "Kaya Labadie",
               "fantasia": "",
               "nomeParaContato": "Elfrieda Labadie",
-              "cpfcnpj": "83294489654",
+              "cpfcnpj": "00000000000191",
               "tipo": [
                 "cliente"
               ],
@@ -337,12 +318,12 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
                 "exemplo@example.com.br"
               ],
               "fones": [],
-              "cep": 4320040,
+              "cep": ,
               "logradouro": "Rua Exemplo lado ímpar",
               "numero": "999",
               "complemento": "",
               "bairro": "",
-              "codIBGE": "355030",
+              "codIBGE": "3550308",
               "uf": "SP",
               "pais": "",
               "clienteFinal": true,
@@ -356,13 +337,12 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "complementoEntrega": "",
               "bairroEntrega": "",
               "codIBGEEntrega": "",
-              "cidadeEntrega": "",
               "ufEntrega": "",
               "cepEntrega": "",
               "pontoRefEntrega": ""
               "suframa": "",
               "obs": "",
-              "tags": []
+              "tags": ["cliente bom", "especial"]
             }
 
 + Response 200 (application/json)
@@ -429,11 +409,10 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "dtCad": "2017-01-15 11:20:15",
               "cpfCnpjEntrega": "",
               "logradouroEntrega": "",
-              "numeroEntrega": 0,
+              "numeroEntrega": "",
               "complementoEntrega": "",
               "bairroEntrega": "",
               "codIBGEEntrega": "0",
-              "cidadeEntrega": "",
               "ufEntrega": "",
               "cepEntrega": 0,
               "pontoRefEntrega": ""
@@ -512,7 +491,6 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "complementoEntrega": "",
               "bairroEntrega": "",
               "codIBGEEntrega": "",
-              "cidadeEntrega": "",
               "ufEntrega": "",
               "cepEntrega": "",
               "pontoRefEntrega": "",
@@ -560,7 +538,7 @@ Os contatos podem ser clientes, fornecedores e transportadoras.
               "dtCad": "2017-01-15 11:20:15",
               "cpfCnpjEntrega": "",
               "logradouroEntrega": "",
-              "numeroEntrega": 0,
+              "numeroEntrega": "",
               "complementoEntrega": "",
               "bairroEntrega": "",
               "codIBGEEntrega": "0",
@@ -838,32 +816,51 @@ Produtos são utilizados nas vendas e controle de estoque.
                 "from": 1,
                 "to": 50,
                 "data": [
-                  {
-                      "codigo": 1,
-                      "descricao": "Caneca Preta",
-                      "codigoProprio": "",
-                      "estoque": 60,
-                      "estoqueMinimo": 10,
-                      "controlarEstoque": false,
-                      "margemLucro": 0,
-                      "precoCusto": 100,
-                      "precoVenda": 200,
-                      "origemFiscal": 0,
-                      "unidadeTributada": "UN",
-                      "refEanGtin": "",
-                      "ncm": "",
-                      "excecaoIPI": 1,
-                      "codigoCEST": "",
-                      "pesoBruto": 0,
-                      "pesoLiquido": 0,
-                      "codigoGrupoTributos": 1,
-                      "anotacoesNFE": "",
-                      "anotacoesInternas": "",
-                      "tags": [ 'café', 'utilidades' ],
-                      "dtCad": "2017-03-10 14:10:37",
-                      "codCategoria": 0,
-                      "updatedAt": "2019-09-20 16:56:39"
-                  }
+                    {
+                        "codigo": 1,
+                        "descricao": "Caneca Preta",
+                        "codigoProprio": "",
+                        "estoque": 60,
+                        "estoqueMinimo": 10,
+                        "controlarEstoque": false,
+                        "margemLucro": 0,
+                        "precoCusto": 100,
+                        "precoVenda": 200,
+                        "origemFiscal": 0,
+                        "unidadeTributada": "UN",
+                        "refEanGtin": "",
+                        "ncm": "",
+                        "excecaoIPI": 1,
+                        "codigoCEST": "",
+                        "pesoBruto": 0,
+                        "pesoLiquido": 0,
+                        "codigoGrupoTributos": 1,
+                        "anotacoesNFE": "",
+                        "anotacoesInternas": "",
+                        "tags": [ "café", "utilidades" ],
+                        "dtCad": "2017-03-10 14:10:37",
+                        "codCategoria": 0,
+                        "updatedAt": "2019-09-20 16:56:39",
+                        "listaImagens": [
+                            {
+                                "foto": {
+                                    "link": "https://730590973010370e1726.cdn.com/010-2154900.png",
+                                    "padrao": 1
+                                },
+                                "thumb": {
+                                    "link": "https://730590973010370e1726.cdn.com/010-2154900_tmb.png",
+                                }
+                            },
+                            {
+                                "foto": {
+                                    "link": "https://730590973010370e1726.cdn.com/011-2111100.png",
+                                },
+                                "thumb": {
+                                    "link": "https://730590973010370e1726.cdn.com/011-2111100_tmb.png",
+                                }
+                            }
+                        ]
+                    }
                 ]
             }
 
@@ -2393,7 +2390,7 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
 ### Listar (List) [GET /recebimentos{?filtro,dtTipo,dtIni,dtFim,caixa,origem,conciliacao,planoContas,obs,formaPgto,numDoc,situFin,boleto,recibo,fields,orderBy}]
 
 + Parameters
-    + filtro (optional) - Busca a string informada nos campos: código do recebimento, descrição, palavras-chave e nome do cliente.
+    + filtro (optional) - Busca a string informada nos campos: código do recebimento, descrição, palavras-chave e nome do cliente. Pode-se informar vários códigos, separados por virgula.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
       * dtVencPgto(default) - Data de venc/pgto (caso em aberto, filtra por vencimento, caso pago filtra por pagamento)
       * dtVenc - Data de vencimento
@@ -2698,7 +2695,7 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
 
 ### Listar (List) [GET /pagamentos{?filtro,dtTipo,dtIni,dtFim,caixa,origem,conciliacao,planoContas,obs,formaPgto,numDoc,situFin,boleto,recibo,fields,orderBy}]
 + Parameters
-    + filtro (optional) - Busca a string informada nos campos: código do pagamento, descrição, palavras-chave e nome do cliente.
+    + filtro (optional) - Busca a string informada nos campos: código do pagamento, descrição, palavras-chave e nome do cliente. Pode-se informar vários códigos, separados por virgula.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
       * dtVencPgto(default) - Data de venc/pgto (caso em aberto, filtra por vencimento, caso pago filtra por pagamento)
       * dtVenc - Data de vencimento
@@ -3037,7 +3034,7 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
 
 # Compras [/compras]
 
-As compras não podem ser editadas. Caso seja necessário, apague-a e crie uma nova.
+As compras não podem ser editadas via API. Caso seja necessário, apague-a e crie uma nova.
 
 
 ### Listar (List) [GET /compras{?filtro,dtTipo,dtIni,dtFim,situacao,observacoes,nota,fields,orderBy}]
@@ -3414,10 +3411,57 @@ Somente podem ser excluídas compras na situação de `Orçamento`. Ao excluir a
                 "obs": null,
                 "fields": null
             }
+            
 
-# Vendas [/vendas]
+### Detalhar XML NFE (Read) [GET /compras/{codigo}/nfe]
 
-As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma nova.
++ Parameters
+    + codigo (required, number, `1`) ... Código da compra
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+Todos os XMLs associados a venda, e suas respectivas situações.
+| Situação | Descrição |
+|------|--------|
+| `10` | Orçamento |
+| `20` | Compra |
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+        [
+            {
+                "codigo": "100",
+                "chave": "43191014911562000100550010000150951741512345", 
+                "situacao": "20",
+                "nota": "<?xml version=\"1.0\"?><nfeProc xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"4.00\"><NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe versao=\"4.00\"<ide><cUF>43</cUF><natOp>...</NFe>"
+            }
+            ,
+            {
+                "codigo": "101",
+                "chave": "43191014911562000100550010000150951741512346", 
+                "situacao": "20",
+                "nota": "<?xml version=\"1.0\"?><nfeProc xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"4.00\"><NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe versao=\"4.00\"<ide><cUF>43</cUF><natOp>...</NFe>"
+            }
+        ]
+
+
+# Vendas / Ordens de serviço / OS [/vendas]
+
+As vendas não podem ser editadas pela API. Caso seja necessário, apague-a e crie uma nova.
+
+No eGestor, vendas podem ser de produtos e serviços. Vendas de serviços são consideradas OS. 
+
+Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar notas fiscais de serviços (NFSe)
 
 |Situação|Descrição|
 |--------|---------|
@@ -3431,6 +3475,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
         * dtVenda(default) - Data da venda.
         * dtCad - Data de cadastro.
+        * dtEntrega - Data de entrega
     + dtIni (optional, date) - Data inicial, no formato yyyy-mm-dd
     + dtFim (optional, date) - Data final, no formato yyyy-mm-dd
     + vendedor (optional, integer) - Código do vendedor
@@ -3483,7 +3528,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
                     "valorFinanc": 500,
                     "codsNFe": [],
                     "situacao": 50,
-                    "clienteFinal
+                    "clienteFinal": 1,
                     "tags": [],
                     "ativo": true
                 }
@@ -3513,9 +3558,10 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
             {
               "codContato":1,
               "codVendedor":12,
-              "dtVenda":"2017-07-18",
+              "dtVenda":"2022-09-14",
+              "dtEntrega": "2022-09-14",
               "situacao": 50,
-              "tags": [],
+              "tags": ["VENDA_VIA_API" , "Tag2"],
               "valorFrete": 15.45,
               "valorDesc": 7.51,
               "valorDespesasAcessorias": 12.50,
@@ -3523,30 +3569,66 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "enderecoEntrega":1,
               "situacaoOS": "Em espera",
               "customizado": {
-                "xCampo1": "Observações gerais"
+                "xCampo1": "Mensagem do campo observações gerais",
+                "xCampo2": "Mensagem do campo personalizado 2",
+                "xCampo3": "Mensagem do campo personalizado 3",
+                "xCampo4": "Mensagem do campo personalizado 4"
               },
-              "produtos": [
+              "produtos":[
                 {
                 "codProduto":17,
                 "quant":1,
                 "vDesc":0,
                 "deducao":0,
-                "preco":49.90,
-                "obs":""
+                "preco":50.00,
+                "obs":"SN: XYZ1020"
+                },
+                {
+                "codProduto":22,
+                "quant":10,
+                "vDesc":0,
+                "deducao":0,
+                "preco":200.00,
+                "obs":"Entregar em mãos"
                 }
               ],
               "financeiros": [
                 {
-                "dtVenc":"2017-05-18",
-                "dtComp":"2017-05-20",
+                "dtVenc":"2022-09-18",
+                "dtComp":"2022-09-20",
+                "pago": true,
+                "codFormaPgto": 2,
+                "codPlanoContas": 1,
+                "codCaixa": 1,
+                "valor": 100.00,
+                "tags": ["API", "Parc1", "tag_do_financeiro"],
+                "descricao": "Cobrança da venda de produtos, parcela 1/2"
+                },
+                {
+                "dtVenc":"2022-09-18",
+                "dtComp":"2022-09-20",
                 "pago": false,
                 "codFormaPgto": 4,
                 "codPlanoContas": 1,
                 "codCaixa": 1,
-                "valor": 57.84,
-                "tags": ["API", "Desconto"],
-                "descricao": "Cobrança da venda de produtos, parcela 1/1"
+                "valor": 150.00,
+                "tags": ["API", "Parc2", "tag_do_financeiro"],
+                "descricao": "Cobrança da venda de produtos, parcela 2/2"
                 }
+              ],
+              "despesas":[
+               {
+                "codFormaPgto": 4,
+                "descricao": "Pagamento instalador",
+                "codCaixa": 1,
+                "pago": 1,
+                "dtComp": "2022-09-30",
+                "codPlanoContas": 25,
+                "tags": ["instalador"],
+                "codContato": "66",
+                "numDoc": "doc001",
+                "valor": 150
+               }
               ]
             }
 
@@ -3608,6 +3690,7 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "situacao": 50,
               "situacaoOS": "Em espera",
               "tags": [],
+              "publicURL": "https://v4.egestor.com.br/vendas/print.php?key=10540.626.3588.2457.d1432",
               "produtos": [
                 {
                     "codigo": 26,
@@ -3692,6 +3775,54 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "errFields": null
             }
 
+### Detalhar XML NFE (Read) [GET /vendas/{codigo}/nfe]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código da venda
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+Todos os XMLs associados a venda, e suas respectivas situações.
+| Situação | Descrição |
+|------|--------|
+| `5` | Criada |
+| `10` | Em digitação |
+| `15` | Rejeitada |
+| `20` | Assinada |
+| `30` | Validada |
+| `35` | Form. Segur. |
+| `40` | Enviada |
+| `50` | Autorizada |
+| `80` | Denegada |
+| `90` | Cancelada |
+| `91` | Inutilizada |
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+        [
+            {
+                "id": "100",
+                "situacao": "5",
+                "nota": "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe><ide><cUF>43</cUF><natOp>...</NFe>"
+            }
+            ,
+            {
+                "id": "101",
+                "situacao": "50",
+                "nota": "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe><ide><cUF>43</cUF><natOp>...</NFe>"
+            }
+
+        ]
 
 ### Remover (Delete) [DELETE  /vendas/{codigo}]
 
@@ -3767,12 +3898,13 @@ As vendas não podem ser editadas. Caso seja necessário, apague-a e crie uma no
               "tags": []
             }
 
-### Gerar NFSe da venda [GET  /vendas/{codigo}/gerarNfse]
+### Gerar NFSe da venda [GET  /vendas/{codigo}/gerarNfse{?reterIssqn}]
 Emite uma NFSe a partir de uma venda que possua serviços.
 Não envia o documento automaticamente para o cliente.
 
 + Parameters
     + codigo (required, number, `1`) ... Código da venda
+    + reterIssqn (optional, boolean) - Define se o ISSQN será retido na NFSe emitida
 
 + Request (application/json)
 
@@ -3833,6 +3965,29 @@ Envia o documento automaticamente para o cliente por email.
               "emailCliente": "zipline@zipline.com.br",
               "emailEnviado": true
             }
+
+### Buscar dados Mercado Livre [GET  /vendas/{codigo}/mercadoLivre]
+Retorna os dados vindos da integração com o mercado livre, baseado no código da venda do eGestor.
+
++ Parameters
+    + codigo (required, number, `1`) ... Código da venda
+    
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+               {
+                    "codVenda": "1",
+                    "dados": "{\"idOrder\": 1234567890, \"date_closed\": \"15\\/03\\/2022 12:58:00\", \"total_amount\": 20, \"paid_amount\": 20, \"payments\": [{\"transaction_amount\": 20, \"shipping_cost\": 0, \"payment_method_id\": \"elo\", \"date_created\": \"2022-03-15T11:57:59.000-04:00\"}], \"order_items\": [{\"idProduto\": \"MLB0000000000\", \"quantity\": 1, \"price\": 20, \"sale_fee\": 7.4, \"idProdutoEgestor\": \"123\"}], \"idBuyer\": 123456789, \"tracking_number\": \"RN123123333BR\", \"idBuyerEgestor\": \"99999\"}"
+               }
+            ]
+
 
 ### Gerar NFCe [POST  /vendas/{codigo}/gerarNfce]
 Permite gerar uma NFCe a partir de determinada venda. Informe o campo `cpfcnpj` quando o contato da venda não possuir um CPF ou CNPJ definido no cadastro.
@@ -4126,6 +4281,27 @@ Quando o boleto já estiver pago.
               "errFields": null
             }
             
+# Boleto eGestor - Verificar retorno  [/verificarRetornoBoletos]
+
+### Verificar Retorno (Read) [GET /verificarRetornoBoletos]
+Atualiza os recebimentos associados ao Boleto eGestor.
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "ok": 1
+            }
+
+
+
 # Relatórios [/relatorios]
 
 ### Extrato Financeiro [POST /relatorios/extratoFinanceiro]
@@ -4224,6 +4400,7 @@ Quando o boleto já estiver pago.
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + semPlano (boolean, optional) - Lançamentos sem Plano de Contas
       + comTransf (boolean, optional) - Transferências entre contas
+      + mostrarRecorrencia (boolean, optional) - Incluir recorrências
       
   + Request (application/json)
 
@@ -4240,7 +4417,8 @@ Quando o boleto já estiver pago.
                 "anoFim": 2018,
                 "tags": "",
                 "semPlano": true,
-                "comTransf": false
+                "comTransf": false,
+                "mostrarRecorrencia": true
             }
             {
                 "agrupamento": "dia",
@@ -4249,7 +4427,8 @@ Quando o boleto já estiver pago.
                 "ate": "2018-12-31",
                 "tags": "",
                 "semPlano": true,
-                "comTransf": false
+                "comTransf": false,
+                "mostrarRecorrencia": true
             }
               
 
@@ -4504,6 +4683,7 @@ Quando o boleto já estiver pago.
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + disponivel (number, optional) - Código da conta disponível
       + semSaldoAnterior (number, optional) - Ocultar saldos e pgtos antes do início
+      + semAtrasadasAnterior (number, optional) - Ocultar lanç. atrasados antes da data inícial
 
   + Request (application/json)
 
@@ -4559,6 +4739,7 @@ Quando o boleto já estiver pago.
       + disponivel (number, optional) - Código da conta disponível
       + comContato (number, optional) - Mostrar nome do contato associado ao lançamento
       + semSaldoAnterior (number, optional) - Ocultar saldos e pgtos antes do início
+      + semAtrasadasAnterior (number, optional) - Ocultar lanç. atrasados antes da data inícial
 
   + Request (application/json)
 
@@ -5177,6 +5358,7 @@ Quando o boleto já estiver pago.
         + Members
           + dtVenda - Data da venda
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + vendedor (number, optional) - Código do vendedor
@@ -5315,6 +5497,7 @@ Quando o boleto já estiver pago.
         + Members
           + dtVenda - Data da venda
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + contato (number, optional) - Código do cliente
@@ -5461,6 +5644,7 @@ Quando o boleto já estiver pago.
         + Members
           + dtVenda - Data da venda
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + tagsContatos (string, optional) - Palavras-chave do cliente
@@ -5537,6 +5721,7 @@ Quando o boleto já estiver pago.
         + Members
           + dtVenda - Data da venda
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega          
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + contato (number, optional) - Código do cliente
@@ -5637,6 +5822,7 @@ Quando o boleto já estiver pago.
         + Members
           + dtVenda - Data da venda
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega          
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + situOS (enum[string], optional) - Situação da venda
@@ -5762,6 +5948,7 @@ Quando o boleto já estiver pago.
         + Members
           + dtVenda - Data da venda
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega          
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + codVendas (string, optional) - Código das vendas, separados por vírgula
@@ -6071,6 +6258,7 @@ Quando o boleto já estiver pago.
           + 50 - Somente concluidas
       + cods (string, optional) - Código das produções, separados por virgula
       + esconderValores (boolean, optional) - Esconder valor monetário
+      + mostrarQntPerda (boolean, optional) - Mostrar quantidade da perda
 
   + Request (application/json)
 
@@ -6087,7 +6275,8 @@ Quando o boleto já estiver pago.
                 "tags": "",
                 "situacao": 0,
                 "cods": "",
-                "esconderValores": false
+                "esconderValores": false,
+                "mostrarQntPerda": true
             }
               
 
@@ -6112,6 +6301,7 @@ Quando o boleto já estiver pago.
                         "IuCom": "GR",
                         "quant": 0.12,
                         "pPerda": 0,
+                        "qntPerda": 0,
                         "custoInsumo": 6.12,
                         "custoUnit": 51,
                         "custoExtra": 0,
@@ -6125,6 +6315,7 @@ Quando o boleto já estiver pago.
                         "IuCom": "Quilo",
                         "quant": 3.6,
                         "pPerda": 0.02,
+                        "qntPerda": 0.0007,
                         "custoInsumo": 32.04,
                         "custoUnit": 8.9,
                         "custoExtra": 0,
@@ -6140,6 +6331,7 @@ Quando o boleto já estiver pago.
                         "IuCom": "UN",
                         "quant": 12,
                         "pPerda": 0,
+                        "qntPerda": 0,
                         "custoInsumo": 62.16,
                         "custoUnit": 5.18,
                         "custoExtra": 222,
@@ -7532,10 +7724,10 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
               "descricao": "Mensagem retornada pela prefeitura: Código: E100, Mensagem: Documento autorizado",
               "numeroNfse": "1",
               "protocolo": "1",
-              "codVerificacao": "123 123 123",
+              "codVerificacao": "1231332",
               "codNota": 1,
               "situacao": 10,
-              "urlImpressao": "http://v4.egestor.com.br/xxxxxx",
+              "urlImpressao": "https://v4.egestor.com.br/fiscal/print.php?chave=123031fs03.j42fk4mlg.2hbrx10029",
               "emailCliente": "email@contato.com.br"
             }
             
@@ -7686,6 +7878,62 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
 | `80` | Denegada |
 | `90` | Cancelada |
 | `91` | Inutilizada |
+
+| Ambiente | Descrição |
+|---------|-----------|
+| `1` | Produção |
+| `2` | Homologação |
+
+### Listar (List) [GET /nfe{?dtIni,dtFim,fields,orderBy}]
++ Parameters
+    + dtIni (date, required) - Data inicial, no formato yyyy-mm-dd
+    + dtFim (date, required) - Data final, no formato yyyy-mm-dd
+    + fields (string, optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
+        * codigo, numero, codVenda, cliente, chave, email, ambiente, serie, modelo, dtEmissao, cfop, valor, situacao
+        * ex: &fields=codigo,cliente
+        * Padrão: codigo
+    + orderBy (string, optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
+        * codigo, numero, codVenda, cliente, chave, email, ambiente, serie, modelo, dtEmissao, cfop, valor, situacao
+        * ex: &orderBy=cliente,desc
+        * ex: &orderBy=email,asc
+        
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+          {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 4,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 50,
+              "data": [
+                 {
+                   "codigo": 282,
+                   "dtEmissao": "2021-01-08",
+                   "situacao": 50,
+                   "valor": 10.45
+                 }
+              ]
+          }
+
++ Response 401 (application/json)
+
+          {
+              "errCode": 401,
+              "errMsg": "Não foi possível acessar o sistema. Verifique seu \"access_token\".",
+              "errObs": "access_denied",
+              "errFields": null,
+              "errUrl": "/v1/nfe"
+          }
 
 ### Detalhar (Read) [GET /nfe/{codigo}]
 
@@ -7858,7 +8106,7 @@ Não é possível editar um registro no disco virtual. A URL para download é ob
           }
 
 ### Novo (Create) [POST]
-
+ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisição o "application-type: json", pois o mesmo não funciona em conjunto com o envio de arquivos. Nesse caso, apenas iniba o envio dessa propriedade.
 + Attributes (object)
 
     + arquivo (required) - Arquivo que será enviado
@@ -8119,23 +8367,28 @@ Módulo permite listar e detalhar os usuários cadastrados no sistema.
 
             
 # Webhooks [/webhooks]
-O eGestor conta com uma estrutura de webhooks. Através dela, será disparada uma requisição para determinada URL do seu sistema sempre que algum registro for criado, editado ou excluído. Importante: Enviaremos um parâmetro chave na requisição, chamado de "securityToken". Esta é uma chave única e diferente de seu token. Você pode usá-la para autenticar o webhook recebido e confirmar a autenticidade da requisição.
+O eGestor conta com uma estrutura de webhooks. Através dela, será disparada uma requisição para determinada URL do seu sistema sempre que algum registro for criado, editado ou excluído. 
+
+Importante: Enviaremos um parâmetro chave na requisição, chamado de "securityToken". Esta é uma chave única e diferente de seu token. Você deve usá-la para autenticar o webhook recebido, confirmando a autenticidade da requisição.
+
+Para testes dos webhooks, sugerimos a utilização do site https://webhook.site/
+
 Os módulos disponíveis são os seguintes:
 * Produtos
 * Contatos
 * Vendas
 * Usuários
 
-Dessa forma, sempre que um produto, cliente, venda ou usuários for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato:
-        
-        {
-
-            "action": "updated",
-            "codigo": "1",
-            "date": "2019-01-11 14:55:19",
-            "module": "contatos",
-            "securityToken": "01a161daaaf265968c1f36a19ef8f4"
-    }
+Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato (form-data):
+    
+    {
+    
+        "action"        => "updated",
+        "codigo"        => "1",
+        "date"          => "2019-01-11 14:55:19",
+        "module"        => "contatos",
+        "securityToken" => "01a161daaaf265968c1f36a19ef8f4"
+    
     
 
 + action: Ação realizada. Valores possíveis: "created", "updated" ou "deleted".
@@ -8144,7 +8397,9 @@ Dessa forma, sempre que um produto, cliente, venda ou usuários for criado, edit
 + module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos", "vendas" ou "usuarios"
 + securityToken: Sua chave de segurança
 
-No momento do cadastro, deve-se definir quais os módulos serão ativos, através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
+*ATENÇÃO: O timeout para resposta ao POST do webhook é de 3 segundos. Serão feitas 5 tentativas em caso de falha. Sugerimos a utilização de queues para processamento dos webhooks enviados pelo eGestor, a fim de evitar timeouts.*
+
+No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
 
 ### Detalhar [GET /webhooks]
 
