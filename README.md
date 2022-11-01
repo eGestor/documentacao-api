@@ -3773,6 +3773,52 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
               "errFields": null
             }
 
+### Editar (Update) [PUT /vendas/{codigo}]
+Só é possível alterar a situação (Venda/Orçamento) e a situação da O.S.
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
+  + Parameters
+      + codigo (required, number, `1`) ... Código da venda
+      
+  + Body 
+            
+            {
+                "situacao": 50,
+                "situacaoOS": "Entregue"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "codVendedor": 12,
+              "dtVenda": "2022-10-31",
+              "valorTotal": 74.73
+            }
+
++ Response 400 (application/json)
+ Quando o registro não foi encontrado.
+
+    + Body
+
+            {
+              "errCode": 400,
+              "errMsg": "Impossível salvar a venda.",
+              "errObs": null,
+              "errFields": null
+            }
+
 ### Detalhar XML NFE (Read) [GET /vendas/{codigo}/nfe]
 
 + Parameters
