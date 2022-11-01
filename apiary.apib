@@ -3457,7 +3457,7 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
 # Vendas / Ordens de serviço / OS [/vendas]
 
-As vendas não podem ser editadas pela API. Caso seja necessário, apague-a e crie uma nova.
+As vendas não podem ser editadas pela API, apenas alterada sua situação. Caso seja necessário, apague-a e crie uma nova.
 
 No eGestor, vendas podem ser de produtos e serviços. Vendas de serviços são consideradas OS. 
 
@@ -3771,6 +3771,52 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
             {
               "errCode": 410,
               "errMsg": "Registro com código 1 não existe.",
+              "errObs": null,
+              "errFields": null
+            }
+
+### Editar (Update) [PUT /vendas/{codigo}]
+Só é possível alterar a situação (Venda/Orçamento) e a situação da O.S.
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
+  + Parameters
+      + codigo (required, number, `1`) ... Código da venda
+      
+  + Body 
+            
+            {
+                "situacao": 50,
+                "situacaoOS": "Entregue"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": 1,
+              "codVendedor": 12,
+              "dtVenda": "2022-10-31",
+              "valorTotal": 74.73
+            }
+
++ Response 400 (application/json)
+ Quando o registro não foi encontrado.
+
+    + Body
+
+            {
+              "errCode": 400,
+              "errMsg": "Impossível salvar a venda.",
               "errObs": null,
               "errFields": null
             }
