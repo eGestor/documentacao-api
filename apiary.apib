@@ -287,15 +287,15 @@ Os contatos podem ser clientes, fornecedores e transportadores.
     + suframa (string, optional)
     + obs (string, optional)
     + tags (array, optional)
-    + cepEntrega (number, optional)
-    + cpfCnpjEntrega (number, optional)
-    + logradouroEntrega (string, optional)
-    + numeroEntrega (number, optional)
-    + complementoEntrega (string, optional)
-    + bairroEntrega (string, optional)
-    + codIBGEEntrega (number, optional) - Informe um código IBGE válido
-    + ufEntrega (string, optional) - O UF deverá ser referente ao código do IBGE informado
-    + pontoRefEntrega (string, optional)
+    + cepEntrega (number, optional) - CEP do endereço de entrega, caso seja diferente do informado no cliente
+    + cpfCnpjEntrega (number, optional) - CPF/CNPJ do endereço de entrega, caso seja diferente do informado no cliente
+    + logradouroEntrega (string, optional) - Logradouro do endereço de entrega, caso seja diferente do informado no cliente
+    + numeroEntrega (number, optional) - Número do endereço de entrega, caso seja diferente do informado no cliente
+    + complementoEntrega (string, optional) - Complemento do endereço de entrega, caso seja diferente do informado no cliente
+    + bairroEntrega (string, optional) - Bairro do endereço de entrega, caso seja diferente do informado no cliente
+    + codIBGEEntrega (number, optional) - Código da cidade do endereço de entrega, caso seja diferente do informado no cliente
+    + ufEntrega (string, optional) - UF do endereço de entrega, caso seja diferente do informado no cliente. O UF deverá ser referente ao código do IBGE informado
+    + pontoRefEntrega (string, optional) - Ponto de referência do endereço de entrega, caso seja diferente do informado no cliente 
 
 + Request (application/json)
 
@@ -331,15 +331,15 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "inscricaoMunicipal": "",
               "inscricaoEstadual": "",
               "inscricaoEstadualST": "",
-              "cpfCnpjEntrega": "",
-              "logradouroEntrega": "",
-              "numeroEntrega": "",
-              "complementoEntrega": "",
-              "bairroEntrega": "",
-              "codIBGEEntrega": "",
-              "ufEntrega": "",
-              "cepEntrega": "",
-              "pontoRefEntrega": ""
+              "cpfCnpjEntrega": "25214589514",
+              "logradouroEntrega": "Rua das palmeiras",
+              "numeroEntrega": "123",
+              "complementoEntrega": "AP 300",
+              "bairroEntrega": "Centro",
+              "codIBGEEntrega": "4304606",
+              "ufEntrega": "RS",
+              "cepEntrega": "92120555",
+              "pontoRefEntrega": "Prédio branco"
               "suframa": "",
               "obs": "",
               "tags": ["cliente bom", "especial"]
