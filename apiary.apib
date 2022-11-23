@@ -3489,7 +3489,9 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
     + fiscal (optional, string) - Permite filtrar por vendas com ou sem nota fiscal. Valores possíveis:
         * comNFe
         * semNFe
-    + listarCanceladas (optional, boolean) - Define se as vendas canceladas também serão listadas
+    + listarCanceladas (optional, integer) - Define se as vendas canceladas também serão listadas.
+        * 1 - Listar vendas normais e vendas canceladas
+        * 2 - Listar somente vendas canceladas
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
         * codigo, codContato, nomeContato, codVendedor, dtVenda, dtEntrega, dtCad, valorTotal, valorFrete, valorFinanc, valorEntrada, numParcelas, codsNFe, clienteFinal, situacao, situacaoOS, tags
         * ex: &fields=nomeContato,valorTotal
@@ -3648,10 +3650,12 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
                 "valorTotal": 3453.45
             }
 
-### Detalhar (Read) [GET /vendas/{codigo}]
+### Detalhar (Read) [GET /vendas/{codigo}{?listarCanceladas}]
 
 + Parameters
     + codigo (required, number, `1`) ... Código da venda
+    + listarCanceladas (optional, boolean) - Caso definido como true, detalha uma venda mesmo que ela esteja cancelada
+    
 
 + Request (application/json)
 
@@ -3872,6 +3876,9 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
 ### Remover (Delete) [DELETE  /vendas/{codigo}]
 
++ Parameters
+    + codigo (required, number, `1`) ... Código da venda
+
 + Request (application/json)
 
     + Headers
@@ -3896,6 +3903,9 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
 
 ### Detalhar contato da venda [GET  /vendas/{codigo}/contato]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código da venda
 
 + Request (application/json)
 
