@@ -285,15 +285,15 @@ Os contatos podem ser clientes, fornecedores e transportadores.
     + suframa (string, optional)
     + obs (string, optional)
     + tags (array, optional)
-    + cepEntrega (number, optional)
-    + cpfCnpjEntrega (number, optional)
-    + logradouroEntrega (string, optional)
-    + numeroEntrega (number, optional)
-    + complementoEntrega (string, optional)
-    + bairroEntrega (string, optional)
-    + codIBGEEntrega (number, optional) - Informe um código IBGE válido
-    + ufEntrega (string, optional) - O UF deverá ser referente ao código do IBGE informado
-    + pontoRefEntrega (string, optional)
+    + cepEntrega (number, optional) - CEP do endereço de entrega, caso seja diferente do informado no cliente
+    + cpfCnpjEntrega (number, optional) - CPF/CNPJ do endereço de entrega, caso seja diferente do informado no cliente
+    + logradouroEntrega (string, optional) - Logradouro do endereço de entrega, caso seja diferente do informado no cliente
+    + numeroEntrega (number, optional) - Número do endereço de entrega, caso seja diferente do informado no cliente
+    + complementoEntrega (string, optional) - Complemento do endereço de entrega, caso seja diferente do informado no cliente
+    + bairroEntrega (string, optional) - Bairro do endereço de entrega, caso seja diferente do informado no cliente
+    + codIBGEEntrega (number, optional) - Código da cidade do endereço de entrega, caso seja diferente do informado no cliente
+    + ufEntrega (string, optional) - UF do endereço de entrega, caso seja diferente do informado no cliente. O UF deverá ser referente ao código do IBGE informado
+    + pontoRefEntrega (string, optional) - Ponto de referência do endereço de entrega, caso seja diferente do informado no cliente 
 
 + Request (application/json)
 
@@ -329,15 +329,15 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "inscricaoMunicipal": "",
               "inscricaoEstadual": "",
               "inscricaoEstadualST": "",
-              "cpfCnpjEntrega": "",
-              "logradouroEntrega": "",
-              "numeroEntrega": "",
-              "complementoEntrega": "",
-              "bairroEntrega": "",
-              "codIBGEEntrega": "",
-              "ufEntrega": "",
-              "cepEntrega": "",
-              "pontoRefEntrega": ""
+              "cpfCnpjEntrega": "25214589514",
+              "logradouroEntrega": "Rua das palmeiras",
+              "numeroEntrega": "123",
+              "complementoEntrega": "AP 300",
+              "bairroEntrega": "Centro",
+              "codIBGEEntrega": "4304606",
+              "ufEntrega": "RS",
+              "cepEntrega": "92120555",
+              "pontoRefEntrega": "Prédio branco"
               "suframa": "",
               "obs": "",
               "tags": ["cliente bom", "especial"]
@@ -3455,7 +3455,7 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
 # Vendas / Ordens de serviço / OS [/vendas]
 
-As vendas não podem ser editadas pela API. Caso seja necessário, apague-a e crie uma nova.
+As vendas não podem ser editadas pela API, apenas alterada sua situação. Caso seja necessário, apague-a e crie uma nova.
 
 No eGestor, vendas podem ser de produtos e serviços. Vendas de serviços são consideradas OS. 
 
@@ -3487,7 +3487,9 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
     + fiscal (optional, string) - Permite filtrar por vendas com ou sem nota fiscal. Valores possíveis:
         * comNFe
         * semNFe
-    + listarCanceladas (optional, boolean) - Define se as vendas canceladas também serão listadas
+    + listarCanceladas (optional, integer) - Define se as vendas canceladas também serão listadas.
+        * 1 - Listar vendas normais e vendas canceladas
+        * 2 - Listar somente vendas canceladas
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
         * codigo, codContato, nomeContato, codVendedor, dtVenda, dtEntrega, dtCad, valorTotal, valorFrete, valorFinanc, valorEntrada, numParcelas, codsNFe, clienteFinal, situacao, situacaoOS, tags
         * ex: &fields=nomeContato,valorTotal
@@ -3646,10 +3648,12 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
                 "valorTotal": 3453.45
             }
 
-### Detalhar (Read) [GET /vendas/{codigo}]
+### Detalhar (Read) [GET /vendas/{codigo}{?listarCanceladas}]
 
 + Parameters
     + codigo (required, number, `1`) ... Código da venda
+    + listarCanceladas (optional, boolean) - Caso definido como true, detalha uma venda mesmo que ela esteja cancelada
+    
 
 + Request (application/json)
 
@@ -3870,6 +3874,9 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
 ### Remover (Delete) [DELETE  /vendas/{codigo}]
 
++ Parameters
+    + codigo (required, number, `1`) ... Código da venda
+
 + Request (application/json)
 
     + Headers
@@ -3894,6 +3901,9 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
 
 ### Detalhar contato da venda [GET  /vendas/{codigo}/contato]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código da venda
 
 + Request (application/json)
 
