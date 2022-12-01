@@ -3043,6 +3043,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
     + filtro (optional, string) - Busca a string informada nos campos: código da compra, palavras-chave e nome do fornecedor.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
         * dtCompra(default) - Data da compra.
+        * dtEntrega - Data de entrega.
         * dtCad - Data de cadastro.
     + dtIni (optional, date) - Data inicial, no formato yyyy-mm-dd
     + dtFim (optional, date) - Data final, no formato yyyy-mm-dd
@@ -3055,7 +3056,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
         * codigo, codContato, nomeContato, numNota, dtCompra, valorTotal, obs, tags, situacao, ativo
         * ex: &fields=nomeContato,valorTotal
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
-        * codigo, codContato, nomeContato, numNota, dtCompra, valorTotal, obs, tags, situacao, ativo
+        * codigo, codContato, nomeContato, numNota, dtCompra, dtEntrega, valorTotal, obs, tags, situacao, ativo
         * ex: &orderBy=nomeContato,desc
         * ex: &orderBy=numNota,asc
     
@@ -3084,6 +3085,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
                     "nomeContato": "Fornecedor padrão",
                     "numNota": "775",
                     "dtCompra": "2019-05-03",
+                    "dtEntrega": "2019-05-03",
                     "valorTotal": 494.76,
                     "obs": "",
                     "tags": [],
@@ -3110,6 +3112,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
     + codContato (number, required)
     + numNota (number, optional) - Número do documento fiscal
     + dtCompra (string, required) - Data da realização da compra, formato YYYY-MM-DD
+    + dtEntrega (string, optional) - Data da entrega, formato YYYY-MM-DD
     + extFrete (number, optional) - Valor do frete externo
     + extST (number, optional) - Valor da substituição tributária
     + extDesp (number, optional) - Valor de outras despesas
@@ -3133,6 +3136,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
                 "codContato": 20,
                 "numNota": "775",
                 "dtCompra": "2019-05-03",
+                "dtEntrega": "2019-05-03",
                 "extFrete": 0,
                 "extST": 0,
                 "extDesp": 0,
@@ -3233,6 +3237,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
                 "codCompraXML": 0,
                 "numNota": "775",
                 "dtCompra": "2019-05-03",
+                "dtEntrega": "2019-05-03",
                 "dtCad": "2019-05-03 17:41:31",
                 "valorTotal": 504789.76,
                 "extFrete": 0,
@@ -6095,6 +6100,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
         + Members
             + dtCompra - Data da compra
             + dtCad - Data de cadastro
+            + dtEntrega - Data de entrega
     + de (string, required) - Data inicial, formato YYYY-MM-DD
     + ate (string, required) - Data final, formato YYYY-MM-DD
     + contato (number, optional) - Código do fornecedor
@@ -6165,6 +6171,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "codCompra": "1",
                     "dtCad": "2019-08-02 17:11:14",
                     "dtCompra": "2019-08-02",
+                    "dtCompra": "2019-08-02",
                     "fornecedor": "Zipline Tecnologia Ltda",
                     "cpfcnpj": "25098282000132",
                     "endereco": "Rua Doutor Alberto Pasqualini, 111, Centro, Santa Maria - RS",
@@ -6195,6 +6202,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
         + Members
           + dtCompra - Data da compra
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + contato (number, optional) - Código do fornecedor
@@ -6209,6 +6217,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + mostrarCpfCnpj (boolean, optional) - Mostrar CPF/CNPJ do fornecedor
       + mostrarDtCad (boolean, optional) - Mostrar data de cadastro
       + mostrarDtCompra (boolean, optional) - Mostrar data da compra
+      + mostrarDtEntrega (boolean, optional) - Mostrar data de entrega
       + mostrarDtNf (boolean, optional) - Mostrar data da Nota Fiscal
       + mostrarCustoBruto (boolean, optional) - Mostrar custo bruto do produto
       + mostrarCustoLiquido (boolean, optional) - Mostrar custo calculado do produto
@@ -6251,6 +6260,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 "mostrarCpfCnpj": true,
                 "mostrarDtCad": true,
                 "mostrarDtCompra": true,
+                "mostrarDtEntrega": true,
                 "mostrarDtNf": true,
                 "mostrarCustoBruto": true,
                 "mostrarCustoLiquido": true,
@@ -6277,6 +6287,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "compra": "1",
                     "dtCompra": "2019-04-04",
                     "dtCad": "2019-04-04",
+                    "dtEntrega": "2019-04-04",
                     "numNota": "",
                     "tags": "",
                     "obs": "",
