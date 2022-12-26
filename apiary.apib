@@ -4559,12 +4559,16 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + disponivel (number, optional) - Código da conta disponível
       + formaPgto (enum[number], optional) - Código da forma de pagamento
         + Members
-          + `-1` - Forma de pagamento não definida
-          + 0 - Não filtrar por forma de pagamento
+          + `-1` - Não filtrar por forma de pagamento
+          + 0 - Forma de pagamento não definida
           + 1,2,3, etc - Código da forma de pagamento
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + comContato (boolean, optional) - Mostrar nome do contato
       + semSaldoAnterior (boolean, optional) - Ocultar saldo anterior
+      + mostrarCategoria (boolean, optional) - Mostrar categoria
+      + mostrarContaCaixa (boolean, optional) - Mostrar conta caixa
+      + mostrarFormaPgto (boolean, optional) - Mostrar forma de pagamento
+      + mostrarNumDoc (boolean, optional) - Mostrar número do documento
       + ordem (enum[number], optional) - Ordenação
         + Members
           + 1 - Data de pagamento
@@ -4647,6 +4651,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + semPlano (boolean, optional) - Lançamentos sem Plano de Contas
       + comTransf (boolean, optional) - Transferências entre contas
       + mostrarRecorrencia (boolean, optional) - Incluir recorrências
+      + detalharPlanoContas (boolean, optional) - Detalhar plano de contas
       
   + Request (application/json)
 
