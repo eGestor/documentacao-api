@@ -19,6 +19,7 @@ Recursos disponíveis para acesso via API:
 * [**Pagamentos**](#reference/recursos/pagamentos)
 * [**Compras**](#reference/recursos/compras)
 * [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas)
+* [**Devolução de vendas**](#reference/recursos/devolucoes)
 * [**Boletos**](#reference/recursos/boletos)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
@@ -3041,6 +3042,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
     + filtro (optional, string) - Busca a string informada nos campos: código da compra, palavras-chave e nome do fornecedor.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
         * dtCompra(default) - Data da compra.
+        * dtEntrega - Data de entrega.
         * dtCad - Data de cadastro.
     + dtIni (optional, date) - Data inicial, no formato yyyy-mm-dd
     + dtFim (optional, date) - Data final, no formato yyyy-mm-dd
@@ -3053,7 +3055,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
         * codigo, codContato, nomeContato, numNota, dtCompra, valorTotal, obs, tags, situacao, ativo
         * ex: &fields=nomeContato,valorTotal
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
-        * codigo, codContato, nomeContato, numNota, dtCompra, valorTotal, obs, tags, situacao, ativo
+        * codigo, codContato, nomeContato, numNota, dtCompra, dtEntrega, valorTotal, obs, tags, situacao, ativo
         * ex: &orderBy=nomeContato,desc
         * ex: &orderBy=numNota,asc
     
@@ -3082,6 +3084,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
                     "nomeContato": "Fornecedor padrão",
                     "numNota": "775",
                     "dtCompra": "2019-05-03",
+                    "dtEntrega": "2019-05-03",
                     "valorTotal": 494.76,
                     "obs": "",
                     "tags": [],
@@ -3108,6 +3111,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
     + codContato (number, required)
     + numNota (number, optional) - Número do documento fiscal
     + dtCompra (string, required) - Data da realização da compra, formato YYYY-MM-DD
+    + dtEntrega (string, optional) - Data da entrega, formato YYYY-MM-DD
     + extFrete (number, optional) - Valor do frete externo
     + extST (number, optional) - Valor da substituição tributária
     + extDesp (number, optional) - Valor de outras despesas
@@ -3131,6 +3135,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
                 "codContato": 20,
                 "numNota": "775",
                 "dtCompra": "2019-05-03",
+                "dtEntrega": "2019-05-03",
                 "extFrete": 0,
                 "extST": 0,
                 "extDesp": 0,
@@ -3231,6 +3236,7 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
                 "codCompraXML": 0,
                 "numNota": "775",
                 "dtCompra": "2019-05-03",
+                "dtEntrega": "2019-05-03",
                 "dtCad": "2019-05-03 17:41:31",
                 "valorTotal": 504789.76,
                 "extFrete": 0,
@@ -4045,16 +4051,16 @@ Retorna os dados vindos da integração com o mercado livre, baseado no código 
 
 ### Gerar NFCe [POST  /vendas/{codigo}/gerarNfce]
 Permite gerar uma NFCe a partir de determinada venda. Informe o campo `cpfcnpj` quando o contato da venda não possuir um CPF ou CNPJ definido no cadastro.
-+ Parameters
-    + codigo (required, number, `1`) ... Código da venda
-    + indPres (required, number) ... Indicador de presença do consumidor
++ Attributes (object)
+    + codigo (required, number) ... Código da venda
+    + indPres (required, enum) ... Indicador de presença do consumidor
         + 0 = Não se aplica
         + 1 = Operação presencial
-        + 2 = Operação não presencial, pela internet
-        + 3 = Operação não presencial, teleatendimento
-        + 4 = NFC-e em operação com entrega a domicílio
-        + 5 = Operação presencial, fora do estabelecimento
-        + 9 = Operação não presencial, outros
+        + 2 = Operação não presencial pela internet
+        + 3 = Operação não presencial teleatendimento
+        + 4 = NFCe em operação com entrega a domicílio
+        + 5 = Operação presencial fora do estabelecimento
+        + 9 = Operação não presencial outros
 
         
 
@@ -4121,6 +4127,190 @@ Acesse este recurso (endpoint) para saber qual a descrição (label) de cada cam
             {
               "xCampo1": "Observa\u00e7\u00f5es gerais",
               "xCampo2": "Laudo técnico"
+            }
+
+# Devolução de vendas [/devolucoes]
+
+Permite realizar a devolução de itens que foram vendidos
+
+
+### Listar (List) [GET /devolucoes{?fields,orderBy}]
+
++ Parameters
+    + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula.
+      * ex: &fields=codigo,obs
+    + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
+        * codigo, codVenda, codContato, dtCad
+        * ex: &orderBy=dtCad,desc
+        * ex: &orderBy=codVenda,asc
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+          {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 4,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 50,
+              "data": [
+                {
+                    "codigo": 1,
+                    "tags": [
+                        "tag1",
+                        "tag2"
+                    ],
+                    "obs": "Motivo da devolução",
+                    "dtCad": "2022-05-26 10:31:20",
+                    "codContato": "165"
+                }
+              ]
+          }
+
++ Response 401 (application/json)
+
+          {
+              "errCode": 401,
+              "errMsg": "Não foi possível acessar o sistema. Verifique seu \"access_token\".",
+              "errObs": "access_denied",
+              "errFields": null,
+              "errUrl": "/v1/devolucoes"
+          }
+
+### Novo (Create) [POST /devolucoes]
+Ao realizar a devolução, é possível editar o recebimento da venda envolvida, ou gerar um pagamento para o cliente. Caso não sejam informados finPagar nem finReceber, não haverá modificações financeiras, apenas no estoque do produto.
+
++ Attributes (object)
+
+    + codVenda (number, required) - Código do venda que será devolvida
+    + tags (array, optional) - Palavras-chave da devolução
+    + obs (string, optional) - Motivo da devolução
+    + produtos (array, required) - Array com as informações dos produtos devolvidos
+    + finPagar (array, optional) - Array com as informações para gerar o pagamento para o cliente. Caso seja informado, não deve ser enviado o array finReceber.
+    + finReceber (array, optional) - Array com as informações do recebimento da venda para editar. Caso seja informado, não deve ser enviado o array finPagar.
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "codVenda": 22,
+                "tags": ["tag1", "tag2"],
+                "obs": "Motivo da devolução",
+                "produtos": [
+                    {
+                        "codigo": 8,
+                        "valorDevolvido": 2.50,
+                        "quantDevolvida": 1
+                    },
+                    {
+                        "codigo": 7,
+                        "valorDevolvido": 2.50,
+                        "quantDevolvida": 1
+                    }
+                ],
+                "finReceber": [
+                    {
+                        "codigo": 10,
+                        "valor": 116.28
+                    }
+                ],
+                "finPagar": [
+                    {
+                        "valor": 18.48,
+                        "data": "2022-12-09",
+                        "codFormaPgto": 1,
+                        "codDisponivel": 1,
+                        "codPlanoConta": 27,
+                        "situacao": 20
+                    }
+                ]
+            }
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codDevol": 46,
+                "deducoes": []
+            }
+
+### Detalhar (Read) [GET /devolucoes/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código do devoluco
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+  Todos os dados do devoluco
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+                "codigo": 1,
+                "codVenda": 1,
+                "tags": [
+                    "tag1",
+                    "tag2"
+                ],
+                "obs": "Produto com defeito",
+                "dtCad": "2022-12-09 17:26:08",
+                "codContato": 1,
+                "dtVenda": "2022-12-09",
+                "situOS": "",
+                "nomeContato": "Contato Teste",
+                "produtos": [
+                    {
+                        "codigo": 1,
+                        "quantDevolvida": 3,
+                        "valorDevolvido": 14.97,
+                        "descricao": "Nome do produto",
+                        "codigoProprio": "789123445566"
+                    }
+                ]
+            }
+
++ Response 404 (application/json)
+  Quando registro não for encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum registro com código 1 econtrado",
+              "errObs": null,
+              "errFields": null
             }
 
 # Boletos [/boletos]
@@ -6093,6 +6283,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
         + Members
             + dtCompra - Data da compra
             + dtCad - Data de cadastro
+            + dtEntrega - Data de entrega
     + de (string, required) - Data inicial, formato YYYY-MM-DD
     + ate (string, required) - Data final, formato YYYY-MM-DD
     + contato (number, optional) - Código do fornecedor
@@ -6163,6 +6354,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "codCompra": "1",
                     "dtCad": "2019-08-02 17:11:14",
                     "dtCompra": "2019-08-02",
+                    "dtCompra": "2019-08-02",
                     "fornecedor": "Zipline Tecnologia Ltda",
                     "cpfcnpj": "25098282000132",
                     "endereco": "Rua Doutor Alberto Pasqualini, 111, Centro, Santa Maria - RS",
@@ -6193,6 +6385,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
         + Members
           + dtCompra - Data da compra
           + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + contato (number, optional) - Código do fornecedor
@@ -6207,6 +6400,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + mostrarCpfCnpj (boolean, optional) - Mostrar CPF/CNPJ do fornecedor
       + mostrarDtCad (boolean, optional) - Mostrar data de cadastro
       + mostrarDtCompra (boolean, optional) - Mostrar data da compra
+      + mostrarDtEntrega (boolean, optional) - Mostrar data de entrega
       + mostrarDtNf (boolean, optional) - Mostrar data da Nota Fiscal
       + mostrarCustoBruto (boolean, optional) - Mostrar custo bruto do produto
       + mostrarCustoLiquido (boolean, optional) - Mostrar custo calculado do produto
@@ -6249,6 +6443,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 "mostrarCpfCnpj": true,
                 "mostrarDtCad": true,
                 "mostrarDtCompra": true,
+                "mostrarDtEntrega": true,
                 "mostrarDtNf": true,
                 "mostrarCustoBruto": true,
                 "mostrarCustoLiquido": true,
@@ -6275,6 +6470,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "compra": "1",
                     "dtCompra": "2019-04-04",
                     "dtCad": "2019-04-04",
+                    "dtEntrega": "2019-04-04",
                     "numNota": "",
                     "tags": "",
                     "obs": "",
