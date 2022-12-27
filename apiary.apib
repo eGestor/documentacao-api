@@ -38,7 +38,7 @@ O eGestor não possui sandbox (ambiente de homologação). Cada conta do eGestor
 
 Para testar a API, crie uma conta gratuitamente, acesse o sistema e clique no menu configurações. Na aba API você gera o personal_token.
 
-URL homologação/produção (access_token): https://api.egestor.com.br/api/oauth/access_token
+URL homologação/produção (access_token): https://v4.egestor.com.br/api/oauth/access_token
 
 URL homologação/produção (ex: contatos): https://api.egestor.com.br/api/v1/contatos
 
@@ -4554,6 +4554,10 @@ Atualiza os recebimentos associados ao Boleto eGestor.
   Este relatório mostra a movimentação financeira já confirmada (já paga e já recebida) com o saldo.
 
   + Attributes (object)
+      + tpData (enum[string], optional) - Tipo de data a filtrar
+        + Members
+          + dtPgto - Data de pagamento (default)
+          + dtCred - Data de crédito
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + disponivel (number, optional) - Código da conta disponível
@@ -4571,11 +4575,12 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + mostrarNumDoc (boolean, optional) - Mostrar número do documento
       + ordem (enum[number], optional) - Ordenação
         + Members
-          + 1 - Data de pagamento
+          + 1 - Data de pagamento (default)
           + 2 - Código interno
           + 3 - Descrição
           + 4 - Valor
           + 5 - Contato
+          + 6 - Data de crédito
       
   + Request (application/json)
 
@@ -4641,6 +4646,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + dtCad - Data de cadastro
           + dtVenc - Data de vencimento
           + dtComp - Data de competência
+          + dtCred - Data de venc/pgto conforme situação
       + mesIni (string, required) - Mês inicial
       + anoIni (string, required) - Ano inicial
       + mesFim (string, required) - Mês final
