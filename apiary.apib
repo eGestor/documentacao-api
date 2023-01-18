@@ -4330,7 +4330,7 @@ Boletos não podem ser **editados** ou **excluídos** via API.
 | `10` | Em aberto. |
 | `50` | Recebido. |
 
-### Listar (List) [GET /boletos{?filtro,dtTipo,dtIni,dtFim,codigosFin,situacaoBoleto,situacaoRemessa,situacaoFin,formaPgto,fields,orderBy}]
+### Listar (List) [GET /boletos{?filtro,dtTipo,dtIni,dtFim,codigosFin,situacaoBoleto,situacaoRemessa,situacaoFin,formaPgto,mostrarInativos,fields,orderBy}]
 + Parameters
     + filtro (optional, string) - Busca a string informada nos campos: código do boleto, nome do cliente ou descrição do financeiro.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
@@ -4358,6 +4358,7 @@ Boletos não podem ser **editados** ou **excluídos** via API.
         * 80 - Financeiros em diferentes situações (quando boleto composto por mais de um financeiro)
         * 90 - Financeiro cancelado
     + formaPgto (optional, integer) - Filtra pela forma de pagamento do financeiro vinculado ao boleto.
+    + mostrarInativos (optional, boolean) - Define se os boletos cancelados também serão listados.
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula.
         * ex: &fields=contatoNome,dtEmissao
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
@@ -4447,16 +4448,16 @@ Boletos não podem ser **editados** ou **excluídos** via API.
             }
 
 
-### Detalhar (Read) [GET /boletos/{codigo}]
+### Detalhar (Read) [GET /boletos/{codigo}{?mostrarInativos}]
+  + Parameters
+      + codigo (required, number, `1`) ... Código do boleto
+      + mostrarInativos (optional, boolean) - Caso definido como true, detalha um boleto mesmo que ele esteja cancelado
 
 + Request (application/json)
 
   + Headers
 
             Authorization: Bearer [access_token]
-
-  + Parameters
-      + codigo (required, number, `1`) ... Código do boleto
 
 + Response 200 (application/json)
 Quando o boleto está em aberto (ainda não pago).
