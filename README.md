@@ -36,7 +36,7 @@ O eGestor não possui sandbox (ambiente de homologação). Cada conta do eGestor
 
 Para testar a API, crie uma conta gratuitamente, acesse o sistema e clique no menu configurações. Na aba API você gera o personal_token.
 
-URL homologação/produção (access_token): https://api.egestor.com.br/api/oauth/access_token
+URL homologação/produção (access_token): https://v4.egestor.com.br/api/oauth/access_token
 
 URL homologação/produção (ex: contatos): https://api.egestor.com.br/api/v1/contatos
 
@@ -90,6 +90,12 @@ Nossa API utiliza [OAuth2](https://oauth.net/2/) como forma de autenticação/au
 
 
 ## Solicitando tokens de acesso [/oauth/access_token]
+
+### Obtendo o personal_token
+
+Para testar a API do eGestor (sandbox), sugerimos a criação de uma conta de testes.
+
+Para obter o personal_token, siga as instruções do video a seguir: https://www.youtube.com/watch?v=2y648YPA9Us&authuser=1
 
 ### Utilizando personal_token [POST]
 
@@ -4322,7 +4328,7 @@ Boletos não podem ser **editados** ou **excluídos** via API.
 | `10` | Em aberto. |
 | `50` | Recebido. |
 
-### Listar (List) [GET /boletos{?filtro,dtTipo,dtIni,dtFim,codigosFin,situacaoBoleto,situacaoRemessa,situacaoFin,formaPgto,fields,orderBy}]
+### Listar (List) [GET /boletos{?filtro,dtTipo,dtIni,dtFim,codigosFin,situacaoBoleto,situacaoRemessa,situacaoFin,formaPgto,mostrarInativos,fields,orderBy}]
 + Parameters
     + filtro (optional, string) - Busca a string informada nos campos: código do boleto, nome do cliente ou descrição do financeiro.
     + dtTipo (optional, string) - Define a data que será utilizada pelos filtros dtIni e dtFim. Valores possíveis: 
@@ -4350,6 +4356,7 @@ Boletos não podem ser **editados** ou **excluídos** via API.
         * 80 - Financeiros em diferentes situações (quando boleto composto por mais de um financeiro)
         * 90 - Financeiro cancelado
     + formaPgto (optional, integer) - Filtra pela forma de pagamento do financeiro vinculado ao boleto.
+    + mostrarInativos (optional, boolean) - Define se os boletos cancelados também serão listados.
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula.
         * ex: &fields=contatoNome,dtEmissao
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
@@ -4439,16 +4446,16 @@ Boletos não podem ser **editados** ou **excluídos** via API.
             }
 
 
-### Detalhar (Read) [GET /boletos/{codigo}]
+### Detalhar (Read) [GET /boletos/{codigo}{?mostrarInativos}]
+  + Parameters
+      + codigo (required, number, `1`) ... Código do boleto
+      + mostrarInativos (optional, boolean) - Caso definido como true, detalha um boleto mesmo que ele esteja cancelado
 
 + Request (application/json)
 
   + Headers
 
             Authorization: Bearer [access_token]
-
-  + Parameters
-      + codigo (required, number, `1`) ... Código do boleto
 
 + Response 200 (application/json)
 Quando o boleto está em aberto (ainda não pago).
@@ -4552,24 +4559,33 @@ Atualiza os recebimentos associados ao Boleto eGestor.
   Este relatório mostra a movimentação financeira já confirmada (já paga e já recebida) com o saldo.
 
   + Attributes (object)
+      + tpData (enum[string], optional) - Tipo de data a filtrar
+        + Members
+          + dtPgto - Data de pagamento (default)
+          + dtCred - Data de crédito
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
       + disponivel (number, optional) - Código da conta disponível
       + formaPgto (enum[number], optional) - Código da forma de pagamento
         + Members
-          + `-1` - Forma de pagamento não definida
-          + 0 - Não filtrar por forma de pagamento
+          + `-1` - Não filtrar por forma de pagamento
+          + 0 - Forma de pagamento não definida
           + 1,2,3, etc - Código da forma de pagamento
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + comContato (boolean, optional) - Mostrar nome do contato
       + semSaldoAnterior (boolean, optional) - Ocultar saldo anterior
+      + mostrarCategoria (boolean, optional) - Mostrar categoria
+      + mostrarContaCaixa (boolean, optional) - Mostrar conta caixa
+      + mostrarFormaPgto (boolean, optional) - Mostrar forma de pagamento
+      + mostrarNumDoc (boolean, optional) - Mostrar número do documento
       + ordem (enum[number], optional) - Ordenação
         + Members
-          + 1 - Data de pagamento
+          + 1 - Data de pagamento (default)
           + 2 - Código interno
           + 3 - Descrição
           + 4 - Valor
           + 5 - Contato
+          + 6 - Data de crédito
       
   + Request (application/json)
 
@@ -4635,6 +4651,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + dtCad - Data de cadastro
           + dtVenc - Data de vencimento
           + dtComp - Data de competência
+          + dtCred - Data de venc/pgto conforme situação
       + mesIni (string, required) - Mês inicial
       + anoIni (string, required) - Ano inicial
       + mesFim (string, required) - Mês final
@@ -4645,6 +4662,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + semPlano (boolean, optional) - Lançamentos sem Plano de Contas
       + comTransf (boolean, optional) - Transferências entre contas
       + mostrarRecorrencia (boolean, optional) - Incluir recorrências
+      + detalharPlanoContas (boolean, optional) - Detalhar plano de contas
       
   + Request (application/json)
 
