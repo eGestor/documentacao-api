@@ -36,7 +36,7 @@ O eGestor não possui sandbox (ambiente de homologação). Cada conta do eGestor
 
 Para testar a API, crie uma conta gratuitamente, acesse o sistema e clique no menu configurações. Na aba API você gera o personal_token.
 
-URL homologação/produção (access_token): https://v4.egestor.com.br/api/oauth/access_token
+URL homologação/produção (access_token): https://api.egestor.com.br/api/oauth/access_token
 
 URL homologação/produção (ex: contatos): https://api.egestor.com.br/api/v1/contatos
 
@@ -91,6 +91,9 @@ Nossa API utiliza [OAuth2](https://oauth.net/2/) como forma de autenticação/au
 
 ## Solicitando tokens de acesso [/oauth/access_token]
 
+Para testar a API, crie uma conta no eGestor e entre no sistema utilizando as credenciais informadas.  
+Para gerar o token da API (personal_token)
+
 ### Obtendo o personal_token
 
 Para testar a API do eGestor (sandbox), sugerimos a criação de uma conta de testes.
@@ -100,6 +103,8 @@ Para obter o personal_token, siga as instruções do video a seguir: https://www
 ### Utilizando personal_token [POST]
 
 O `personal_token` é do formato JWT e contém informações da empresa (subdomínio) e do usuário. Este é o token utilizado em sistemas de e-Commerce e sites integrados ao eGestor.
+
+A URL para obter o access_token é a seguinte: https://api.egestor.com.br/api/oauth/access_token
 
 #### Dados para envio no POST
 | Parâmetro | Descrição |
@@ -3347,8 +3352,12 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
               "errFields": null
             }
 
-### Efetivar compra [GET  /compras/{codigo}/efetivar]
+### Efetivar compra [GET  /compras/{codigo}/efetivar{atualizarPrecoVenda}]
 Efetiva uma compra que esteja na situação "Orçamento", atualizando-a para "Concluída".
+
+    + Parameters
+
+        + atualizarPrecoVenda (optional, boolean, true) Caso definido como true, o preço de venda dos produtos será atualizado de acordo com a margem definida e com o preço de compra.
 
 + Request (application/json)
 
@@ -6428,6 +6437,12 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + mostrarPrecoVenda (boolean, optional) - Mostrar preço atual do produto
       + mostrarTags (boolean, optional) - Mostrar palavras-chave
       + mostrarObserv (boolean, optional) - Mostrar observações compra
+      + mostrarvICMS (boolean, optional) - Mostrar ICMS
+      + mostrarvST (boolean, optional) - Mostrar substituição tributária
+      + mostrarvIPI (boolean, optional) - Mostrar IPI
+      + mostrarvFrete (boolean, optional) - Mostrar frete
+      + mostrarvSeg (boolean, optional) - Mostrar seguro
+      + mostrarvDesp (boolean, optional) - Mostrar despesas acessórias
       + ordem (enum[number], optional) - Ordenação
         + Members
           + 1 - Código compra
