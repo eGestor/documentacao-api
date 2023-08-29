@@ -3358,9 +3358,9 @@ As compras não podem ser editadas via API. Caso seja necessário, apague-a e cr
 ### Efetivar compra [GET  /compras/{codigo}/efetivar{?atualizarPrecoVenda}]
 Efetiva uma compra que esteja na situação "Orçamento", atualizando-a para "Concluída".
 
-    + Parameters
-
-        + atualizarPrecoVenda (optional, boolean, true) Caso definido como true, o preço de venda dos produtos será atualizado de acordo com a margem definida e com o preço de compra.
++ Parameters
+    + codigo (required, integer, `1`) - Código da compra que será efetivada
+    + atualizarPrecoVenda (optional, boolean) - Caso definido como true, o preço de venda dos produtos será atualizado de acordo com a margem definida e com o preço de compra.
 
 + Request (application/json)
 
