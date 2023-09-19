@@ -4585,6 +4585,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + 1,2,3, etc - Código da forma de pagamento
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + comContato (boolean, optional) - Mostrar nome do contato
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + semSaldoAnterior (boolean, optional) - Ocultar saldo anterior
       + mostrarCategoria (boolean, optional) - Mostrar categoria
       + mostrarContaCaixa (boolean, optional) - Mostrar conta caixa
@@ -4672,6 +4673,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + ate (string, optional) - Data final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + semPlano (boolean, optional) - Lançamentos sem Plano de Contas
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + comTransf (boolean, optional) - Transferências entre contas
       + mostrarRecorrencia (boolean, optional) - Incluir recorrências
       + detalharPlanoContas (boolean, optional) - Detalhar plano de contas
@@ -4795,6 +4797,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + disponivel (number, optional) - Código da conta disponível
       + semPlano (number, optional) - Mostrar lançamentos sem Plano de Contas
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + comTransf (number, optional) - Mostrar transferências entre contas
       + comSomaGrupos (number, optional) - Mostrar somatório dos grupos
       + ordem (enum[number], optional) - Ordenação
@@ -4948,14 +4951,15 @@ Atualiza os recebimentos associados ao Boleto eGestor.
             }
           
 
-### Fluxo futuro [POST /relatorios/fluxoFuturoDetalhado]
+### Fluxo futuro [POST /relatorios/fluxoFuturo]
   Este relatório mostra o fluxo de entrada e saída de dinheiro de acordo com as datas de vencimento dos lançamentos entre a data inicial e a data final. Todos os lançamentos já pagos e também os lançamentos com data de vencimento menor que a data inicial entram no "Saldo anterior".
 
   + Attributes (object)
       + de (string, required) - Data de vencimento inicial, formato YYYY-MM-DD
       + ate (string, required) - Data de vencimento final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
-      + disponivel (number, optional) - Código da conta disponível
+      + disponivel (string, optional) - Códigos das contas disponíveis, separados por vírgula
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + semSaldoAnterior (number, optional) - Ocultar saldos e pgtos antes do início
       + semAtrasadasAnterior (number, optional) - Ocultar lanç. atrasados antes da data inícial
 
@@ -4968,7 +4972,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             {
-                "disponivel": 0,
+                "disponivel": "1,3,5",
                 "de": "2019-01-01",
                 "ate": "2019-01-31",
                 "tags": "",
@@ -5003,14 +5007,15 @@ Atualiza os recebimentos associados ao Boleto eGestor.
             }
 
 
-### Fluxo futuro detalhado [POST /relatorios/fluxoFuturo]
+### Fluxo futuro detalhado [POST /relatorios/fluxoFuturoDetalhado]
   Este relatório mostra o fluxo de entrada e saída de dinheiro, detalhando cada lançamento cadastrado no financeiro, de acordo com as datas de vencimento dos lançamentos entre a data inicial e a data final. Todos os lançamentos já pagos e também os lançamentos com data de vencimento menor que a data inicial entram no "Saldo anterior".
 
   + Attributes (object)
       + de (string, required) - Data de vencimento inicial, formato YYYY-MM-DD
       + ate (string, required) - Data de vencimento final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
-      + disponivel (number, optional) - Código da conta disponível
+      + disponivel (string, optional) - Códigos das contas disponíveis, separados por vírgula
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + comContato (number, optional) - Mostrar nome do contato associado ao lançamento
       + semSaldoAnterior (number, optional) - Ocultar saldos e pgtos antes do início
       + semAtrasadasAnterior (number, optional) - Ocultar lanç. atrasados antes da data inícial
@@ -5024,7 +5029,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             {
-                "disponivel": 0,
+                "disponivel": "1,3,5",
                 "de": "2019-01-01",
                 "ate": "2019-01-31",
                 "tags": "",
@@ -5145,7 +5150,8 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + `-1` - Forma de pagamento não definida
           + 0 - Não filtrar por forma de pagamento
           + 1,2,3, etc - Código da forma de pagamento
-      + disponivel (number, optional) - Código da conta disponível
+      + disponivel (string, optional) - Códigos das contas disponíveis, separados por vírgula
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + ordem (enum[string], optional) - Campo para realizar o ordenação (ASC)
         + Members
             + `codigo`
@@ -5204,7 +5210,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 "busca": "",
                 "contato": "",
                 "contatoText": "",
-                "disponivel": 0,
+                "disponivel": "1,3,5",
                 "formaPgto": -1,
                 "planoContas": 0,
                 "tags": "",
@@ -5468,6 +5474,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + de (string, required) - Data inicial, formato YYYY-MM-DD
     + ate (string, required) - Data final, formato YYYY-MM-DD
     + disponivel (number, optional) - Código da conta disponível
+    + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
     + ordem (enum[number], optional) - Ordenação
         + Members
           + 1 - Data
@@ -5659,6 +5666,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + 'vendedor'
       + formaPgto (number, optional) - Filtrar por forma de pagamento
       + contaDestino (number, optional) - Filtrar por conta destino
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + buscaEnd (string, optional) - Buscar no endereço do cliente
       + buscar_xCampos (string, optional) - Buscar nas observações da venda
       + mostrarvendasConcluidas (boolean, optional) - Filtrar apenas vendas concluídas
@@ -8687,6 +8695,8 @@ Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluí
 
 No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
 
+Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será disparado com o cabeçalho **Content-Type: application/json**.
+
 ### Detalhar [GET /webhooks]
 
 + Request (application/json)
@@ -8710,7 +8720,8 @@ No momento do cadastro do webhook, é necessário definir quais os módulos ser�
               "produtos": true,
               "contatos": false,
               "vendas": true,
-              "usuarios": true
+              "usuarios": true,
+              "enviarComoJson": false
             }
 
 ### Cadastrar [POST /webhooks]
@@ -8728,7 +8739,8 @@ No momento do cadastro do webhook, é necessário definir quais os módulos ser�
               "produtos": true,
               "contatos": false,
               "vendas": true,
-              "usuarios": false
+              "usuarios": false,
+              "enviarComoJson": false
             }
 
 + Response 200 (application/json)
