@@ -331,7 +331,7 @@ Os contatos podem ser clientes, fornecedores e transportadores.
                 "exemplo@example.com.br"
               ],
               "fones": [],
-              "cep": ,
+              "cep": "",
               "logradouro": "Rua Exemplo lado ímpar",
               "numero": "999",
               "complemento": "",
@@ -352,7 +352,7 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "codIBGEEntrega": "4304606",
               "ufEntrega": "RS",
               "cepEntrega": "92120555",
-              "pontoRefEntrega": "Prédio branco"
+              "pontoRefEntrega": "Prédio branco",
               "suframa": "",
               "obs": "",
               "tags": ["cliente bom", "especial"]
@@ -861,15 +861,15 @@ Produtos são utilizados nas vendas e controle de estoque.
                                     "padrao": 1
                                 },
                                 "thumb": {
-                                    "link": "https://730590973010370e1726.cdn.com/010-2154900_tmb.png",
+                                    "link": "https://730590973010370e1726.cdn.com/010-2154900_tmb.png"
                                 }
                             },
                             {
                                 "foto": {
-                                    "link": "https://730590973010370e1726.cdn.com/011-2111100.png",
+                                    "link": "https://730590973010370e1726.cdn.com/011-2111100.png"
                                 },
                                 "thumb": {
-                                    "link": "https://730590973010370e1726.cdn.com/011-2111100_tmb.png",
+                                    "link": "https://730590973010370e1726.cdn.com/011-2111100_tmb.png"
                                 }
                             }
                         ]
@@ -908,7 +908,7 @@ Produtos são utilizados nas vendas e controle de estoque.
                   "anotacoesInternas": "",
                   "pesoBruto": 0,
                   "pesoLiquido": 0,
-                  "tags": ['exemplo', 'modelo']
+                  "tags": ["exemplo", "modelo"]
                 }
 
 + Response 200 (application/json)
@@ -4696,16 +4696,6 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 "comTransf": false,
                 "mostrarRecorrencia": true
             }
-            {
-                "agrupamento": "dia",
-                "tipoData": "dtCad",
-                "de": "2018-12-01",
-                "ate": "2018-12-31",
-                "tags": "",
-                "semPlano": true,
-                "comTransf": false,
-                "mostrarRecorrencia": true
-            }
               
 
   + Response 200 (application/json)
@@ -4858,7 +4848,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                             "valorIn": null,
                             "valorOut": null
                         }
-                    ],
+                    ]
                 },
                 "despesas": {
                     "Gastos gerais": [
@@ -4911,7 +4901,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            {
+            [
                 {
                     "dre": "+ Receita bruta",
                     "valor": 25490.87
@@ -4948,7 +4938,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "dre": "= Lucro/prejuízo",
                     "valor": -10364.395514
                 }
-            }
+            ]
           
 
 ### Fluxo futuro [POST /relatorios/fluxoFuturo]
@@ -4989,22 +4979,20 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            {
-                [
-                    {
-                        "dtVenc": "2019-01-02",
-                        "aReceber": "17.92",
-                        "aPagar": null,
-                        "saldo": 17.92
-                    },
-                    {
-                        "dtVenc": "2019-01-03",
-                        "aReceber": "5.07",
-                        "aPagar": null,
-                        "saldo": 22.990000000000002
-                    }
-                ]
-            }
+            [
+                {
+                    "dtVenc": "2019-01-02",
+                    "aReceber": "17.92",
+                    "aPagar": null,
+                    "saldo": 17.92
+                },
+                {
+                    "dtVenc": "2019-01-03",
+                    "aReceber": "5.07",
+                    "aPagar": null,
+                    "saldo": 22.990000000000002
+                }
+            ]
 
 
 ### Fluxo futuro detalhado [POST /relatorios/fluxoFuturoDetalhado]
@@ -5047,19 +5035,17 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            {
-                [
-                    {
-                        "dtVenc": "2018-12-17",
-                        "codigo": "1312",
-                        "descricao": "Venda código 264, parc 3/3",
-                        "contato": "Cliente Revenda XX",
-                        "aReceber": "567.50",
-                        "aPagar": "",
-                        "saldo": 567.5
-                    }
-                ]
-            }
+            [
+                {
+                    "dtVenc": "2018-12-17",
+                    "codigo": "1312",
+                    "descricao": "Venda código 264, parc 3/3",
+                    "contato": "Cliente Revenda XX",
+                    "aReceber": "567.50",
+                    "aPagar": "",
+                    "saldo": 567.5
+                }
+            ]
 
 
 ### Lançamentos cancelados [POST /relatorios/lancamentosCancelados]
@@ -5891,7 +5877,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "quant": "1.0000",
                     "preco": "1.0000000000",
                     "vFrete": "0.0000",
-                    "vOutro": 
+                    "vOutro": "0.0000",
                     "vDesc": "0.0000",
                     "vIPI": "0.0000",
                     "vST": "0.0000",
@@ -6752,7 +6738,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            [
+            {
               "Financeiro": [
                 {
                   "data": "2019-05-17",
@@ -6787,7 +6773,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                   "situacao": "Concluída"
                 }
               ]
-            ]
+            }
 
 ### Personalizado de contatos [POST /relatorios/personalizadoContatos]
   Lista os contatos com os campos escolhidos. O nome do contato e seu código interno sempre são listados.
@@ -6844,7 +6830,8 @@ Atualiza os recebimentos associados ao Boleto eGestor.
             Authorization: Bearer [access_token]
 
     + Body
-
+            
+            [
             {
               "contato": "",
               "tipoContato": "",
@@ -6877,7 +6864,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
               "mostrar_tags": true,
               "mostrar_obs": true
             }
-              
+            ]  
 
   + Response 200 (application/json)
 
@@ -6954,11 +6941,13 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             [
-              "codigo": "16",
-              "nome": "Cliente padrão",
-              "emails": "cliente@padrao.com",
-              "fones": "12345677",
-              "dtNasc": "1981-03-29"
+              {
+                  "codigo": "16",
+                  "nome": "Cliente padrão",
+                  "emails": "cliente@padrao.com",
+                  "fones": "12345677",
+                  "dtNasc": "1981-03-29"
+              }
             ]
 
 ### Inatividade de clientes [POST /relatorios/inatividadeClientes]
@@ -7140,7 +7129,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "vST": "0.00",
                     "quant": "100.0000",
                     "total": "2500.00000000000000"
-                },
+                }
             ]
             
 ### Estoque mínimo [POST /relatorios/estoqueMinimo]
@@ -7196,7 +7185,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "custo": "12.5500000000",
                     "saldo": "1.0000",
                     "categoria": "Arames"
-                },
+                }
             ]
             
 ### Estoque em data específica [POST /relatorios/estoqueDoDia]
@@ -8122,7 +8111,7 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
               ],
               "munIncidencia": 1,
               "localPrest": 1,
-              "tags": "",
+              "tags": []
             }
 
 + Response 404 (application/json)
@@ -8422,7 +8411,7 @@ ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisi
               "tags": [],
               "modulo": "vendas",
               "codModulo": 200,
-              "descricao": "Comprovante de pagamento",
+              "descricao": "Comprovante de pagamento"
             }
 
 + Response 200 (application/json)
@@ -8578,7 +8567,7 @@ Módulo permite listar e detalhar os usuários cadastrados no sistema.
                   "comisProd": 7.35,
                   "comisServ": 5.00,
                   "comisFin": 9.90
-                },
+                }
               ]
           }
 
@@ -8715,7 +8704,7 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
     + Body
             
             {
-              "endpoint": "http://www.example.com/webhookEgestor"
+              "endpoint": "http://www.example.com/webhookEgestor",
               "securityToken": "01a161daaaf265968c1f36a19ef8f4",
               "produtos": true,
               "contatos": false,
