@@ -328,7 +328,7 @@ Os contatos podem ser clientes, fornecedores e transportadores.
                 "exemplo@example.com.br"
               ],
               "fones": [],
-              "cep": ,
+              "cep": "",
               "logradouro": "Rua Exemplo lado ímpar",
               "numero": "999",
               "complemento": "",
@@ -349,7 +349,7 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "codIBGEEntrega": "4304606",
               "ufEntrega": "RS",
               "cepEntrega": "92120555",
-              "pontoRefEntrega": "Prédio branco"
+              "pontoRefEntrega": "Prédio branco",
               "suframa": "",
               "obs": "",
               "tags": ["cliente bom", "especial"]
@@ -858,15 +858,15 @@ Produtos são utilizados nas vendas e controle de estoque.
                                     "padrao": 1
                                 },
                                 "thumb": {
-                                    "link": "https://730590973010370e1726.cdn.com/010-2154900_tmb.png",
+                                    "link": "https://730590973010370e1726.cdn.com/010-2154900_tmb.png"
                                 }
                             },
                             {
                                 "foto": {
-                                    "link": "https://730590973010370e1726.cdn.com/011-2111100.png",
+                                    "link": "https://730590973010370e1726.cdn.com/011-2111100.png"
                                 },
                                 "thumb": {
-                                    "link": "https://730590973010370e1726.cdn.com/011-2111100_tmb.png",
+                                    "link": "https://730590973010370e1726.cdn.com/011-2111100_tmb.png"
                                 }
                             }
                         ]
@@ -905,7 +905,7 @@ Produtos são utilizados nas vendas e controle de estoque.
                   "anotacoesInternas": "",
                   "pesoBruto": 0,
                   "pesoLiquido": 0,
-                  "tags": ['exemplo', 'modelo']
+                  "tags": ["exemplo", "modelo"]
                 }
 
 + Response 200 (application/json)
@@ -4582,6 +4582,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + 1,2,3, etc - Código da forma de pagamento
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + comContato (boolean, optional) - Mostrar nome do contato
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + semSaldoAnterior (boolean, optional) - Ocultar saldo anterior
       + mostrarCategoria (boolean, optional) - Mostrar categoria
       + mostrarContaCaixa (boolean, optional) - Mostrar conta caixa
@@ -4669,6 +4670,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + ate (string, optional) - Data final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + semPlano (boolean, optional) - Lançamentos sem Plano de Contas
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + comTransf (boolean, optional) - Transferências entre contas
       + mostrarRecorrencia (boolean, optional) - Incluir recorrências
       + detalharPlanoContas (boolean, optional) - Detalhar plano de contas
@@ -4686,16 +4688,6 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 "tipoData": "dtPgto",
                 "anoIni": 2017,
                 "anoFim": 2018,
-                "tags": "",
-                "semPlano": true,
-                "comTransf": false,
-                "mostrarRecorrencia": true
-            }
-            {
-                "agrupamento": "dia",
-                "tipoData": "dtCad",
-                "de": "2018-12-01",
-                "ate": "2018-12-31",
                 "tags": "",
                 "semPlano": true,
                 "comTransf": false,
@@ -4792,6 +4784,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
       + disponivel (number, optional) - Código da conta disponível
       + semPlano (number, optional) - Mostrar lançamentos sem Plano de Contas
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + comTransf (number, optional) - Mostrar transferências entre contas
       + comSomaGrupos (number, optional) - Mostrar somatório dos grupos
       + ordem (enum[number], optional) - Ordenação
@@ -4852,7 +4845,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                             "valorIn": null,
                             "valorOut": null
                         }
-                    ],
+                    ]
                 },
                 "despesas": {
                     "Gastos gerais": [
@@ -4905,7 +4898,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            {
+            [
                 {
                     "dre": "+ Receita bruta",
                     "valor": 25490.87
@@ -4942,17 +4935,18 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "dre": "= Lucro/prejuízo",
                     "valor": -10364.395514
                 }
-            }
+            ]
           
 
-### Fluxo futuro [POST /relatorios/fluxoFuturoDetalhado]
+### Fluxo futuro [POST /relatorios/fluxoFuturo]
   Este relatório mostra o fluxo de entrada e saída de dinheiro de acordo com as datas de vencimento dos lançamentos entre a data inicial e a data final. Todos os lançamentos já pagos e também os lançamentos com data de vencimento menor que a data inicial entram no "Saldo anterior".
 
   + Attributes (object)
       + de (string, required) - Data de vencimento inicial, formato YYYY-MM-DD
       + ate (string, required) - Data de vencimento final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
-      + disponivel (number, optional) - Código da conta disponível
+      + disponivel (string, optional) - Códigos das contas disponíveis, separados por vírgula
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + semSaldoAnterior (number, optional) - Ocultar saldos e pgtos antes do início
       + semAtrasadasAnterior (number, optional) - Ocultar lanç. atrasados antes da data inícial
 
@@ -4965,7 +4959,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             {
-                "disponivel": 0,
+                "disponivel": "1,3,5",
                 "de": "2019-01-01",
                 "ate": "2019-01-31",
                 "tags": "",
@@ -4982,32 +4976,31 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            {
-                [
-                    {
-                        "dtVenc": "2019-01-02",
-                        "aReceber": "17.92",
-                        "aPagar": null,
-                        "saldo": 17.92
-                    },
-                    {
-                        "dtVenc": "2019-01-03",
-                        "aReceber": "5.07",
-                        "aPagar": null,
-                        "saldo": 22.990000000000002
-                    }
-                ]
-            }
+            [
+                {
+                    "dtVenc": "2019-01-02",
+                    "aReceber": "17.92",
+                    "aPagar": null,
+                    "saldo": 17.92
+                },
+                {
+                    "dtVenc": "2019-01-03",
+                    "aReceber": "5.07",
+                    "aPagar": null,
+                    "saldo": 22.990000000000002
+                }
+            ]
 
 
-### Fluxo futuro detalhado [POST /relatorios/fluxoFuturo]
+### Fluxo futuro detalhado [POST /relatorios/fluxoFuturoDetalhado]
   Este relatório mostra o fluxo de entrada e saída de dinheiro, detalhando cada lançamento cadastrado no financeiro, de acordo com as datas de vencimento dos lançamentos entre a data inicial e a data final. Todos os lançamentos já pagos e também os lançamentos com data de vencimento menor que a data inicial entram no "Saldo anterior".
 
   + Attributes (object)
       + de (string, required) - Data de vencimento inicial, formato YYYY-MM-DD
       + ate (string, required) - Data de vencimento final, formato YYYY-MM-DD
       + tags (string, optional) - Filtrar por palavras-chave do financeiro
-      + disponivel (number, optional) - Código da conta disponível
+      + disponivel (string, optional) - Códigos das contas disponíveis, separados por vírgula
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + comContato (number, optional) - Mostrar nome do contato associado ao lançamento
       + semSaldoAnterior (number, optional) - Ocultar saldos e pgtos antes do início
       + semAtrasadasAnterior (number, optional) - Ocultar lanç. atrasados antes da data inícial
@@ -5021,7 +5014,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             {
-                "disponivel": 0,
+                "disponivel": "1,3,5",
                 "de": "2019-01-01",
                 "ate": "2019-01-31",
                 "tags": "",
@@ -5039,19 +5032,17 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            {
-                [
-                    {
-                        "dtVenc": "2018-12-17",
-                        "codigo": "1312",
-                        "descricao": "Venda código 264, parc 3/3",
-                        "contato": "Cliente Revenda XX",
-                        "aReceber": "567.50",
-                        "aPagar": "",
-                        "saldo": 567.5
-                    }
-                ]
-            }
+            [
+                {
+                    "dtVenc": "2018-12-17",
+                    "codigo": "1312",
+                    "descricao": "Venda código 264, parc 3/3",
+                    "contato": "Cliente Revenda XX",
+                    "aReceber": "567.50",
+                    "aPagar": "",
+                    "saldo": 567.5
+                }
+            ]
 
 
 ### Lançamentos cancelados [POST /relatorios/lancamentosCancelados]
@@ -5142,7 +5133,8 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + `-1` - Forma de pagamento não definida
           + 0 - Não filtrar por forma de pagamento
           + 1,2,3, etc - Código da forma de pagamento
-      + disponivel (number, optional) - Código da conta disponível
+      + disponivel (string, optional) - Códigos das contas disponíveis, separados por vírgula
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + ordem (enum[string], optional) - Campo para realizar o ordenação (ASC)
         + Members
             + `codigo`
@@ -5201,7 +5193,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 "busca": "",
                 "contato": "",
                 "contatoText": "",
-                "disponivel": 0,
+                "disponivel": "1,3,5",
                 "formaPgto": -1,
                 "planoContas": 0,
                 "tags": "",
@@ -5465,6 +5457,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + de (string, required) - Data inicial, formato YYYY-MM-DD
     + ate (string, required) - Data final, formato YYYY-MM-DD
     + disponivel (number, optional) - Código da conta disponível
+    + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
     + ordem (enum[number], optional) - Ordenação
         + Members
           + 1 - Data
@@ -5656,6 +5649,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + 'vendedor'
       + formaPgto (number, optional) - Filtrar por forma de pagamento
       + contaDestino (number, optional) - Filtrar por conta destino
+      + comCaixasOcultas (boolean, optional) - Considera contas/caixa ocultas
       + buscaEnd (string, optional) - Buscar no endereço do cliente
       + buscar_xCampos (string, optional) - Buscar nas observações da venda
       + mostrarvendasConcluidas (boolean, optional) - Filtrar apenas vendas concluídas
@@ -5880,7 +5874,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "quant": "1.0000",
                     "preco": "1.0000000000",
                     "vFrete": "0.0000",
-                    "vOutro": 
+                    "vOutro": "0.0000",
                     "vDesc": "0.0000",
                     "vIPI": "0.0000",
                     "vST": "0.0000",
@@ -6741,7 +6735,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
     + Body
 
-            [
+            {
               "Financeiro": [
                 {
                   "data": "2019-05-17",
@@ -6756,7 +6750,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                   "descricao": "Venda código 586, parc 1/1 nota ",
                   "valor": "73.50",
                   "situacao": "A receber"
-                },
+                }
               ],
               "Vendas": [
                 {
@@ -6776,7 +6770,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                   "situacao": "Concluída"
                 }
               ]
-            ]
+            }
 
 ### Personalizado de contatos [POST /relatorios/personalizadoContatos]
   Lista os contatos com os campos escolhidos. O nome do contato e seu código interno sempre são listados.
@@ -6833,7 +6827,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
             Authorization: Bearer [access_token]
 
     + Body
-
+            
             {
               "contato": "",
               "tipoContato": "",
@@ -6866,7 +6860,6 @@ Atualiza os recebimentos associados ao Boleto eGestor.
               "mostrar_tags": true,
               "mostrar_obs": true
             }
-              
 
   + Response 200 (application/json)
 
@@ -6878,6 +6871,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             [
+            {
               "codigo": "1",
               "nome": "Cliente padrão",
               "fantasia": "",
@@ -6902,6 +6896,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
               "dtCad": "2016-10-17 15:40:50",
               "tags": "",
               "obs": ""
+              }
             ]
 
 ### Aniversariantes do mês [POST /relatorios/aniversariantesDoMes]
@@ -6943,11 +6938,13 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             [
-              "codigo": "16",
-              "nome": "Cliente padrão",
-              "emails": "cliente@padrao.com",
-              "fones": "12345677",
-              "dtNasc": "1981-03-29"
+              {
+                  "codigo": "16",
+                  "nome": "Cliente padrão",
+                  "emails": "cliente@padrao.com",
+                  "fones": "12345677",
+                  "dtNasc": "1981-03-29"
+              }
             ]
 
 ### Inatividade de clientes [POST /relatorios/inatividadeClientes]
@@ -7129,7 +7126,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "vST": "0.00",
                     "quant": "100.0000",
                     "total": "2500.00000000000000"
-                },
+                }
             ]
             
 ### Estoque mínimo [POST /relatorios/estoqueMinimo]
@@ -7185,7 +7182,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     "custo": "12.5500000000",
                     "saldo": "1.0000",
                     "categoria": "Arames"
-                },
+                }
             ]
             
 ### Estoque em data específica [POST /relatorios/estoqueDoDia]
@@ -8111,7 +8108,7 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
               ],
               "munIncidencia": 1,
               "localPrest": 1,
-              "tags": "",
+              "tags": []
             }
 
 + Response 404 (application/json)
@@ -8411,7 +8408,7 @@ ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisi
               "tags": [],
               "modulo": "vendas",
               "codModulo": 200,
-              "descricao": "Comprovante de pagamento",
+              "descricao": "Comprovante de pagamento"
             }
 
 + Response 200 (application/json)
@@ -8567,7 +8564,7 @@ Módulo permite listar e detalhar os usuários cadastrados no sistema.
                   "comisProd": 7.35,
                   "comisServ": 5.00,
                   "comisFin": 9.90
-                },
+                }
               ]
           }
 
@@ -8684,6 +8681,8 @@ Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluí
 
 No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
 
+Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será disparado com o cabeçalho **Content-Type: application/json**.
+
 ### Detalhar [GET /webhooks]
 
 + Request (application/json)
@@ -8702,12 +8701,13 @@ No momento do cadastro do webhook, é necessário definir quais os módulos ser�
     + Body
             
             {
-              "endpoint": "http://www.example.com/webhookEgestor"
+              "endpoint": "http://www.example.com/webhookEgestor",
               "securityToken": "01a161daaaf265968c1f36a19ef8f4",
               "produtos": true,
               "contatos": false,
               "vendas": true,
-              "usuarios": true
+              "usuarios": true,
+              "enviarComoJson": false
             }
 
 ### Cadastrar [POST /webhooks]
@@ -8725,7 +8725,8 @@ No momento do cadastro do webhook, é necessário definir quais os módulos ser�
               "produtos": true,
               "contatos": false,
               "vendas": true,
-              "usuarios": false
+              "usuarios": false,
+              "enviarComoJson": false
             }
 
 + Response 200 (application/json)
