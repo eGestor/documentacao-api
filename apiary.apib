@@ -3802,7 +3802,7 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
             }
 
 ### Editar (Update) [PUT /vendas/{codigo}]
-Só é possível alterar a situação (Venda/Orçamento) e a situação da O.S.
+Só é possível alterar a situação (Venda/Orçamento), a situação da O.S. e os campos adicionais.
 + Request (application/json)
 
   + Headers
@@ -3816,7 +3816,11 @@ Só é possível alterar a situação (Venda/Orçamento) e a situação da O.S.
             
             {
                 "situacao": 50,
-                "situacaoOS": "Entregue"
+                "situacaoOS": "Entregue",
+                "campoAdicional1": "Garantia de 3 meses",
+                "campoAdicional2": "Produto novo",
+                "campoAdicional3": "Serial: 12345",
+                "campoAdicional4": "Entrega prevista: 10/10"
             }
 
 + Response 200 (application/json)
