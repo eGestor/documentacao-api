@@ -5817,6 +5817,16 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + listarServicos (boolean, optional) - Listar serviços
       + mostrarAbertas (boolean, optional) - Listar orçamentos
       + mostrarVOutros (boolean, optional) - Mostrar despesas acessórias
+      + mostrarDtEntrega (boolean, optional) - Mostrar data de entrega da venda
+      + mostrarSituacao (boolean, optional) - Mostrar situação da venda
+      + mostrarCidUFEntr (boolean, optional) - Mostrar dados do end. de entrega
+      + mostrarNumNota (boolean, optional) - Mostrar nº da NF associada a venda
+      + mostrarCodProd (boolean, optional) - Mostrar código do produto
+      + mostrarFantasia (boolean, optional) - Mostrar nome fantasia do cliente
+      + mostrarFoneCli (boolean, optional) - Mostrar telefones do cliente
+      + mostrarMailCli (boolean, optional) - Mostrar e-mail do cliente
+      + mostrarPeso (boolean, optional) - Mostrar pelo líquido o bruto
+      + mostrarDevol (boolean, optional) - Mostrar as devoluções de venda
 
   + Request (application/json)
 
@@ -5827,38 +5837,41 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             {
-                "de": "2019-03-01",
-                "ate": "2019-03-31",
                 "tipoData": "dtVenda",
-                "contato": "",
-                "tags": "",
-                "tagsProd": "",
-                "situOS": "",
-                "ordem": "codigo",
-                "mostrarObs": 1,
-                "mostrarCategorias": 1,
-                "mostrarCpfCnpj": 1,
-                "mostrarTags": 1,
-                "mostrarTagsProd": 1,
-                "mostrarVendedor": 1,
-                "mostrarDtCad": 1,
-                "mostrarDtVenda": 1,
-                "mostrarCusto": 1,
-                "mostrarApenasComNFE": 0,
-                "mostrarCustoTotal": 1,
-                "mostrarVendaTotal": 1,
-                "mostrarLucro": 1,
-                "mostrarMarkup": 1,
-                "mostrarMLucro": 1,
-                "mostrarCEST": 1,
-                "mostrarCEAN": 1,
-                "mostrarCFOP": 1,
-                "mostrarGrupoTrib": 1,
-                "mostrarNCM": 1,
-                "mostrarIcProd": 1,
-                "listarServicos": 1,
-                "mostrarVOutros": 1,
-                "mostrarAbertas": 0
+                "de": "2023-01-01",
+                "ate": "2023-12-31",
+                "mostrarDtVenda": false,
+                "mostrarDtCad": false,
+                "mostrarDtEntrega": false,
+                "mostrarTags": false,
+                "mostrarSituacao": false,
+                "mostrarCidUFEntr": false,
+                "mostrarNumNota": false,
+                "mostrarCusto": false,
+                "mostrarVOutros": false,
+                "mostrarObs": false,
+                "listarServicos": false,
+                "mostrarCodProd": false,
+                "mostrarIcProd": false,
+                "mostrarCategorias": false,
+                "mostrarFantasia": false,
+                "mostrarCpfCnpj": false,
+                "mostrarFoneCli": false,
+                "mostrarMailCli": false,
+                "mostrarVendedor": false,
+                "mostrarTagsProd": false,
+                "mostrarCEST": false,
+                "mostrarCEAN": false,
+                "mostrarNCM": false,
+                "mostrarCFOP": false,
+                "mostrarGrupoTrib": false,
+                "mostrarPeso": false,
+                "mostrarDevol": false,
+                "mostrarCustoTotal": false,
+                "mostrarVendaTotal": false,
+                "mostrarLucro": false,
+                "mostrarMarkup": false,
+                "mostrarMLucro": false
             }
               
 
