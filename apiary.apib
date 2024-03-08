@@ -1097,6 +1097,40 @@ Produtos são utilizados nas vendas e controle de estoque.
               "fields": null
             }
 
+### Fotos [POST /produtos/{codigo}/fotos]
+ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisição o "application-type: json", pois o mesmo não funciona em conjunto com o envio de arquivos. Nesse caso, apenas iniba o envio dessa propriedade e envie o arquivo com o cabeçalho Content-type: multipart/form-data
++ Attributes (object)
+
+    + arquivo (required) - Arquivo que será enviado. Enviar como um *file*.
+
+
++ Request (multipart/form-data)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "arquivo": "comprovante.pfd"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codigo": 1,
+                "link": "https://v4.egestor.com.br/files/?key=00.000.000.0000.000"
+            }
+
+
 # Ajuste de estoque [/ajusteEstoque]
 
 Permite definir o estoque atual dos produtos. 
