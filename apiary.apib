@@ -1101,7 +1101,7 @@ Produtos são utilizados nas vendas e controle de estoque.
 ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisição o "application-type: json", pois o mesmo não funciona em conjunto com o envio de arquivos. Nesse caso, apenas iniba o envio dessa propriedade e envie o arquivo com o cabeçalho Content-type: multipart/form-data
 + Attributes (object)
 
-    + arquivo (required) - Arquivo que será enviado. Enviar como um *file*.
+    + foto (required) - Arquivo que será enviado. Enviar como um *file*.
 
 
 + Request (multipart/form-data)
@@ -1113,7 +1113,7 @@ ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisi
     + Body
 
             {
-              "arquivo": "comprovante.pfd"
+              "foto": "comprovante.pfd"
             }
 
 + Response 200 (application/json)
@@ -4717,6 +4717,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + comTransf (boolean, optional) - Transferências entre contas
       + mostrarRecorrencia (boolean, optional) - Incluir recorrências
       + detalharPlanoContas (boolean, optional) - Detalhar plano de contas
+      + ocultarZerados (boolean, optional) - Ocultar itens zerados
       
   + Request (application/json)
 
@@ -4916,6 +4917,9 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + dtComp - Data de competência
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
+      + detalhado (boolean, optional) - detalhar (gerencial)
+      + ocultarZerados (boolean, optional) - ocultar itens zerados
+      
 
   + Request (application/json)
 
