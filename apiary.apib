@@ -8373,6 +8373,60 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
               "errObs": null,
               "errFields": null
             }
+### Download DANFE (Read) [GET /nfe/{codigo}/danfe]
+    Retorna o DANFE (binário) de um documento autorizado.
++ Parameters
+    + codigo (required, number, `1`) ... Código da NFe
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              
+            }
+
++ Response 400 (application/json)
+  Quando houver falha ao gerar o arquivo.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 400,
+              "errMsg": "Falha ao gerar DANFE, tente novamente",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 404 (application/json)
+  Quando o documento ainda não foi autorizado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "O documento não se encontra autorizado, impossível fazer download do DANFE.",
+              "errObs": null,
+              "errFields": null
+            }
 
 # Disco virtual [/discoVirtual]
 Módulo para upload de arquivos, que podem ser vinculados a registros de outros módulo, ou serem enviados de maneira avulsa.
