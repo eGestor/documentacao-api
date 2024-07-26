@@ -21,7 +21,7 @@ Recursos disponíveis para acesso via API:
 * [**Recebimentos**](#reference/recursos/recebimentos)
 * [**Pagamentos**](#reference/recursos/pagamentos)
 * [**Compras**](#reference/recursos/compras)
-* [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas)
+* [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas-ordens-de-servico-os)
 * [**Devolução de vendas**](#reference/recursos/devolucoes)
 * [**Boletos**](#reference/recursos/boletos)
 * [**Relatórios**](#reference/recursos/relatorios)
@@ -3912,7 +3912,9 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 | `50` | Autorizada |
 | `80` | Denegada |
 | `90` | Cancelada |
-| `91` | Inutilizada |
+| `91` | Inutilizada |  
+**Código:** Identificador interno do sistema, utilizado para detalhar a nota em outros endpoints  
+**ID:** É o número da nota fiscal dentro do sistema.
 
     + Headers
 
@@ -3923,12 +3925,14 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
         [
             {
+                "codigo": "110",
                 "id": "100",
                 "situacao": "5",
                 "nota": "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe><ide><cUF>43</cUF><natOp>...</NFe>"
             }
             ,
             {
+                "codigo": "113",
                 "id": "101",
                 "situacao": "50",
                 "nota": "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe><ide><cUF>43</cUF><natOp>...</NFe>"
@@ -6355,7 +6359,127 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     ]
                 }
             ]
+            
+### Resumo de vendas [POST /relatorios/vendasResumo]
+  
+  Mostra total vendido agrupado por mês no período selecionado.
 
+  + Attributes (object)
+      + tipoData (enum[string], required) - Tipo de data que será considerada para realizar os filtros
+        + Members
+          + dtVenda - Data da venda
+          + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
+      + de (string, required) - Data inicial, formato YYYY-MM-DD
+      + ate (string, required) - Data final, formato YYYY-MM-DD
+      + vendedor (number, optional) - Código do vendedor
+      + contato (number, optional) - Código do cliente
+      + considerarDevolucoes (boolean, optional) - Considera devoluções no cálculo
+      
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "tipoData": "dtVenda",
+                "de": "2021-08-15",
+                "ate": "2023-09-30",
+                "vendedor": "",
+                "contato": "",
+                "considerarDevolucoes": 0
+            }
+            
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "1": {
+                    "mes": "Jan",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "3815.60"
+                },
+                "2": {
+                    "mes": "Fev",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "blank"
+                },
+                "3": {
+                    "mes": "Mar",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "1128.10"
+                },
+                "4": {
+                    "mes": "Abr",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "159.03"
+                },
+                "5": {
+                    "mes": "Mai",
+                    "y2021": "blank",
+                    "y2022": "12905.08",
+                    "y2023": "244.50"
+                },
+                "6": {
+                    "mes": "jun",
+                    "y2021": "blank",
+                    "y2022": "827.35",
+                    "y2023": "2598.00"
+                },
+                "7": {
+                    "mes": "Jul",
+                    "y2021": "blank",
+                    "y2022": "723.31",
+                    "y2023": "blank"
+                },
+                "8": {
+                    "mes": "Ago",
+                    "y2021": "blank",
+                    "y2022": "710.81",
+                    "y2023": "blank"
+                },
+                "9": {
+                    "mes": "Set",
+                    "y2021": "blank",
+                    "y2022": "338.57",
+                    "y2023": "blank"
+                },
+                "10": {
+                    "mes": "Out",
+                    "y2021": "blank",
+                    "y2022": "81.29",
+                    "y2023": "blank"
+                },
+                "11": {
+                    "mes": "Nov",
+                    "y2021": "blank",
+                    "y2022": "40.89",
+                    "y2023": "blank"
+                },
+                "12": {
+                    "mes": "Dez",
+                    "y2021": "blank",
+                    "y2022": "42431.60",
+                    "y2023": "blank"
+                }
+            }
+        
+        
 ### Compras detalhadas [POST /relatorios/comprasDetalhadas]
   Mostra a lista das compras, com detalhes como quantidade, valor de compra e totais.
 
