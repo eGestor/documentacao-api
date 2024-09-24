@@ -2446,6 +2446,7 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
       * dtPgto - Data de pagamento
       * dtComp - Data de competência
       * dtCad - Data de cadastro
+      * dtCred - Data de crédito
     + dtIni (optional, date) - Data inicial, no formato yyyy-mm-dd
     + dtFim (optional, date) - Data final, no formato yyyy-mm-dd
     + caixa (optional, integer) - Código interno da conta caixa
@@ -2471,11 +2472,11 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
       * 'com' - Com recibo vinculado
       * 'sem' - Sem recibo vinculado
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
-        * codigo, numDoc, descricao, valor, taxa, data, dtVenc, dtPgto, dtCad, dtComp, situacao, codContato, codPlanoContas, nomeContato, origem, codDisponivel, codModulo, obs, tags 
+        * codigo, numDoc, descricao, valor, taxa, data, dtVenc, dtPgto, dtCad, dtComp, dtCred, situacao, codContato, codPlanoContas, nomeContato, origem, codDisponivel, codModulo, obs, tags 
         * ex: &fields=nomeContato,valor
         * Padrão: codigo,descricao,valor,data,situacao,nomeContato
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
-        * codigo, codContato, nomeContato, codFormaPgto, codDisponivel, codPlanoContas, codConciliacao, codBoleto, codRecibo, codModulo, origem, descricao, numDoc, tags, valor, valorPago, taxa, dtComp, dtVenc, dtPgto, dtCad, dtDel, motivoDel, obs, previsao, situacao
+        * codigo, codContato, nomeContato, codFormaPgto, codDisponivel, codPlanoContas, codConciliacao, codBoleto, codRecibo, codModulo, origem, descricao, numDoc, tags, valor, valorPago, taxa, dtComp, dtVenc, dtPgto, dtCad, dtCred, dtDel, motivoDel, obs, previsao, situacao
         * ex: &orderBy=situacao,desc
         * ex: &orderBy=nomeContato,asc
 
@@ -2530,9 +2531,10 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
               "numDoc": "",
               "descricao": "Recebimento parcela 1/1",
               "valor": 500,
-              "dtVenc": "2017-09-02",
+              "dtVenc": "2024-09-01",
               "dtPgto": "0000-00-00",
-              "dtComp": "2017-09-02",
+              "dtComp": "2024-09-01",
+              "dtCred": "2024-09-15",
               "recebido": false,
               "codContato": 7,
               "codDisponivel": 1,
@@ -2590,8 +2592,9 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
                 "taxa": 0,
                 "dtVenc": "2019-04-15",
                 "dtPgto": "",
-                "dtCad": "2019-05-08 11:06:50",
-                "dtComp": "2019-04-10",
+                "dtCad": "2024-09-01 11:06:50",
+                "dtComp": "2024-09-01",
+                "dtCred": "2024-09-15",
                 "situacao": 20,
                 "codContato": 7,
                 "codDisponivel": 6,
@@ -2657,8 +2660,9 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
               "numDoc": "",
               "descricao": "Recebimento parcela 1/1",
               "valor": 500,
-              "dtVenc": "2017-09-02",
-              "dtComp": "2017-09-02",
+              "dtVenc": "2024-09-03",
+              "dtComp": "2024-09-03",
+              "dtCred": "2024-09-25",
               "codContato": 7,
               "codDisponivel": 1,
               "obs": "",
@@ -2693,8 +2697,8 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
 
             {
               "valor": 200,
-              "dtPgto": "2017-04-25",
-              "dtComp": "2019-05-25"
+              "dtPgto": "2024-09-25",
+              "dtComp": "2024-09-25"
             }
 
 + Response 200 (application/json)
