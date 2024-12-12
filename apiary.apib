@@ -104,10 +104,12 @@ Para testar a API do eGestor (sandbox), sugerimos a criação de uma conta de te
 Para obter o personal_token, siga as instruções do video a seguir: https://www.youtube.com/watch?v=2y648YPA9Us&authuser=1
 
 ### Utilizando personal_token [POST]
+**Atenção! O endpoint de login não utiliza o parâmetro da versão da API (v1). Utilize a seguinte URL:**
+
+> POST https://api.egestor.com.br/api/oauth/access_token
 
 O `personal_token` é do formato JWT e contém informações da empresa (subdomínio) e do usuário. Este é o token utilizado em sistemas de e-Commerce e sites integrados ao eGestor.
 
-A URL para obter o access_token é a seguinte: https://api.egestor.com.br/api/oauth/access_token
 
 #### Dados para envio no POST
 | Parâmetro | Descrição |
