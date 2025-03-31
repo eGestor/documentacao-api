@@ -8450,6 +8450,87 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
               "errFields": null
             }
             
+### Criar (Create) [POST /nfe/salvar]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "xml":"<?xml version=\"1.0\" encoding=\"utf-8\"?><NFe ... </NFe>",
+                "enviar": true
+            }
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+                "code": 200,
+                "msg": "Nota 1 importada com sucesso.",
+                "obs": "",
+                "fields": ""
+            }
+
++ Response 400 (application/json)
+  Quando o xml não é informado
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "errCode": 400,
+                "errMsg": "XML não informado.",
+                "errObs": "Para importar notas para o sistema, é necessário informar o xml no corpo do envio",
+                "errFields": [],
+                "errUrl": ""
+            }
+            
++ Response 400 (application/json)
+  Quando o xml não é válido
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "errCode": 400,
+                "errMsg": "Não foi possível extrair os dados do arquivo enviado. (tag infNFe não encontrada ou conteúdo vazio)",
+                "errObs": "",
+                "errFields": [],
+                "errUrl": ""
+            }
+
++ Response 401 (application/json)
+  Quando o módulo não está atualizado
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "errCode": 401,
+                "errMsg": "Não foi possível salvar XML",
+                "errObs": "O método Salvar só está disponível para a versão atualizada do módulo NFe.",
+                "errFields": [],
+                "errUrl": "//v1/nfe/salvar"
+            }
+            
 ### Download XML (Read) [GET /nfe/{codigo}/xml]
     Retorna o XML (binário) de um documento autorizado.
 + Parameters
