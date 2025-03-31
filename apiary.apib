@@ -8405,52 +8405,8 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
               "errFields": null,
               "errUrl": "/v1/nfe"
           }
-
-### Detalhar (Read) [GET /nfe/{codigo}]
-
-+ Parameters
-    + codigo (required, number, `1`) ... Código da NFe
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: Bearer [access_token]
-
-+ Response 200 (application/json)
-    + Headers
-
-            X-RateLimit-Limit: 60
-            X-RateLimit-Remaining: 58
-
-    + Body
-
-            {
-              "codigo": "1",
-              "numero": "1",
-              "chave": "43123456789123456789123456789123456789123456",
-              "modelo": "65",
-              "dt_emissao": "2019-12-19",
-              "situacao": "50"
-            }
-
-+ Response 404 (application/json)
-  Quando o registro não foi encontrado.
-    + Headers
-
-            X-RateLimit-Limit: 60
-            X-RateLimit-Remaining: 59
-
-    + Body
-
-            {
-              "errCode": 404,
-              "errMsg": "Nenhum nfe encontrado para o código 1",
-              "errObs": null,
-              "errFields": null
-            }
-            
-### Criar (Create) [POST /nfe/salvar]
+          
+### Nova (Create) [POST /nfe/salvar]
 
 + Request (application/json)
 
@@ -8529,6 +8485,50 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
                 "errObs": "O método Salvar só está disponível para a versão atualizada do módulo NFe.",
                 "errFields": [],
                 "errUrl": "//v1/nfe/salvar"
+            }
+
+### Detalhar (Read) [GET /nfe/{codigo}]
+
++ Parameters
+    + codigo (required, number, `1`) ... Código da NFe
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "codigo": "1",
+              "numero": "1",
+              "chave": "43123456789123456789123456789123456789123456",
+              "modelo": "65",
+              "dt_emissao": "2019-12-19",
+              "situacao": "50"
+            }
+
++ Response 404 (application/json)
+  Quando o registro não foi encontrado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "Nenhum nfe encontrado para o código 1",
+              "errObs": null,
+              "errFields": null
             }
             
 ### Download XML (Read) [GET /nfe/{codigo}/xml]
