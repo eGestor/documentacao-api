@@ -355,6 +355,9 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "ufEntrega": "RS",
               "cepEntrega": "92120555",
               "pontoRefEntrega": "Prédio branco",
+              "inscEstadualEntrega": "12345678",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiroemail@teste.com,segundoemail@teste.com",
               "suframa": "",
               "obs": "",
               "tags": ["cliente bom", "especial"]
@@ -4115,6 +4118,39 @@ Retorna os dados vindos da integração com o mercado livre, baseado no código 
                     "dados": "{\"idOrder\": 1234567890, \"date_closed\": \"15\\/03\\/2022 12:58:00\", \"total_amount\": 20, \"paid_amount\": 20, \"payments\": [{\"transaction_amount\": 20, \"shipping_cost\": 0, \"payment_method_id\": \"elo\", \"date_created\": \"2022-03-15T11:57:59.000-04:00\"}], \"order_items\": [{\"idProduto\": \"MLB0000000000\", \"quantity\": 1, \"price\": 20, \"sale_fee\": 7.4, \"idProdutoEgestor\": \"123\"}], \"idBuyer\": 123456789, \"tracking_number\": \"RN123123333BR\", \"idBuyerEgestor\": \"99999\"}"
                }
             ]
+
+
+### Gerar NFe [POST  /vendas/{codigo}/gerarNfe]
+Permite gerar uma NFe a partir de determinada venda. Certifique-se se a venda contém um cliente e produtos válidos.
++ Attributes (object)
+    + enviar (optional, enum) ... Apenas gerar ou gerar e enviar
+        + false (boolean) - Apenas gera a nota na situação Criada
+        + true (boolean) - Gerar a nota e enviar para a SEFAZ
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "enviar": false
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codNFe": 106
+            }
 
 
 ### Gerar NFCe [POST  /vendas/{codigo}/gerarNfce]
