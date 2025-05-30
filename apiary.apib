@@ -311,6 +311,9 @@ Os contatos podem ser clientes, fornecedores e transportadores.
     + codIBGEEntrega (number, optional) - Código da cidade do endereço de entrega, caso seja diferente do informado no cliente
     + ufEntrega (string, optional) - UF do endereço de entrega, caso seja diferente do informado no cliente. O UF deverá ser referente ao código do IBGE informado
     + pontoRefEntrega (string, optional) - Ponto de referência do endereço de entrega, caso seja diferente do informado no cliente 
+    + inscEstadualEntrega (string, optional) - Inscrição estadual do destinatário da entrega, caso seja diferente do informado no cliente
+    + fonesEntretga (string, optional) - Números de contato do destinatário da entrega, separados por vírgula
+    + emailsEntrega (string, optional) - E-mails de contato do destinatário da entrega, separados por vírgula
 
 + Request (application/json)
 
@@ -433,7 +436,10 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "codIBGEEntrega": "0",
               "ufEntrega": "",
               "cepEntrega": 0,
-              "pontoRefEntrega": ""
+              "pontoRefEntrega": "",
+              "inscEstadualEntrega": "01234567",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiro@teste.com,segundo@teste.com"
             }
 
 + Response 404 (application/json)
@@ -512,6 +518,9 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "ufEntrega": "",
               "cepEntrega": "",
               "pontoRefEntrega": "",
+              "inscEstadualEntrega": "01234567",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiro@teste.com,segundo@teste.com",
               "suframa": "",
               "obs": "",
               "tags": []
@@ -563,7 +572,10 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "cidadeEntrega": "",
               "ufEntrega": "",
               "cepEntrega": 0,
-              "pontoRefEntrega": ""
+              "pontoRefEntrega": "",
+              "inscEstadualEntrega": "01234567",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiro@teste.com,segundo@teste.com"
             }
 
 ### Remover (Delete) [DELETE  /contatos/{codigo}]
@@ -4122,6 +4134,14 @@ Retorna os dados vindos da integração com o mercado livre, baseado no código 
 
 ### Gerar NFe [POST  /vendas/{codigo}/gerarNfe]
 Permite gerar uma NFe a partir de determinada venda. Certifique-se se a venda contém um cliente e produtos válidos.
+Traduções de campos:
+* `codNota: Código da nota no sistema`;
+* `numNota: Número da nota`;
+* `chNFe: Chave da nota`;
+* `cStat: Código de status (retorno da SEFAZ)`;
+* `xMotivo: Descrição do status (retorno da SEFAZ)`;
+* `nProt: Número de protocolo, caso exista`;
+* `ambiente: 1 = Produção, 2 = Homologação/teste`;
 + Attributes (object)
     + enviar (optional, enum) ... Apenas gerar ou gerar e enviar
         + false (boolean) - Apenas gera a nota na situação Criada
@@ -4140,7 +4160,7 @@ Permite gerar uma NFe a partir de determinada venda. Certifique-se se a venda co
             }
 
 + Response 200 (application/json)
-
+    Em caso de criação de nota sem envio
     + Headers
 
             X-RateLimit-Limit: 60
@@ -4149,7 +4169,59 @@ Permite gerar uma NFe a partir de determinada venda. Certifique-se se a venda co
     + Body
 
             {
-                "codNFe": 106
+                "codNota": 106
+            }
+
+    
++ Response 200 (application/json)
+    Em caso de envio e retorno com Rejeição
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "numNota": "39",
+                "nomeContato": "Meu cliente",
+                "emailContato": "",
+                "chNFe": "432505...77",
+                "situacao": "rejeitada",
+                "cStat": 210,
+                "xMotivo": "Rejeicao: IE do destinatario invalida",
+                "autorizada": false,
+                "nProt": null,
+                "ok": 1,
+                "ambiente": "2",
+                "feedback": "Nota enviada com sucesso.",
+                "codNota": 116
+            }
+            
++ Response 200 (application/json)
+    Em caso de envio e retorno com Autorização
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "numNota": "44",
+                "nomeContato": "Imobiliária Lária",
+                "emailContato": "",
+                "chNFe": "432505...91",
+                "situacao": "autorizada",
+                "cStat": 100,
+                "xMotivo": "Autorizado o uso da NF-e",
+                "autorizada": true,
+                "nProt": "14...03",
+                "emailsEnviados": "contador@mailinator.com",
+                "ok": 1,
+                "ambiente": "2",
+                "feedback": "Nota enviada com sucesso.",
+                "codNota": 121
             }
 
 
