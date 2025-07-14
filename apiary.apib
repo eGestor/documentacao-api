@@ -9092,8 +9092,9 @@ Os módulos disponíveis são os seguintes:
 * Contatos
 * Vendas
 * Usuários
+* Financeiros
 
-Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato (form-data):
+Sempre que um produto, cliente, venda, usuário ou financeiro for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato (form-data):
     
     {
     
@@ -9108,12 +9109,12 @@ Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluí
 + action: Ação realizada. Valores possíveis: "created", "updated" ou "deleted".
 + codigo: Código do registro
 + date: Data que a alteração ocorreu no eGestor
-+ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos", "vendas" ou "usuarios"
++ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos", "vendas", "usuarios" ou "financeiro"
 + securityToken: Sua chave de segurança
 
 *ATENÇÃO: O timeout para resposta ao POST do webhook é de 3 segundos. Serão feitas 5 tentativas em caso de falha. Sugerimos a utilização de queues para processamento dos webhooks enviados pelo eGestor, a fim de evitar timeouts.*
 
-No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
+No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas", "usuarios" e "financeiro".
 
 Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será disparado com o cabeçalho **Content-Type: application/json**.
 
@@ -9141,6 +9142,7 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
               "contatos": false,
               "vendas": true,
               "usuarios": true,
+              "financeiro": true,
               "enviarComoJson": false
             }
 
@@ -9160,6 +9162,7 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
               "contatos": false,
               "vendas": true,
               "usuarios": false,
+              "financeiro": true,
               "enviarComoJson": false
             }
 
@@ -9178,5 +9181,6 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
               "produtos": true,
               "contatos": false,
               "vendas": true,
-              "usuarios": false
+              "usuarios": false,
+              "financeiro": true
             }
