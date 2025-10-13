@@ -24,6 +24,7 @@ Recursos disponíveis para acesso via API:
 * [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas-ordens-de-servico-os)
 * [**Devolução de vendas**](#reference/recursos/devolucoes)
 * [**Boletos**](#reference/recursos/boletos)
+* [**Pix**](#reference/recursos/pix)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
 * [**NFe**](#reference/recursos/nfe)
@@ -4146,6 +4147,9 @@ Traduções de campos:
     + enviar (optional, enum) ... Apenas gerar ou gerar e enviar
         + false (boolean) - Apenas gera a nota na situação Criada
         + true (boolean) - Gerar a nota e enviar para a SEFAZ
+    + contigOffline (optional, enum) ... Emitir em contingência
+        + false (boolean) - Emissão normal
+        + true (boolean) - Emissão em contingência
 
 + Request (application/json)
 
@@ -4156,7 +4160,8 @@ Traduções de campos:
     + Body
 
             {
-                "enviar": false
+                "enviar": false,
+                "contigOffline": false
             }
 
 + Response 200 (application/json)
@@ -4721,6 +4726,272 @@ Atualiza os recebimentos associados ao Boleto eGestor.
               "ok": 1
             }
 
+
+
+
+
+# Pix [/pix]
+
+Pix não podem ser **editados** ou **excluídos** via API.
+
+| Status | Descrição |
+|------|------------|
+| `10` | Em aberto. |
+| `20` | Recebido.  |
+| `90` | Cancelado. |
+
+### Listar (List) [GET /pix{?filtro,orderBy, page}]
++ Parameters
+    + filtro (optional, string) - Busca a string informada nos campos: código do pix ou nome do cliente.
+    + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
+        * codigo, descricao, nome, codFin, a.situacao desc, dtVenc, dtPgto, valorTotal
+        * ex: &orderBy=descricao,desc
+        * ex: &orderBy=dtVenc,asc
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+            {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 1,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 1,
+              "data": [
+                {
+                  "codigo": 1,
+                  "status": 10,
+                  "codFinanceiro": 49200,
+                  "urlExterna": "https://v4.egestor.com.br/pagamentosPix/?key=00.300.12c1.3597.7e5",
+                  "detalhesCobranca": {
+                    "informacoesPix": {
+                      "txId": "***Ez***aJ***BVh***1HN5***",
+                      "textoQrCode": "00000000000000000000br.gov.bcb.pix0000qrcodepix.bb.com.br/pix/v2/cobv/b837cc34-e121-44e4-a2ee-629c76d6197b00000000000000000000.000000BR0000ZIPLINE TECNOLOGIA LTDA6011SANTA MARIA62070503***6304D2FA"
+                    },
+                    "vencimento": {
+                      "data": "2025-01-21",
+                      "multaPercentual": 0,
+                      "multaValorFixo": 0,
+                      "jurosPercentual": 0,
+                      "descontos": []
+                    }
+                  }
+                }
+              ]
+            }
+
+### Novo (Create) [POST]
+
++ Attributes (object)
+
+    + codFinanceiro (number, required) - código do financeiro
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "codFinanceiro" : 56228
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "56228": {
+                "codigo": 492,
+                "emails": "cliente@email.com",
+                "chaveExterna": "00.349.2f9d.8011.beb",
+                "resposta": {
+                  "numeroSolicitacao": 46900000,
+                  "informacoesPIX": {
+                    "textoQrCode": "00000000000000000000br.gov.bcb.pix0000qrcodepix.bb.com.br/pix/v2/cobv/b837cc34-e121-44e4-a2ee-629c76d6197b00000000000000000000.000000BR0000ZIPLINE TECNOLOGIA LTDA6011SANTA MARIA62070503***6304D2FA",
+                    "txId": "***Ez***aJ***BVh***1HN5***"
+                  },
+                  "informacoesBoleto": {
+                    "linhaDigitavel": "",
+                    "textoCodigoBarras": ""
+                  }
+                }
+              }
+            }
+
+
+### Detalhar (Read) [GET /pix/{codigo}]
+  + Parameters
+      + codigo (required, number, `1`) ... Código do pix
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "dados": {
+                "codigo": "1",
+                "created_at": "2024-09-10 13:48:11",
+                "dtPagamento": "0000-00-00 00:00:00",
+                "dtCredito": "0000-00-00",
+                "chaveExterna": "00.300.12c1.3597.7e5",
+                "valorPago": "0.00",
+                "situacao": "10",
+                "codFinanceiros": "49200",
+                "descFinanceiros": "Descrição ddo financeiro",
+                "numDocFin": "",
+                "obsFin": "Obs do financeiro",
+                "situacaoFin": "20",
+                "dtVencimento": "2024-09-10",
+                "diff": "308",
+                "valor": "0.94",
+                "contato": "Nome do contato",
+                "codContato": "1",
+                "contatoEmail": "cliente@email.com",
+                "contatoCpfcnpj": "01234567890",
+                "contatoFantasia": "Nome fantasia do contato",
+                "end": "Rua das avenidas",
+                "num": "123",
+                "bairro": "Bairro",
+                "cidadeNome": "Cidade",
+                "uf": "SP",
+                "nome": "Nome do financeiro",
+                "fantasia": "Fantasia do financeiro",
+                "cpfcnpj": "01234567890",
+                "valorTotal": "0.94",
+                "fones": "99999999999",
+                "pixInfo": {
+                  "numeroSolicitacao": 36663317,
+                  "valorSolicitacao": 5.15,
+                  "informacoesPix": {
+                    "txId": "hzUEztiRaJvlvBVhvdy1HN53NM",
+                    "textoQrCode": "00020101021226900014br.gov.bcb.pix2568qrcodepix.bb.com.br/pix/v2/cobv/b837cc34-e121-44e4-a2ee-629c76d6197b52040000530398654045.005802BR5923ZIPLINE TECNOLOGIA LTDA6011SANTA MARIA62070503***6304D2FA"
+                  },
+                  "vencimento": {
+                    "data": "2025-01-21",
+                    "multaPercentual": 0,
+                    "multaValorFixo": 0,
+                    "jurosPercentual": 0,
+                    "descontos": []
+                  }
+                },
+                "visualizado": null,
+                "visualizadoInterno": null,
+                "link": "https://v4.egestor.com.br/pagamentosPix/?key=00.300.12c1.3597.7e5"
+              },
+              "historico": [
+                {
+                  "codigo": "615624",
+                  "codModulo": "1",
+                  "modulo": "pix",
+                  "data": "2024-06-20 14:26:52",
+                  "interno": "0",
+                  "msg": "Inseriu",
+                  "obs": {
+                      "Cód. Financeiro": "36655",
+                      "Valor": "60,00",
+                      "Vencimento": "-",
+                      "Código do contato": 0
+                  },
+                  "pid": "4688@1718904412",
+                  "usuario": "user"
+                },
+                {
+                  "codigo": "616225",
+                  "codModulo": "1",
+                  "modulo": "pix",
+                  "data": "2024-06-26 14:44:03",
+                  "interno": "0",
+                  "msg": "Excluiu",
+                  "obs": {
+                      "Cód. Financeiro": "36655"
+                  },
+                  "pid": "271744@1719423843",
+                  "usuario": "igor"
+                }
+              ]
+            }
+
+### Consultar Situação (Read) [GET /pix/{codigo}/consultarSituacao]
+  + Parameters
+      + codigo (required, number, `1`) ... Código do pix
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+          {
+            "situacao": "pago",
+            "valorPago": 1.1,
+            "nsu": "E00000000202500000000s00fedf0000",
+            "dtPgto": "2025-02-05 12:08:13"
+          }
+
+### Credencial (Read) [GET /pix/credencial]
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+          {
+              "numeroConvenio": 0,
+              "numeroParticipante": 0,
+              "nomeParticipante": "Titular da conta bancária",
+              "tipoDocumento": 1,
+              "numeroDocumento": 01234567890,
+              "codigoEstadoParticipante": 0,
+              "numeroConta": 000000,
+              "numeroAgencia": 0000,
+              "tipoConta": 1,
+              "variacaoPoupanca": 0,
+              "codigoIspb": 60701190,
+              "instituicao": "341 - ITAÚ UNIBANCO S.A."
+          }
 
 
 # Relatórios [/relatorios]
