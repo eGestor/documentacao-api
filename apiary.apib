@@ -3767,6 +3767,7 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
               "valorEntrada": 0,
               "numParcelas": 0,
               "codsNFe": [],
+              "codsNFSe": [],
               "customizado": {
                 "xCampo1": "Venda direta."
               },
@@ -8268,6 +8269,171 @@ Pix não podem ser **editados** ou **excluídos** via API.
                     "irrf": 0.37
                 }
             ]
+
+### Resumo de NFe [POST /relatorios/nfeResumo]
+  Lista as notas emitidas com os campos escolhidos e relativas aos filtros informados.
+
+  + Attributes (object)
+
+      + de (string, required) - data inicial, formato YYYY-MM-DD
+      + ate (string, required) - data final, formato YYYY-MM-DD
+      + ambiente (enum[string], required), required)
+        + Members
+            + 1 - Produção
+            + 2 - Homologação
+      + serie (number) - Série de emissão da nota
+      + situacao (number) - Situação da nota, conforme a lista de códigos de situação.
+      + cliente (number) - Código do destinatário no sistema
+      + cfop (string) - CFOP relativo à natureza da operação (5102,6102,...)
+      + numCod_tipo (enum[string]) - Utilizar caso informado "numCod valor"
+        + Members
+            + 1 - Filtrar por número da nota
+            + 2 - Filtrar por código da nota no sistema
+      + numCod_valor (number) - Número ou código da nota, de acordo com "numCod tipo"
+      + order (enum[string]) - Ordenação dos registros
+        + Members
+          + codigo - Código da nota no sistema
+          + numNota - Número da nota
+          + dtEmissao - Data de emissão da nota
+          + nome - Nome do destinatário
+      + mostrarISS - Mostrar o valor total de ISS na listagem
+      + mostrarFrete - Mostra o valor total de Frete na listagem
+      + mostrarBCICMS - Mostra a base de cálculo do ICMS na listagem
+      + mostrarICMSST - Mostra o ICMS ST na listagem
+      + mostrarCodVenda - Mostra o código da venda pela qual a nota foi emitida na listagem
+      + mostrarSerie - Mostra a série de emissão na listagem
+      + mostrarFormaPgto - Mostra a forma de pagamento na listagem
+      + mostrarPesoL - Mostra o peso líquido para transporte na listagem
+      + mostrarPesoB - Mostra o peso bruto para transporte na listagem
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+            
+            {
+              "de": "2025-01-01",
+              "ate": "2025-04-28",
+              "ambiente": 2,
+              "serie": 1
+            }
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "codigo": "109",
+                    "nome": "Cliente2",
+                    "numNota": "2",
+                    "cfop": "5102",
+                    "data": "2025-04-01",
+                    "situacao": "Em digitação",
+                    "vNF": "0.00",
+                    "vICMS": "0.00",
+                    "vIPI": "0.00",
+                    "vPIS": "0.00",
+                    "vCOFINS": "0.00"
+                }
+            ]
+
+### Totais de notas por período [POST /relatorios/nfeTotaisPorPeriodo]
+  Totais das notas emitidas por filtro.
+
+  + Attributes (object)
+
+      + de (string, required) - data inicial, formato YYYY-MM-DD
+      + ate (string, required) - data final, formato YYYY-MM-DD
+      + modelo (enum[string]))
+        + Members
+            + 55 - NFe
+            + 65 - NFCe
+      + serie (number) - Série de emissão da nota
+      + situacao (number) - Situação da nota, conforme a lista de códigos de situação.
+      + cfop (string) - CFOP relativo à natureza da operação (5102,6102,...)
+      + ncm (string) - NCM do produto (22011000,...)
+      + gtin (string) - EAN / GTIN do produto (1234567891234,...)
+      + indFinal (enum[string]))
+        + Members
+            + 1 - Apenas notas para cliente final
+            + 2 - Sem notas para cliente final
+      + mostrarFrete (boolean) - Mostrar total de frete
+      + mostrarSeguro (boolean) - Mostrar total de seguro
+      + mostrarDescontos (boolean) - Mostrar total de descontos
+      + mostrarOutrasDespesas (boolean) - Mostrar total de outras despesas
+      + mostrarICMSST (boolean) - Mostrar total de ICMS ST
+      + mostrarFCP (boolean) - Mostrar total de FCP
+      + mostrarFCPST (boolean) - Mostrar total de FCP ST
+      + mostrarII (boolean) - Mostrar total de II
+      + mostrarISS (boolean) - Mostrar total de ISS
+      + mostrarISSRet (boolean) - Mostrar total de ISS Retido
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+            
+            {
+              "de": "2025-01-01",
+              "ate": "2025-10-28",
+              "situacao": 5,
+              "modelo": 55,
+              "ncm": "22011000",
+              "mostrarFrete": true
+            }
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "key": "Valor dos Produtos",
+                    "value": 135.12
+                },
+                {
+                    "key": "Valor do Frete",
+                    "value": 0
+                },
+                {
+                    "key": "Base de Cálculo do ICMS",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do ICMS",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do IPI",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do PIS",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do COFINS",
+                    "value": 0
+                }
+            ]
+
 
 ### Registro de eventos [POST /relatorios/registroEventos]
   Lista os eventos ocorridos no sistema.
