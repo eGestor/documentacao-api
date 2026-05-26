@@ -18,9 +18,10 @@ Recursos disponíveis para acesso via API:
 * [**Recebimentos**](#reference/recursos/recebimentos)
 * [**Pagamentos**](#reference/recursos/pagamentos)
 * [**Compras**](#reference/recursos/compras)
-* [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas)
+* [**Vendas / Ordens de serviço / OS**](#reference/recursos/vendas-ordens-de-servico-os)
 * [**Devolução de vendas**](#reference/recursos/devolucoes)
 * [**Boletos**](#reference/recursos/boletos)
+* [**Pix**](#reference/recursos/pix)
 * [**Relatórios**](#reference/recursos/relatorios)
 * [**NFSe**](#reference/recursos/nfse)
 * [**NFe**](#reference/recursos/nfe)
@@ -101,10 +102,12 @@ Para testar a API do eGestor (sandbox), sugerimos a criação de uma conta de te
 Para obter o personal_token, siga as instruções do video a seguir: https://www.youtube.com/watch?v=2y648YPA9Us&authuser=1
 
 ### Utilizando personal_token [POST]
+**Atenção! O endpoint de login não utiliza o parâmetro da versão da API (v1). Utilize a seguinte URL:**
+
+> POST https://api.egestor.com.br/api/oauth/access_token
 
 O `personal_token` é do formato JWT e contém informações da empresa (subdomínio) e do usuário. Este é o token utilizado em sistemas de e-Commerce e sites integrados ao eGestor.
 
-A URL para obter o access_token é a seguinte: https://api.egestor.com.br/api/oauth/access_token
 
 #### Dados para envio no POST
 | Parâmetro | Descrição |
@@ -306,6 +309,9 @@ Os contatos podem ser clientes, fornecedores e transportadores.
     + codIBGEEntrega (number, optional) - Código da cidade do endereço de entrega, caso seja diferente do informado no cliente
     + ufEntrega (string, optional) - UF do endereço de entrega, caso seja diferente do informado no cliente. O UF deverá ser referente ao código do IBGE informado
     + pontoRefEntrega (string, optional) - Ponto de referência do endereço de entrega, caso seja diferente do informado no cliente 
+    + inscEstadualEntrega (string, optional) - Inscrição estadual do destinatário da entrega, caso seja diferente do informado no cliente
+    + fonesEntretga (string, optional) - Números de contato do destinatário da entrega, separados por vírgula
+    + emailsEntrega (string, optional) - E-mails de contato do destinatário da entrega, separados por vírgula
 
 + Request (application/json)
 
@@ -350,6 +356,9 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "ufEntrega": "RS",
               "cepEntrega": "92120555",
               "pontoRefEntrega": "Prédio branco",
+              "inscEstadualEntrega": "12345678",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiroemail@teste.com,segundoemail@teste.com",
               "suframa": "",
               "obs": "",
               "tags": ["cliente bom", "especial"]
@@ -425,7 +434,10 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "codIBGEEntrega": "0",
               "ufEntrega": "",
               "cepEntrega": 0,
-              "pontoRefEntrega": ""
+              "pontoRefEntrega": "",
+              "inscEstadualEntrega": "01234567",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiro@teste.com,segundo@teste.com"
             }
 
 + Response 404 (application/json)
@@ -504,6 +516,9 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "ufEntrega": "",
               "cepEntrega": "",
               "pontoRefEntrega": "",
+              "inscEstadualEntrega": "01234567",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiro@teste.com,segundo@teste.com",
               "suframa": "",
               "obs": "",
               "tags": []
@@ -555,7 +570,10 @@ Os contatos podem ser clientes, fornecedores e transportadores.
               "cidadeEntrega": "",
               "ufEntrega": "",
               "cepEntrega": 0,
-              "pontoRefEntrega": ""
+              "pontoRefEntrega": "",
+              "inscEstadualEntrega": "01234567",
+              "fonesEntrega": "11999999999,11988888888",
+              "emailsEntrega": "primeiro@teste.com,segundo@teste.com"
             }
 
 ### Remover (Delete) [DELETE  /contatos/{codigo}]
@@ -964,6 +982,7 @@ Produtos são utilizados nas vendas e controle de estoque.
               "anotacoesInternas": "",
               "pesoBruto": "0.000",
               "pesoLiquido": "0.000",
+              "tipoProduto": "produto",
               "tags": [],
               "dtCad": "2017-05-24 17:32:18",
               "codCategoria": 0,
@@ -1092,6 +1111,40 @@ Produtos são utilizados nas vendas e controle de estoque.
               "obs": null,
               "fields": null
             }
+
+### Fotos [POST /produtos/{codigo}/fotos]
+ATENÇÃO! Para utilizar esse método não deve ser enviado no header da requisição o "application-type: json", pois o mesmo não funciona em conjunto com o envio de arquivos. Nesse caso, apenas iniba o envio dessa propriedade e envie o arquivo com o cabeçalho Content-type: multipart/form-data
++ Attributes (object)
+
+    + foto (required) - Arquivo que será enviado. Enviar como um *file*.
+
+
++ Request (multipart/form-data)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "foto": "comprovante.pfd"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codigo": 1,
+                "link": "https://v4.egestor.com.br/files/?key=00.000.000.0000.000"
+            }
+
 
 # Ajuste de estoque [/ajusteEstoque]
 
@@ -1384,6 +1437,7 @@ Os ajustes de estoque não podem ser editados nem excluídos, caso seja necessá
               "codigoGrupoTributos": 1,
               "anotacoesInternas": "",
               "dtCad": "2017-04-24 11:44:35",
+              "tipoProduto": "servico",
               "tags": [],
               "itemListaServico": "14.01",
               "cnae": "1234567",
@@ -2407,6 +2461,7 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
       * dtPgto - Data de pagamento
       * dtComp - Data de competência
       * dtCad - Data de cadastro
+      * dtCred - Data de crédito
     + dtIni (optional, date) - Data inicial, no formato yyyy-mm-dd
     + dtFim (optional, date) - Data final, no formato yyyy-mm-dd
     + caixa (optional, integer) - Código interno da conta caixa
@@ -2432,11 +2487,11 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
       * 'com' - Com recibo vinculado
       * 'sem' - Sem recibo vinculado
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
-        * codigo, numDoc, descricao, valor, taxa, data, dtVenc, dtPgto, dtCad, dtComp, situacao, codContato, nomeContato, origem, codDisponivel, codModulo, obs, tags 
+        * codigo, numDoc, descricao, valor, taxa, data, dtVenc, dtPgto, dtCad, dtComp, dtCred, situacao, codContato, codPlanoContas, nomeContato, origem, codDisponivel, codModulo, obs, tags 
         * ex: &fields=nomeContato,valor
         * Padrão: codigo,descricao,valor,data,situacao,nomeContato
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
-        * codigo, codContato, nomeContato, codFormaPgto, codDisponivel, codPlanoContas, codConciliacao, codBoleto, codRecibo, codModulo, origem, descricao, numDoc, tags, valor, valorPago, taxa, dtComp, dtVenc, dtPgto, dtCad, dtDel, motivoDel, obs, previsao, situacao
+        * codigo, codContato, nomeContato, codFormaPgto, codDisponivel, codPlanoContas, codConciliacao, codBoleto, codRecibo, codModulo, origem, descricao, numDoc, tags, valor, valorPago, taxa, dtComp, dtVenc, dtPgto, dtCad, dtCred, dtDel, motivoDel, obs, previsao, situacao
         * ex: &orderBy=situacao,desc
         * ex: &orderBy=nomeContato,asc
 
@@ -2491,9 +2546,10 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
               "numDoc": "",
               "descricao": "Recebimento parcela 1/1",
               "valor": 500,
-              "dtVenc": "2017-09-02",
+              "dtVenc": "2024-09-01",
               "dtPgto": "0000-00-00",
-              "dtComp": "2017-09-02",
+              "dtComp": "2024-09-01",
+              "dtCred": "2024-09-15",
               "recebido": false,
               "codContato": 7,
               "codDisponivel": 1,
@@ -2551,8 +2607,9 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
                 "taxa": 0,
                 "dtVenc": "2019-04-15",
                 "dtPgto": "",
-                "dtCad": "2019-05-08 11:06:50",
-                "dtComp": "2019-04-10",
+                "dtCad": "2024-09-01 11:06:50",
+                "dtComp": "2024-09-01",
+                "dtCred": "2024-09-15",
                 "situacao": 20,
                 "codContato": 7,
                 "codDisponivel": 6,
@@ -2618,8 +2675,9 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
               "numDoc": "",
               "descricao": "Recebimento parcela 1/1",
               "valor": 500,
-              "dtVenc": "2017-09-02",
-              "dtComp": "2017-09-02",
+              "dtVenc": "2024-09-03",
+              "dtComp": "2024-09-03",
+              "dtCred": "2024-09-25",
               "codContato": 7,
               "codDisponivel": 1,
               "obs": "",
@@ -2654,8 +2712,8 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
 
             {
               "valor": 200,
-              "dtPgto": "2017-04-25",
-              "dtComp": "2019-05-25"
+              "dtPgto": "2024-09-25",
+              "dtComp": "2024-09-25"
             }
 
 + Response 200 (application/json)
@@ -2737,7 +2795,7 @@ Permite consultar os grupos tributários existentes. Não é possível cadastrar
       * 'com' - Com recibo vinculado
       * 'sem' - Sem recibo vinculado
     + fields (optional) - Permite definir quais os campos serão retornados pela api. Informe separado por vírgula. Valores possíveis:
-        * codigo, numDoc, descricao, valor, taxa, data, dtVenc, dtPgto, dtCad, dtComp, situacao, codContato, nomeContato, origem, codDisponivel, codModulo, obs, tags 
+        * codigo, numDoc, descricao, valor, taxa, data, dtVenc, dtPgto, dtCad, dtComp, situacao, codContato, codPlanoContas, nomeContato, origem, codDisponivel, codModulo, obs, tags 
         * ex: &fields=nomeContato,valor
         * Padrão: codigo,descricao,valor,data,situacao,nomeContato
     + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
@@ -3706,6 +3764,7 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
               "valorEntrada": 0,
               "numParcelas": 0,
               "codsNFe": [],
+              "codsNFSe": [],
               "customizado": {
                 "xCampo1": "Venda direta."
               },
@@ -3799,7 +3858,7 @@ Para as OS valem os mesmos endpoint das vendas. Lembrando que é possível gerar
             }
 
 ### Editar (Update) [PUT /vendas/{codigo}]
-Só é possível alterar a situação (Venda/Orçamento) e a situação da O.S.
+Só é possível alterar a situação (Venda/Orçamento), a situação da O.S. e os campos adicionais.
 + Request (application/json)
 
   + Headers
@@ -3813,7 +3872,11 @@ Só é possível alterar a situação (Venda/Orçamento) e a situação da O.S.
             
             {
                 "situacao": 50,
-                "situacaoOS": "Entregue"
+                "situacaoOS": "Entregue",
+                "campoAdicional1": "Garantia de 3 meses",
+                "campoAdicional2": "Produto novo",
+                "campoAdicional3": "Serial: 12345",
+                "campoAdicional4": "Entrega prevista: 10/10"
             }
 
 + Response 200 (application/json)
@@ -3869,7 +3932,9 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 | `50` | Autorizada |
 | `80` | Denegada |
 | `90` | Cancelada |
-| `91` | Inutilizada |
+| `91` | Inutilizada |  
+**Código:** Identificador interno do sistema, utilizado para detalhar a nota em outros endpoints  
+**ID:** É o número da nota fiscal dentro do sistema.
 
     + Headers
 
@@ -3880,12 +3945,14 @@ Todos os XMLs associados a venda, e suas respectivas situações.
 
         [
             {
+                "codigo": "110",
                 "id": "100",
                 "situacao": "5",
                 "nota": "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe><ide><cUF>43</cUF><natOp>...</NFe>"
             }
             ,
             {
+                "codigo": "113",
                 "id": "101",
                 "situacao": "50",
                 "nota": "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\"><infNFe><ide><cUF>43</cUF><natOp>...</NFe>"
@@ -4062,6 +4129,103 @@ Retorna os dados vindos da integração com o mercado livre, baseado no código 
                     "dados": "{\"idOrder\": 1234567890, \"date_closed\": \"15\\/03\\/2022 12:58:00\", \"total_amount\": 20, \"paid_amount\": 20, \"payments\": [{\"transaction_amount\": 20, \"shipping_cost\": 0, \"payment_method_id\": \"elo\", \"date_created\": \"2022-03-15T11:57:59.000-04:00\"}], \"order_items\": [{\"idProduto\": \"MLB0000000000\", \"quantity\": 1, \"price\": 20, \"sale_fee\": 7.4, \"idProdutoEgestor\": \"123\"}], \"idBuyer\": 123456789, \"tracking_number\": \"RN123123333BR\", \"idBuyerEgestor\": \"99999\"}"
                }
             ]
+
+
+### Gerar NFe [POST  /vendas/{codigo}/gerarNfe]
+Permite gerar uma NFe a partir de determinada venda. Certifique-se se a venda contém um cliente e produtos válidos.
+Traduções de campos:
+* `codNota: Código da nota no sistema`;
+* `numNota: Número da nota`;
+* `chNFe: Chave da nota`;
+* `cStat: Código de status (retorno da SEFAZ)`;
+* `xMotivo: Descrição do status (retorno da SEFAZ)`;
+* `nProt: Número de protocolo, caso exista`;
+* `ambiente: 1 = Produção, 2 = Homologação/teste`;
++ Attributes (object)
+    + enviar (optional, enum) ... Apenas gerar ou gerar e enviar
+        + false (boolean) - Apenas gera a nota na situação Criada
+        + true (boolean) - Gerar a nota e enviar para a SEFAZ
+    + contigOffline (optional, enum) ... Emitir em contingência
+        + false (boolean) - Emissão normal
+        + true (boolean) - Emissão em contingência
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "enviar": false,
+                "contigOffline": false
+            }
+
++ Response 200 (application/json)
+    Em caso de criação de nota sem envio
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "codNota": 106
+            }
+
+    
++ Response 200 (application/json)
+    Em caso de envio e retorno com Rejeição
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "numNota": "39",
+                "nomeContato": "Meu cliente",
+                "emailContato": "",
+                "chNFe": "432505...77",
+                "situacao": "rejeitada",
+                "cStat": 210,
+                "xMotivo": "Rejeicao: IE do destinatario invalida",
+                "autorizada": false,
+                "nProt": null,
+                "ok": 1,
+                "ambiente": "2",
+                "feedback": "Nota enviada com sucesso.",
+                "codNota": 116
+            }
+            
++ Response 200 (application/json)
+    Em caso de envio e retorno com Autorização
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "numNota": "44",
+                "nomeContato": "Imobiliária Lária",
+                "emailContato": "",
+                "chNFe": "432505...91",
+                "situacao": "autorizada",
+                "cStat": 100,
+                "xMotivo": "Autorizado o uso da NF-e",
+                "autorizada": true,
+                "nProt": "14...03",
+                "emailsEnviados": "contador@mailinator.com",
+                "ok": 1,
+                "ambiente": "2",
+                "feedback": "Nota enviada com sucesso.",
+                "codNota": 121
+            }
 
 
 ### Gerar NFCe [POST  /vendas/{codigo}/gerarNfce]
@@ -4562,6 +4726,272 @@ Atualiza os recebimentos associados ao Boleto eGestor.
 
 
 
+
+
+# Pix [/pix]
+
+Pix não podem ser **editados** ou **excluídos** via API.
+
+| Status | Descrição |
+|------|------------|
+| `10` | Em aberto. |
+| `20` | Recebido.  |
+| `90` | Cancelado. |
+
+### Listar (List) [GET /pix{?filtro,orderBy, page}]
++ Parameters
+    + filtro (optional, string) - Busca a string informada nos campos: código do pix ou nome do cliente.
+    + orderBy (optional) - Permite definir a ordenação da listagem. Informe o campo e a forma de ordenação (ascendente ou descendente) separados por vírgula. Só é possível definir uma ordenação por requisição. Valores possíveis:
+        * codigo, descricao, nome, codFin, a.situacao desc, dtVenc, dtPgto, valorTotal
+        * ex: &orderBy=descricao,desc
+        * ex: &orderBy=dtVenc,asc
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+
+            {
+              "total": 1,
+              "per_page": 50,
+              "current_page": 1,
+              "last_page": 1,
+              "next_page_url": null,
+              "prev_page_url": null,
+              "from": 1,
+              "to": 1,
+              "data": [
+                {
+                  "codigo": 1,
+                  "status": 10,
+                  "codFinanceiro": 49200,
+                  "urlExterna": "https://v4.egestor.com.br/pagamentosPix/?key=00.300.12c1.3597.7e5",
+                  "detalhesCobranca": {
+                    "informacoesPix": {
+                      "txId": "***Ez***aJ***BVh***1HN5***",
+                      "textoQrCode": "00000000000000000000br.gov.bcb.pix0000qrcodepix.bb.com.br/pix/v2/cobv/b837cc34-e121-44e4-a2ee-629c76d6197b00000000000000000000.000000BR0000ZIPLINE TECNOLOGIA LTDA6011SANTA MARIA62070503***6304D2FA"
+                    },
+                    "vencimento": {
+                      "data": "2025-01-21",
+                      "multaPercentual": 0,
+                      "multaValorFixo": 0,
+                      "jurosPercentual": 0,
+                      "descontos": []
+                    }
+                  }
+                }
+              ]
+            }
+
+### Novo (Create) [POST]
+
++ Attributes (object)
+
+    + codFinanceiro (number, required) - código do financeiro
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+              "codFinanceiro" : 56228
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "56228": {
+                "codigo": 492,
+                "emails": "cliente@email.com",
+                "chaveExterna": "00.349.2f9d.8011.beb",
+                "resposta": {
+                  "numeroSolicitacao": 46900000,
+                  "informacoesPIX": {
+                    "textoQrCode": "00000000000000000000br.gov.bcb.pix0000qrcodepix.bb.com.br/pix/v2/cobv/b837cc34-e121-44e4-a2ee-629c76d6197b00000000000000000000.000000BR0000ZIPLINE TECNOLOGIA LTDA6011SANTA MARIA62070503***6304D2FA",
+                    "txId": "***Ez***aJ***BVh***1HN5***"
+                  },
+                  "informacoesBoleto": {
+                    "linhaDigitavel": "",
+                    "textoCodigoBarras": ""
+                  }
+                }
+              }
+            }
+
+
+### Detalhar (Read) [GET /pix/{codigo}]
+  + Parameters
+      + codigo (required, number, `1`) ... Código do pix
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              "dados": {
+                "codigo": "1",
+                "created_at": "2024-09-10 13:48:11",
+                "dtPagamento": "0000-00-00 00:00:00",
+                "dtCredito": "0000-00-00",
+                "chaveExterna": "00.300.12c1.3597.7e5",
+                "valorPago": "0.00",
+                "situacao": "10",
+                "codFinanceiros": "49200",
+                "descFinanceiros": "Descrição ddo financeiro",
+                "numDocFin": "",
+                "obsFin": "Obs do financeiro",
+                "situacaoFin": "20",
+                "dtVencimento": "2024-09-10",
+                "diff": "308",
+                "valor": "0.94",
+                "contato": "Nome do contato",
+                "codContato": "1",
+                "contatoEmail": "cliente@email.com",
+                "contatoCpfcnpj": "01234567890",
+                "contatoFantasia": "Nome fantasia do contato",
+                "end": "Rua das avenidas",
+                "num": "123",
+                "bairro": "Bairro",
+                "cidadeNome": "Cidade",
+                "uf": "SP",
+                "nome": "Nome do financeiro",
+                "fantasia": "Fantasia do financeiro",
+                "cpfcnpj": "01234567890",
+                "valorTotal": "0.94",
+                "fones": "99999999999",
+                "pixInfo": {
+                  "numeroSolicitacao": 36663317,
+                  "valorSolicitacao": 5.15,
+                  "informacoesPix": {
+                    "txId": "hzUEztiRaJvlvBVhvdy1HN53NM",
+                    "textoQrCode": "00020101021226900014br.gov.bcb.pix2568qrcodepix.bb.com.br/pix/v2/cobv/b837cc34-e121-44e4-a2ee-629c76d6197b52040000530398654045.005802BR5923ZIPLINE TECNOLOGIA LTDA6011SANTA MARIA62070503***6304D2FA"
+                  },
+                  "vencimento": {
+                    "data": "2025-01-21",
+                    "multaPercentual": 0,
+                    "multaValorFixo": 0,
+                    "jurosPercentual": 0,
+                    "descontos": []
+                  }
+                },
+                "visualizado": null,
+                "visualizadoInterno": null,
+                "link": "https://v4.egestor.com.br/pagamentosPix/?key=00.300.12c1.3597.7e5"
+              },
+              "historico": [
+                {
+                  "codigo": "615624",
+                  "codModulo": "1",
+                  "modulo": "pix",
+                  "data": "2024-06-20 14:26:52",
+                  "interno": "0",
+                  "msg": "Inseriu",
+                  "obs": {
+                      "Cód. Financeiro": "36655",
+                      "Valor": "60,00",
+                      "Vencimento": "-",
+                      "Código do contato": 0
+                  },
+                  "pid": "4688@1718904412",
+                  "usuario": "user"
+                },
+                {
+                  "codigo": "616225",
+                  "codModulo": "1",
+                  "modulo": "pix",
+                  "data": "2024-06-26 14:44:03",
+                  "interno": "0",
+                  "msg": "Excluiu",
+                  "obs": {
+                      "Cód. Financeiro": "36655"
+                  },
+                  "pid": "271744@1719423843",
+                  "usuario": "igor"
+                }
+              ]
+            }
+
+### Consultar Situação (Read) [GET /pix/{codigo}/consultarSituacao]
+  + Parameters
+      + codigo (required, number, `1`) ... Código do pix
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+          {
+            "situacao": "pago",
+            "valorPago": 1.1,
+            "nsu": "E00000000202500000000s00fedf0000",
+            "dtPgto": "2025-02-05 12:08:13"
+          }
+
+### Credencial (Read) [GET /pix/credencial]
+
++ Request (application/json)
+
+  + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+          {
+              "numeroConvenio": 0,
+              "numeroParticipante": 0,
+              "nomeParticipante": "Titular da conta bancária",
+              "tipoDocumento": 1,
+              "numeroDocumento": 01234567890,
+              "codigoEstadoParticipante": 0,
+              "numeroConta": 000000,
+              "numeroAgencia": 0000,
+              "tipoConta": 1,
+              "variacaoPoupanca": 0,
+              "codigoIspb": 60701190,
+              "instituicao": "341 - ITAÚ UNIBANCO S.A."
+          }
+
+
 # Relatórios [/relatorios]
 
 ### Extrato Financeiro [POST /relatorios/extratoFinanceiro]
@@ -4674,6 +5104,7 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + comTransf (boolean, optional) - Transferências entre contas
       + mostrarRecorrencia (boolean, optional) - Incluir recorrências
       + detalharPlanoContas (boolean, optional) - Detalhar plano de contas
+      + ocultarZerados (boolean, optional) - Ocultar itens zerados
       
   + Request (application/json)
 
@@ -4873,6 +5304,9 @@ Atualiza os recebimentos associados ao Boleto eGestor.
           + dtComp - Data de competência
       + de (string, required) - Data inicial, formato YYYY-MM-DD
       + ate (string, required) - Data final, formato YYYY-MM-DD
+      + detalhado (boolean, optional) - detalhar (gerencial)
+      + ocultarZerados (boolean, optional) - ocultar itens zerados
+      
 
   + Request (application/json)
 
@@ -5808,6 +6242,17 @@ Atualiza os recebimentos associados ao Boleto eGestor.
       + listarServicos (boolean, optional) - Listar serviços
       + mostrarAbertas (boolean, optional) - Listar orçamentos
       + mostrarVOutros (boolean, optional) - Mostrar despesas acessórias
+      + mostrarDtEntrega (boolean, optional) - Mostrar data de entrega da venda
+      + mostrarSituacao (boolean, optional) - Mostrar situação da venda
+      + mostrarCidUFEntr (boolean, optional) - Mostrar dados do end. de entrega
+      + mostrarNumNota (boolean, optional) - Mostrar nº da NF associada a venda
+      + mostrarCodProd (boolean, optional) - Mostrar código do produto
+      + mostrarFantasia (boolean, optional) - Mostrar nome fantasia do cliente
+      + mostrarFoneCli (boolean, optional) - Mostrar telefones do cliente
+      + mostrarMailCli (boolean, optional) - Mostrar e-mail do cliente
+      + mostrarPeso (boolean, optional) - Mostrar pelo líquido o bruto
+      + mostrarDevol (boolean, optional) - Mostrar as devoluções de venda
+      + mostrarStatusFinanceiro (boolean, optional) - Mostrar status dos financeiros
 
   + Request (application/json)
 
@@ -5818,38 +6263,41 @@ Atualiza os recebimentos associados ao Boleto eGestor.
     + Body
 
             {
-                "de": "2019-03-01",
-                "ate": "2019-03-31",
                 "tipoData": "dtVenda",
-                "contato": "",
-                "tags": "",
-                "tagsProd": "",
-                "situOS": "",
-                "ordem": "codigo",
-                "mostrarObs": 1,
-                "mostrarCategorias": 1,
-                "mostrarCpfCnpj": 1,
-                "mostrarTags": 1,
-                "mostrarTagsProd": 1,
-                "mostrarVendedor": 1,
-                "mostrarDtCad": 1,
-                "mostrarDtVenda": 1,
-                "mostrarCusto": 1,
-                "mostrarApenasComNFE": 0,
-                "mostrarCustoTotal": 1,
-                "mostrarVendaTotal": 1,
-                "mostrarLucro": 1,
-                "mostrarMarkup": 1,
-                "mostrarMLucro": 1,
-                "mostrarCEST": 1,
-                "mostrarCEAN": 1,
-                "mostrarCFOP": 1,
-                "mostrarGrupoTrib": 1,
-                "mostrarNCM": 1,
-                "mostrarIcProd": 1,
-                "listarServicos": 1,
-                "mostrarVOutros": 1,
-                "mostrarAbertas": 0
+                "de": "2023-01-01",
+                "ate": "2023-12-31",
+                "mostrarDtVenda": false,
+                "mostrarDtCad": false,
+                "mostrarDtEntrega": false,
+                "mostrarTags": false,
+                "mostrarSituacao": false,
+                "mostrarCidUFEntr": false,
+                "mostrarNumNota": false,
+                "mostrarCusto": false,
+                "mostrarVOutros": false,
+                "mostrarObs": false,
+                "listarServicos": false,
+                "mostrarCodProd": false,
+                "mostrarIcProd": false,
+                "mostrarCategorias": false,
+                "mostrarFantasia": false,
+                "mostrarCpfCnpj": false,
+                "mostrarFoneCli": false,
+                "mostrarMailCli": false,
+                "mostrarVendedor": false,
+                "mostrarTagsProd": false,
+                "mostrarCEST": false,
+                "mostrarCEAN": false,
+                "mostrarNCM": false,
+                "mostrarCFOP": false,
+                "mostrarGrupoTrib": false,
+                "mostrarPeso": false,
+                "mostrarDevol": false,
+                "mostrarCustoTotal": false,
+                "mostrarVendaTotal": false,
+                "mostrarLucro": false,
+                "mostrarMarkup": false,
+                "mostrarMLucro": false
             }
               
 
@@ -6295,7 +6743,127 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                     ]
                 }
             ]
+            
+### Resumo de vendas [POST /relatorios/vendasResumo]
+  
+  Mostra total vendido agrupado por mês no período selecionado.
 
+  + Attributes (object)
+      + tipoData (enum[string], required) - Tipo de data que será considerada para realizar os filtros
+        + Members
+          + dtVenda - Data da venda
+          + dtCad - Data de cadastro
+          + dtEntrega - Data de entrega
+      + de (string, required) - Data inicial, formato YYYY-MM-DD
+      + ate (string, required) - Data final, formato YYYY-MM-DD
+      + vendedor (number, optional) - Código do vendedor
+      + contato (number, optional) - Código do cliente
+      + considerarDevolucoes (boolean, optional) - Considera devoluções no cálculo
+      
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "tipoData": "dtVenda",
+                "de": "2021-08-15",
+                "ate": "2023-09-30",
+                "vendedor": "",
+                "contato": "",
+                "considerarDevolucoes": 0
+            }
+            
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "1": {
+                    "mes": "Jan",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "3815.60"
+                },
+                "2": {
+                    "mes": "Fev",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "blank"
+                },
+                "3": {
+                    "mes": "Mar",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "1128.10"
+                },
+                "4": {
+                    "mes": "Abr",
+                    "y2021": "blank",
+                    "y2022": "blank",
+                    "y2023": "159.03"
+                },
+                "5": {
+                    "mes": "Mai",
+                    "y2021": "blank",
+                    "y2022": "12905.08",
+                    "y2023": "244.50"
+                },
+                "6": {
+                    "mes": "jun",
+                    "y2021": "blank",
+                    "y2022": "827.35",
+                    "y2023": "2598.00"
+                },
+                "7": {
+                    "mes": "Jul",
+                    "y2021": "blank",
+                    "y2022": "723.31",
+                    "y2023": "blank"
+                },
+                "8": {
+                    "mes": "Ago",
+                    "y2021": "blank",
+                    "y2022": "710.81",
+                    "y2023": "blank"
+                },
+                "9": {
+                    "mes": "Set",
+                    "y2021": "blank",
+                    "y2022": "338.57",
+                    "y2023": "blank"
+                },
+                "10": {
+                    "mes": "Out",
+                    "y2021": "blank",
+                    "y2022": "81.29",
+                    "y2023": "blank"
+                },
+                "11": {
+                    "mes": "Nov",
+                    "y2021": "blank",
+                    "y2022": "40.89",
+                    "y2023": "blank"
+                },
+                "12": {
+                    "mes": "Dez",
+                    "y2021": "blank",
+                    "y2022": "42431.60",
+                    "y2023": "blank"
+                }
+            }
+        
+        
 ### Compras detalhadas [POST /relatorios/comprasDetalhadas]
   Mostra a lista das compras, com detalhes como quantidade, valor de compra e totais.
 
@@ -7699,6 +8267,171 @@ Atualiza os recebimentos associados ao Boleto eGestor.
                 }
             ]
 
+### Resumo de NFe [POST /relatorios/nfeResumo]
+  Lista as notas emitidas com os campos escolhidos e relativas aos filtros informados.
+
+  + Attributes (object)
+
+      + de (string, required) - data inicial, formato YYYY-MM-DD
+      + ate (string, required) - data final, formato YYYY-MM-DD
+      + ambiente (enum[string], required), required)
+        + Members
+            + 1 - Produção
+            + 2 - Homologação
+      + serie (number) - Série de emissão da nota
+      + situacao (number) - Situação da nota, conforme a lista de códigos de situação.
+      + cliente (number) - Código do destinatário no sistema
+      + cfop (string) - CFOP relativo à natureza da operação (5102,6102,...)
+      + numCod_tipo (enum[string]) - Utilizar caso informado "numCod valor"
+        + Members
+            + 1 - Filtrar por número da nota
+            + 2 - Filtrar por código da nota no sistema
+      + numCod_valor (number) - Número ou código da nota, de acordo com "numCod tipo"
+      + order (enum[string]) - Ordenação dos registros
+        + Members
+          + codigo - Código da nota no sistema
+          + numNota - Número da nota
+          + dtEmissao - Data de emissão da nota
+          + nome - Nome do destinatário
+      + mostrarISS - Mostrar o valor total de ISS na listagem
+      + mostrarFrete - Mostra o valor total de Frete na listagem
+      + mostrarBCICMS - Mostra a base de cálculo do ICMS na listagem
+      + mostrarICMSST - Mostra o ICMS ST na listagem
+      + mostrarCodVenda - Mostra o código da venda pela qual a nota foi emitida na listagem
+      + mostrarSerie - Mostra a série de emissão na listagem
+      + mostrarFormaPgto - Mostra a forma de pagamento na listagem
+      + mostrarPesoL - Mostra o peso líquido para transporte na listagem
+      + mostrarPesoB - Mostra o peso bruto para transporte na listagem
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+            
+            {
+              "de": "2025-01-01",
+              "ate": "2025-04-28",
+              "ambiente": 2,
+              "serie": 1
+            }
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "codigo": "109",
+                    "nome": "Cliente2",
+                    "numNota": "2",
+                    "cfop": "5102",
+                    "data": "2025-04-01",
+                    "situacao": "Em digitação",
+                    "vNF": "0.00",
+                    "vICMS": "0.00",
+                    "vIPI": "0.00",
+                    "vPIS": "0.00",
+                    "vCOFINS": "0.00"
+                }
+            ]
+
+### Totais de notas por período [POST /relatorios/nfeTotaisPorPeriodo]
+  Totais das notas emitidas por filtro.
+
+  + Attributes (object)
+
+      + de (string, required) - data inicial, formato YYYY-MM-DD
+      + ate (string, required) - data final, formato YYYY-MM-DD
+      + modelo (enum[string]))
+        + Members
+            + 55 - NFe
+            + 65 - NFCe
+      + serie (number) - Série de emissão da nota
+      + situacao (number) - Situação da nota, conforme a lista de códigos de situação.
+      + cfop (string) - CFOP relativo à natureza da operação (5102,6102,...)
+      + ncm (string) - NCM do produto (22011000,...)
+      + gtin (string) - EAN / GTIN do produto (1234567891234,...)
+      + indFinal (enum[string]))
+        + Members
+            + 1 - Apenas notas para cliente final
+            + 2 - Sem notas para cliente final
+      + mostrarFrete (boolean) - Mostrar total de frete
+      + mostrarSeguro (boolean) - Mostrar total de seguro
+      + mostrarDescontos (boolean) - Mostrar total de descontos
+      + mostrarOutrasDespesas (boolean) - Mostrar total de outras despesas
+      + mostrarICMSST (boolean) - Mostrar total de ICMS ST
+      + mostrarFCP (boolean) - Mostrar total de FCP
+      + mostrarFCPST (boolean) - Mostrar total de FCP ST
+      + mostrarII (boolean) - Mostrar total de II
+      + mostrarISS (boolean) - Mostrar total de ISS
+      + mostrarISSRet (boolean) - Mostrar total de ISS Retido
+
+  + Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+            
+            {
+              "de": "2025-01-01",
+              "ate": "2025-10-28",
+              "situacao": 5,
+              "modelo": 55,
+              "ncm": "22011000",
+              "mostrarFrete": true
+            }
+
+  + Response 200 (application/json)
+
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            [
+                {
+                    "key": "Valor dos Produtos",
+                    "value": 135.12
+                },
+                {
+                    "key": "Valor do Frete",
+                    "value": 0
+                },
+                {
+                    "key": "Base de Cálculo do ICMS",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do ICMS",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do IPI",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do PIS",
+                    "value": 0
+                },
+                {
+                    "key": "Valor do COFINS",
+                    "value": 0
+                }
+            ]
+
+
 ### Registro de eventos [POST /relatorios/registroEventos]
   Lista os eventos ocorridos no sistema.
 
@@ -8108,7 +8841,8 @@ Notas fiscais de serviço (NFSe) não podem ser excluídas nem canceladas via AP
               ],
               "munIncidencia": 1,
               "localPrest": 1,
-              "tags": []
+              "tags": [],
+              "urlImpressao": "https://v4.egestor.com.br/fiscal/print.php?chave=123031fs03.j42fk4mlg.2hbrx10029"
             }
 
 + Response 404 (application/json)
@@ -8214,6 +8948,87 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
               "errFields": null,
               "errUrl": "/v1/nfe"
           }
+          
+### Nova (Create) [POST /nfe/salvar]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
+    + Body
+
+            {
+                "xml":"<?xml version=\"1.0\" encoding=\"utf-8\"?><NFe ... </NFe>",
+                "enviar": true
+            }
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+                "code": 200,
+                "msg": "Nota 1 importada com sucesso.",
+                "obs": "",
+                "fields": ""
+            }
+
++ Response 400 (application/json)
+  Quando o xml não é informado
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "errCode": 400,
+                "errMsg": "XML não informado.",
+                "errObs": "Para importar notas para o sistema, é necessário informar o xml no corpo do envio",
+                "errFields": [],
+                "errUrl": ""
+            }
+            
++ Response 400 (application/json)
+  Quando o xml não é válido
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "errCode": 400,
+                "errMsg": "Não foi possível extrair os dados do arquivo enviado. (tag infNFe não encontrada ou conteúdo vazio)",
+                "errObs": "",
+                "errFields": [],
+                "errUrl": ""
+            }
+
++ Response 401 (application/json)
+  Quando o módulo não está atualizado
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+                "errCode": 401,
+                "errMsg": "Não foi possível salvar XML",
+                "errObs": "O método Salvar só está disponível para a versão atualizada do módulo NFe.",
+                "errFields": [],
+                "errUrl": "//v1/nfe/salvar"
+            }
 
 ### Detalhar (Read) [GET /nfe/{codigo}]
 
@@ -8310,6 +9125,60 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
             {
               "errCode": 404,
               "errMsg": "Documento não se encontra autorizado, impossível fazer download do XML.",
+              "errObs": null,
+              "errFields": null
+            }
+### Download DANFE (Read) [GET /nfe/{codigo}/danfe]
+    Retorna o DANFE (binário) de um documento autorizado.
++ Parameters
+    + codigo (required, number, `1`) ... Código da NFe
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer [access_token]
+
++ Response 200 (application/json)
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 58
+
+    + Body
+
+            {
+              
+            }
+
++ Response 400 (application/json)
+  Quando houver falha ao gerar o arquivo.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 400,
+              "errMsg": "Falha ao gerar DANFE, tente novamente",
+              "errObs": null,
+              "errFields": null
+            }
+
++ Response 404 (application/json)
+  Quando o documento ainda não foi autorizado.
+    + Headers
+
+            X-RateLimit-Limit: 60
+            X-RateLimit-Remaining: 59
+
+    + Body
+
+            {
+              "errCode": 404,
+              "errMsg": "O documento não se encontra autorizado, impossível fazer download do DANFE.",
               "errObs": null,
               "errFields": null
             }
@@ -8658,8 +9527,9 @@ Os módulos disponíveis são os seguintes:
 * Contatos
 * Vendas
 * Usuários
+* Financeiros
 
-Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato (form-data):
+Sempre que um produto, cliente, venda, usuário ou financeiro for criado, editado ou excluído, você receberá um webhook no endpoint cadastrado, no seguinte formato (form-data):
     
     {
     
@@ -8674,12 +9544,12 @@ Sempre que um produto, cliente, venda ou usuário for criado, editado ou excluí
 + action: Ação realizada. Valores possíveis: "created", "updated" ou "deleted".
 + codigo: Código do registro
 + date: Data que a alteração ocorreu no eGestor
-+ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos", "vendas" ou "usuarios"
++ module: Módulo do registro alterado. Valores possíveis: "produtos", "contatos", "vendas", "usuarios" ou "financeiro"
 + securityToken: Sua chave de segurança
 
 *ATENÇÃO: O timeout para resposta ao POST do webhook é de 3 segundos. Serão feitas 5 tentativas em caso de falha. Sugerimos a utilização de queues para processamento dos webhooks enviados pelo eGestor, a fim de evitar timeouts.*
 
-No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas" e "usuarios".
+No momento do cadastro do webhook, é necessário definir quais os módulos serão ativados através dos parâmetros "produtos", "contatos", "vendas", "usuarios" e "financeiro".
 
 Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será disparado com o cabeçalho **Content-Type: application/json**.
 
@@ -8707,6 +9577,7 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
               "contatos": false,
               "vendas": true,
               "usuarios": true,
+              "financeiro": true,
               "enviarComoJson": false
             }
 
@@ -8726,6 +9597,7 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
               "contatos": false,
               "vendas": true,
               "usuarios": false,
+              "financeiro": true,
               "enviarComoJson": false
             }
 
@@ -8744,5 +9616,6 @@ Caso o parâmetro "enviarComoJson" seja marcado como true, o webhook será dispa
               "produtos": true,
               "contatos": false,
               "vendas": true,
-              "usuarios": false
+              "usuarios": false,
+              "financeiro": true
             }
