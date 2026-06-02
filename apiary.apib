@@ -8954,6 +8954,12 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
           
 ### Nova (Create) [POST /nfe/salvar]
 
++ Attributes (object)
+
+    + xml (string, required) - xml completo
+    + enviar (boolean) - enviar automaticamente para a SEFAZ. Caso "false", apenas importa a nota no sistema.
+    + usarNumeracaoDoSistema (boolean) - usar numeração configurada na conta para a emissão. Caso "false", mantém a numeração do xml.
+
 + Request (application/json)
 
     + Headers
@@ -8964,7 +8970,8 @@ Módulo para a consultar a situação de NFe e NFCe, e realizar o download do XM
 
             {
                 "xml":"<?xml version=\"1.0\" encoding=\"utf-8\"?><NFe ... </NFe>",
-                "enviar": true
+                "enviar": false,
+                "usarNumeracaoDoSistema": false
             }
 
 + Response 200 (application/json)
